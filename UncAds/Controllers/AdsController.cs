@@ -28,23 +28,22 @@ namespace UncAds.Controllers
         // GET: Ads
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ads.ToListAsync());
+            var ads = await _context.Ads.Include(a => a.User).ToListAsync();
+            return View(ads);
         }
 
         // GET: Ads/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var ad = await _context.Ads
+                .Include(a => a.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (ad == null)
-            {
                 return NotFound();
-            }
 
             return View(ad);
         }
@@ -81,18 +80,18 @@ namespace UncAds.Controllers
         }
 
         // GET: Ads/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var ad = await _context.Ads.FindAsync(id);
-            if (ad == null)
-            {
-                return NotFound();
-            }
+            if (ad == null) return NotFound();
+
+            var user = await _userManager.GetUserAsync(User);
+            if (ad.UserId != user.Id)
+                return Forbid();
+
             return View(ad);
         }
 
@@ -100,16 +99,30 @@ namespace UncAds.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Date")] Ad ad)
+        public async Task<IActionResult> Edit(int id, Ad ad)
         {
             if (id != ad.Id)
             {
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Challenge();
+
+            var existingAd = await _context.Ads.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+            if (existingAd == null)
+                return NotFound();
+
+            // 🔹 Sprawdzenie właściciela
+            if (existingAd.UserId != user.Id)
+                return Forbid(); // 403 Forbidden
+
             if (ModelState.IsValid)
             {
+                ad.UserId = existingAd.UserId; // zachowujemy właściciela
                 try
                 {
                     _context.Update(ad);
@@ -118,48 +131,45 @@ namespace UncAds.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!AdExists(ad.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(ad);
         }
 
+
         // GET: Ads/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var ad = await _context.Ads
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ad == null)
-            {
-                return NotFound();
-            }
+            var ad = await _context.Ads.Include(a => a.User).FirstOrDefaultAsync(m => m.Id == id);
+            if (ad == null) return NotFound();
+
+            var user = await _userManager.GetUserAsync(User);
+            if (ad.UserId != user.Id)
+                return Forbid();
 
             return View(ad);
         }
 
-        // POST: Ads/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var ad = await _context.Ads.FindAsync(id);
-            if (ad != null)
-            {
-                _context.Ads.Remove(ad);
-            }
+            if (ad == null) return NotFound();
 
+            var user = await _userManager.GetUserAsync(User);
+            if (ad.UserId != user.Id)
+                return Forbid();
+
+            _context.Ads.Remove(ad);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
