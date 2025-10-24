@@ -6,6 +6,8 @@
 
 <h1>Index</h1>
 <p>Zalogowany użytkownik: @User?.Identity?.Name</p>
+<p>Rola Admin: @User.IsInRole("Admin")</p>
+
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -30,7 +32,7 @@
                 <td>@item.User?.UserName</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    @if (item.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                    @if (item.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
                     {
                                  <a asp-action = "Edit" asp-route-id = "@item.Id" > Edit </a>
                                  <a asp-action = "Delete" asp-route-id = "@item.Id" > Delete </a>

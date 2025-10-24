@@ -89,7 +89,8 @@ namespace UncAds.Controllers
             if (ad == null) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
-            if (ad.UserId != user.Id)
+            var isAdmin = User.IsInRole("Admin");
+            if (ad.UserId != user.Id && !isAdmin)
                 return Forbid();
 
             return View(ad);
@@ -116,8 +117,8 @@ namespace UncAds.Controllers
             if (existingAd == null)
                 return NotFound();
 
-            // 🔹 Sprawdzenie właściciela
-            if (existingAd.UserId != user.Id)
+            var isAdmin = User.IsInRole("Admin");
+            if (existingAd.UserId != user.Id && !isAdmin)
                 return Forbid(); // 403 Forbidden
 
             if (ModelState.IsValid)
@@ -151,7 +152,8 @@ namespace UncAds.Controllers
             if (ad == null) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
-            if (ad.UserId != user.Id)
+            var isAdmin = User.IsInRole("Admin");
+            if (ad.UserId != user.Id && !isAdmin)
                 return Forbid();
 
             return View(ad);
@@ -166,7 +168,8 @@ namespace UncAds.Controllers
             if (ad == null) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
-            if (ad.UserId != user.Id)
+            var isAdmin = User.IsInRole("Admin");
+            if (ad.UserId != user.Id && !isAdmin)
                 return Forbid();
 
             _context.Ads.Remove(ad);
