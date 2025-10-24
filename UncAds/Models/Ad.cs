@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace UncAds.Models
 {
@@ -20,10 +21,10 @@ namespace UncAds.Models
         [Display(Name = "Date")]
         public DateTime Date { get; set; } = DateTime.Now;
 
-        //[Display(Name = "Author")]
-        //public string AuthorId { get; set; }
+        // 🔹 Nowe pola
+        [ForeignKey("User")]
+        public string? UserId { get; set; }
 
-        //[ForeignKey("AuthorId")]
-        //public virtual User Author { get; set; }
+        public IdentityUser? User { get; set; }
     }
 }
