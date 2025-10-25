@@ -1,0 +1,19 @@
+﻿@model UncAds.Models.Category
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<h2>Delete Category</h2>
+
+<h4>Are you sure you want to delete this?</h4>
+<div>
+    <strong>@Model.Name</strong>
+    <p>Parent: @Model.ParentCategory?.Name</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

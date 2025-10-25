@@ -21,10 +21,11 @@ namespace UncAds.Models
         [Display(Name = "Date")]
         public DateTime Date { get; set; } = DateTime.Now;
 
-        // 🔹 Nowe pola
         [ForeignKey("User")]
         public string? UserId { get; set; }
 
         public IdentityUser? User { get; set; }
+        public ICollection<AdCategory>? AdCategories { get; set; }
+
     }
 }
