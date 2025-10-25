@@ -7,30 +7,53 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Ad</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-    </dl>
+    <h4>@Model.Title</h4>
+    <p>@Model.Description</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("g")</p>
+    <p><strong>Author:</strong> @Model.User?.UserName</p>
+
+    <h5>Kategorie:</h5>
+    @if (Model.AdCategories != null && Model.AdCategories.Any())
+    {
+        <ul class="category-tree list-unstyled">
+            @foreach (var ac in Model.AdCategories)
+            {
+                <li>
+                    <i class="bi bi-folder"></i> @ac.Category.FullPath
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted">Brak przypisanych kategorii</p>
+    }
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<p>
+    @if (Model.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+    }
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</p>
+
+<style>
+    .category-tree {
+        padding-left: 0.5rem;
+        border-left: 2px solid #ccc;
+        margin-bottom: 1rem;
+    }
+
+        .category-tree li {
+            margin: 4px 0;
+            padding-left: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .category-tree i {
+            color: #f0ad4e;
+            margin-right: 6px;
+        }
+</style>

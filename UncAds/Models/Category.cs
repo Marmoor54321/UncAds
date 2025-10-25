@@ -1,10 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UncAds.Models
 {
     public class Category
     {
+        //funkcja pomocnicza do wyświetlania pełnej ścieżki kategorii
+        [NotMapped]
+        public string FullPath
+        {
+            get
+            {
+                var names = new List<string>();
+                var current = this;
+                while (current != null)
+                {
+                    names.Insert(0, current.Name);
+                    current = current.ParentCategory;
+                }
+                return string.Join(" > ", names);
+            }
+        }
         public int Id { get; set; }
 
         [Required]
