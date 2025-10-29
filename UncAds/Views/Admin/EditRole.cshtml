@@ -1,0 +1,27 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityUser
+
+@{
+    ViewData["Title"] = "Zarządzanie rolami";
+    var allRoles = ViewBag.AllRoles as List<string>;
+    var userRoles = ViewBag.UserRoles as IList<string>;
+}
+
+<h2>Zarządzanie rolami użytkownika</h2>
+
+<h4>@Model.Email</h4>
+
+<form asp-action="EditRole" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    @foreach (var role in allRoles)
+    {
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="selectedRoles" value="@role"
+                   @(userRoles.Contains(role) ? "checked" : "") />
+            <label class="form-check-label">@role</label>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary mt-3">Zapisz zmiany</button>
+    <a asp-action="Users" class="btn btn-secondary mt-3">Powrót</a>
+</form>
