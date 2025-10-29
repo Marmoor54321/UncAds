@@ -19,4 +19,49 @@
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Back</a>
+
+    <hr />
+<h4>Atrybuty</h4>
+<div id="attributesContainer">
+    @if (ViewBag.Attributes != null)
+    {
+        foreach (var attr in (List<UncAds.Models.CategoryAttribute>)ViewBag.Attributes)
+        {
+            var existingValue = Model.AttributeValues?
+                .FirstOrDefault(v => v.CategoryAttributeId == attr.Id)?.Value ?? "";
+
+            <div class="form-group">
+                <label>@attr.Name</label>
+
+                @if (attr.Type == UncAds.Models.AttributeType.Select)
+                {
+                    var opts = (attr.Options ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    <select name="AttributeValues[@attr.Id]" class="form-control">
+                        @foreach (var o in opts)
+                        {
+                                <option value="@o" selected="@(existingValue == o)">@o</option>
+                        }
+                    </select>
+                }
+                else if (attr.Type == UncAds.Models.AttributeType.Boolean)
+                {
+                    <input type="checkbox" name="AttributeValues[@attr.Id]" value="true" @(existingValue == "true" ? "checked" : "") />
+                }
+                else if (attr.Type == UncAds.Models.AttributeType.Number)
+                {
+                    <input type="number" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
+                }
+                else if (attr.Type == UncAds.Models.AttributeType.Date)
+                {
+                    <input type="date" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
+                }
+                else
+                {
+                    <input type="text" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
+                }
+            </div>
+        }
+    }
+</div>
+
 </form>

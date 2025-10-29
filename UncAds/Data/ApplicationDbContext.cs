@@ -13,6 +13,9 @@ namespace UncAds.Data
         public DbSet<Ad> Ads { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<AdCategory> AdCategories { get; set; }
+        public DbSet<CategoryAttribute> CategoryAttributes { get; set; }
+        public DbSet<AdAttributeValue> AdAttributeValues { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -38,6 +41,22 @@ namespace UncAds.Data
                 .WithMany(c => c.Children)
                 .HasForeignKey(c => c.ParentCategoryId)
                 .OnDelete(DeleteBehavior.Restrict); // zapobiega kaskadowemu usuwaniu drzewa
+
+            builder.Entity<CategoryAttribute>()
+                .HasOne(ca => ca.Category)
+                .WithMany(c => c.CategoryAttributes)
+                .HasForeignKey(ca => ca.CategoryId);
+
+            builder.Entity<AdAttributeValue>()
+                .HasOne(aav => aav.Ad)
+                .WithMany(a => a.AttributeValues)
+                .HasForeignKey(aav => aav.AdId);
+
+            builder.Entity<AdAttributeValue>()
+                .HasOne(aav => aav.CategoryAttribute)
+                .WithMany()
+                .HasForeignKey(aav => aav.CategoryAttributeId);
+
         }
     }
 }

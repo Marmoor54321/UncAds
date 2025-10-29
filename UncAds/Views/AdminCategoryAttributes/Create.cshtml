@@ -1,0 +1,38 @@
+﻿@model UncAds.Models.CategoryAttribute
+@{
+    ViewData["Title"] = "Nowy atrybut kategorii";
+}
+
+<h2>Nowy atrybut kategorii</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Type">Typ pola</label>
+        <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<UncAds.Models.AttributeType>()"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Options">Opcje (dla Select — rozdzielone ;)</label>
+        <input asp-for="Options" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Kategoria</label>
+        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Zapisz</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}

@@ -24,6 +24,20 @@ namespace UncAds.Controllers
             _context = context;
             _userManager = userManager;
         }
+        // pomocnicza: pobiera atrybuty dla wybranych kategorii
+        private List<CategoryAttribute> GetAttributesForCategories(int[] categoryIds)
+        {
+            var attributes = _context.CategoryAttributes
+                .Where(a => categoryIds.Contains(a.CategoryId))
+                .ToList();
+
+            // jeśli w różnych kategoriach są takie same nazwy — eliminuj duplikaty
+            return attributes
+                .GroupBy(a => a.Name)
+                .Select(g => g.First())
+                .ToList();
+        }
+
 
         // GET: Ads
         public async Task<IActionResult> Index()
@@ -47,19 +61,19 @@ namespace UncAds.Controllers
                 .Include(a => a.User)
                 .Include(a => a.AdCategories)
                     .ThenInclude(ac => ac.Category)
+                .Include(a => a.AttributeValues)
+                    .ThenInclude(av => av.CategoryAttribute)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (ad == null)
                 return NotFound();
 
-            // 🔽 Dociągamy pełne drzewo dla każdej kategorii
             foreach (var adCat in ad.AdCategories)
-            {
                 await LoadCategoryPath(adCat.Category);
-            }
 
             return View(ad);
         }
+
         //Funkcja pomocnicza dla Details do wczytywania drzewa kategorii
         private async Task LoadCategoryPath(Category category)
         {
@@ -87,27 +101,34 @@ namespace UncAds.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Ad ad, int[] SelectedCategoryIds)
+        public async Task<IActionResult> Create(Ad ad, int[] SelectedCategoryIds, Dictionary<int, string> AttributeValues)
         {
             if (ModelState.IsValid)
             {
-                ad.Date = DateTime.Now; // 🔒 nadpisanie dla bezpieczeństwa
+                ad.Date = DateTime.Now;
                 ad.UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
                 _context.Ads.Add(ad);
                 await _context.SaveChangesAsync();
 
-                // 🔽 dodaj relacje z kategoriami
-                if (SelectedCategoryIds != null && SelectedCategoryIds.Length > 0)
+                // relacja z kategoriami
+                foreach (var categoryId in SelectedCategoryIds)
                 {
-                    foreach (var categoryId in SelectedCategoryIds)
+                    _context.AdCategories.Add(new AdCategory { AdId = ad.Id, CategoryId = categoryId });
+                }
+                await _context.SaveChangesAsync();
+
+                // zapis wartości atrybutów
+                if (AttributeValues != null)
+                {
+                    foreach (var kv in AttributeValues)
                     {
-                        var adCategory = new AdCategory
+                        _context.AdAttributeValues.Add(new AdAttributeValue
                         {
                             AdId = ad.Id,
-                            CategoryId = categoryId
-                        };
-                        _context.AdCategories.Add(adCategory);
+                            CategoryAttributeId = kv.Key,
+                            Value = kv.Value
+                        });
                     }
                     await _context.SaveChangesAsync();
                 }
@@ -127,6 +148,8 @@ namespace UncAds.Controllers
 
             var ad = await _context.Ads
                 .Include(a => a.AdCategories)
+                .Include(a => a.AttributeValues)
+                    .ThenInclude(av => av.CategoryAttribute)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (ad == null) return NotFound();
@@ -136,12 +159,16 @@ namespace UncAds.Controllers
             if (ad.UserId != user.Id && !isAdmin)
                 return Forbid();
 
-            // aktualnie wybrane kategorie
             var selectedIds = ad.AdCategories.Select(ac => ac.CategoryId).ToList();
             ViewBag.Categories = new MultiSelectList(_context.Categories, "Id", "Name", selectedIds);
 
+            // wczytaj wszystkie możliwe atrybuty
+            var attributes = GetAttributesForCategories(selectedIds.ToArray());
+            ViewBag.Attributes = attributes;
+
             return View(ad);
         }
+
 
         // POST: Ads/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -149,7 +176,7 @@ namespace UncAds.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Ad ad, int[] SelectedCategoryIds)
+        public async Task<IActionResult> Edit(int id, Ad ad, int[] SelectedCategoryIds, Dictionary<int, string> AttributeValues)
         {
             if (id != ad.Id) return NotFound();
 
@@ -158,6 +185,7 @@ namespace UncAds.Controllers
 
             var existingAd = await _context.Ads
                 .Include(a => a.AdCategories)
+                .Include(a => a.AttributeValues)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (existingAd == null) return NotFound();
@@ -174,12 +202,21 @@ namespace UncAds.Controllers
                 // 🔄 aktualizacja kategorii
                 existingAd.AdCategories.Clear();
                 foreach (var catId in SelectedCategoryIds)
+                    existingAd.AdCategories.Add(new AdCategory { AdId = id, CategoryId = catId });
+
+                // 🔄 aktualizacja wartości atrybutów
+                _context.AdAttributeValues.RemoveRange(existingAd.AttributeValues);
+                if (AttributeValues != null)
                 {
-                    existingAd.AdCategories.Add(new AdCategory
+                    foreach (var kv in AttributeValues)
                     {
-                        AdId = id,
-                        CategoryId = catId
-                    });
+                        _context.AdAttributeValues.Add(new AdAttributeValue
+                        {
+                            AdId = id,
+                            CategoryAttributeId = kv.Key,
+                            Value = kv.Value
+                        });
+                    }
                 }
 
                 _context.Update(existingAd);
@@ -191,6 +228,7 @@ namespace UncAds.Controllers
             ViewBag.Categories = new MultiSelectList(_context.Categories, "Id", "Name", SelectedCategoryIds);
             return View(ad);
         }
+
 
 
         // GET: Ads/Delete/5
@@ -238,5 +276,21 @@ namespace UncAds.Controllers
         {
             return _context.Ads.Any(e => e.Id == id);
         }
+
+        [HttpGet]
+        public IActionResult GetCategoryAttributes([FromQuery] int[] categoryIds)
+        {
+            var attrs = GetAttributesForCategories(categoryIds)
+                .Select(a => new
+                {
+                    a.Id,
+                    a.Name,
+                    a.Type,
+                    a.Options
+                }).ToList();
+
+            return Json(attrs);
+        }
+
     }
 }

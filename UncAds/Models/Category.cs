@@ -35,5 +35,8 @@ namespace UncAds.Models
 
         // relacja wiele-do-wielu z Ad (przez tabelę łącznikową)
         public ICollection<AdCategory>? AdCategories { get; set; }
+
+        public ICollection<CategoryAttribute>? CategoryAttributes { get; set; }
+
     }
 }

@@ -28,6 +28,17 @@
     {
         <p class="text-muted">Brak przypisanych kategorii</p>
     }
+    @if (Model.AttributeValues != null && Model.AttributeValues.Any())
+    {
+        <h5>Atrybuty:</h5>
+        <ul>
+            @foreach (var av in Model.AttributeValues)
+            {
+                <li><strong>@av.CategoryAttribute.Name:</strong> @av.Value</li>
+            }
+        </ul>
+    }
+
 </div>
 
 <p>

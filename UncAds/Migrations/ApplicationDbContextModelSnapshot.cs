@@ -250,6 +250,33 @@ namespace UncAds.Migrations
                     b.ToTable("Ads");
                 });
 
+            modelBuilder.Entity("UncAds.Models.AdAttributeValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryAttributeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdId");
+
+                    b.HasIndex("CategoryAttributeId");
+
+                    b.ToTable("AdAttributeValues");
+                });
+
             modelBuilder.Entity("UncAds.Models.AdCategory", b =>
                 {
                     b.Property<int>("AdId")
@@ -286,6 +313,34 @@ namespace UncAds.Migrations
                     b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("UncAds.Models.CategoryAttribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Options")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CategoryAttributes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -348,6 +403,25 @@ namespace UncAds.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("UncAds.Models.AdAttributeValue", b =>
+                {
+                    b.HasOne("UncAds.Models.Ad", "Ad")
+                        .WithMany("AttributeValues")
+                        .HasForeignKey("AdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UncAds.Models.CategoryAttribute", "CategoryAttribute")
+                        .WithMany()
+                        .HasForeignKey("CategoryAttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ad");
+
+                    b.Navigation("CategoryAttribute");
+                });
+
             modelBuilder.Entity("UncAds.Models.AdCategory", b =>
                 {
                     b.HasOne("UncAds.Models.Ad", "Ad")
@@ -377,14 +451,29 @@ namespace UncAds.Migrations
                     b.Navigation("ParentCategory");
                 });
 
+            modelBuilder.Entity("UncAds.Models.CategoryAttribute", b =>
+                {
+                    b.HasOne("UncAds.Models.Category", "Category")
+                        .WithMany("CategoryAttributes")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("UncAds.Models.Ad", b =>
                 {
                     b.Navigation("AdCategories");
+
+                    b.Navigation("AttributeValues");
                 });
 
             modelBuilder.Entity("UncAds.Models.Category", b =>
                 {
                     b.Navigation("AdCategories");
+
+                    b.Navigation("CategoryAttributes");
 
                     b.Navigation("Children");
                 });

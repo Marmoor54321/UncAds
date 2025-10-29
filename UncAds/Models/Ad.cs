@@ -27,5 +27,8 @@ namespace UncAds.Models
         public IdentityUser? User { get; set; }
         public ICollection<AdCategory>? AdCategories { get; set; }
 
+        public ICollection<AdAttributeValue>? AttributeValues { get; set; }
+
+
     }
 }

@@ -1,0 +1,20 @@
+﻿@model UncAds.Models.CategoryAttribute
+
+<h2>Szczegóły atrybutu</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Nazwa</dt>
+    <dd class="col-sm-10">@Model.Name</dd>
+
+    <dt class="col-sm-2">Typ</dt>
+    <dd class="col-sm-10">@Model.Type</dd>
+
+    <dt class="col-sm-2">Opcje</dt>
+    <dd class="col-sm-10">@Model.Options</dd>
+
+    <dt class="col-sm-2">Kategoria</dt>
+    <dd class="col-sm-10">@Model.Category.Name</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edytuj</a>
+<a asp-action="Index" class="btn btn-secondary">Powrót</a>
