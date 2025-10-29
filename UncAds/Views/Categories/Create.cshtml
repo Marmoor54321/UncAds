@@ -1,0 +1,25 @@
+﻿@model UncAds.Models.Category
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<h2>Create Category</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ParentCategoryId">Parent Category</label>
+        <select asp-for="ParentCategoryId" class="form-control" asp-items="ViewBag.ParentCategoryId">
+            <option value="">(None)</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>

@@ -28,7 +28,12 @@ namespace UncAds.Controllers
         // GET: Ads
         public async Task<IActionResult> Index()
         {
-            var ads = await _context.Ads.Include(a => a.User).ToListAsync();
+            var ads = await _context.Ads
+                .Include(a => a.User)
+                .Include(a => a.AdCategories)
+                    .ThenInclude(ac => ac.Category)
+                .ToListAsync();
+
             return View(ads);
         }
 
@@ -40,17 +45,39 @@ namespace UncAds.Controllers
 
             var ad = await _context.Ads
                 .Include(a => a.User)
+                .Include(a => a.AdCategories)
+                    .ThenInclude(ac => ac.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (ad == null)
                 return NotFound();
 
+            // 🔽 Dociągamy pełne drzewo dla każdej kategorii
+            foreach (var adCat in ad.AdCategories)
+            {
+                await LoadCategoryPath(adCat.Category);
+            }
+
             return View(ad);
+        }
+        //Funkcja pomocnicza dla Details do wczytywania drzewa kategorii
+        private async Task LoadCategoryPath(Category category)
+        {
+            if (category == null || category.ParentCategory != null)
+                return;
+
+            category.ParentCategory = await _context.Categories
+                .Include(c => c.ParentCategory)
+                .FirstOrDefaultAsync(c => c.Id == category.ParentCategoryId);
+
+            if (category.ParentCategory != null)
+                await LoadCategoryPath(category.ParentCategory);
         }
 
         // GET: Ads/Create
         public IActionResult Create()
         {
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -60,22 +87,35 @@ namespace UncAds.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Date")] Ad ad)
+        public async Task<IActionResult> Create(Ad ad, int[] SelectedCategoryIds)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
+                ad.Date = DateTime.Now; // 🔒 nadpisanie dla bezpieczeństwa
+                ad.UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+                _context.Ads.Add(ad);
+                await _context.SaveChangesAsync();
+
+                // 🔽 dodaj relacje z kategoriami
+                if (SelectedCategoryIds != null && SelectedCategoryIds.Length > 0)
                 {
-                    return Challenge(); // wymusza logowanie
+                    foreach (var categoryId in SelectedCategoryIds)
+                    {
+                        var adCategory = new AdCategory
+                        {
+                            AdId = ad.Id,
+                            CategoryId = categoryId
+                        };
+                        _context.AdCategories.Add(adCategory);
+                    }
+                    await _context.SaveChangesAsync();
                 }
 
-                ad.UserId = user.Id; // 🔹 przypisanie użytkownika
-
-                _context.Add(ad);
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
             return View(ad);
         }
 
@@ -85,13 +125,20 @@ namespace UncAds.Controllers
         {
             if (id == null) return NotFound();
 
-            var ad = await _context.Ads.FindAsync(id);
+            var ad = await _context.Ads
+                .Include(a => a.AdCategories)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (ad == null) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
             var isAdmin = User.IsInRole("Admin");
             if (ad.UserId != user.Id && !isAdmin)
                 return Forbid();
+
+            // aktualnie wybrane kategorie
+            var selectedIds = ad.AdCategories.Select(ac => ac.CategoryId).ToList();
+            ViewBag.Categories = new MultiSelectList(_context.Categories, "Id", "Name", selectedIds);
 
             return View(ad);
         }
@@ -102,42 +149,46 @@ namespace UncAds.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Ad ad)
+        public async Task<IActionResult> Edit(int id, Ad ad, int[] SelectedCategoryIds)
         {
-            if (id != ad.Id)
-            {
-                return NotFound();
-            }
+            if (id != ad.Id) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Challenge();
+            if (user == null) return Challenge();
 
-            var existingAd = await _context.Ads.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
-            if (existingAd == null)
-                return NotFound();
+            var existingAd = await _context.Ads
+                .Include(a => a.AdCategories)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (existingAd == null) return NotFound();
 
             var isAdmin = User.IsInRole("Admin");
             if (existingAd.UserId != user.Id && !isAdmin)
-                return Forbid(); // 403 Forbidden
+                return Forbid();
 
             if (ModelState.IsValid)
             {
-                ad.UserId = existingAd.UserId; // zachowujemy właściciela
-                try
+                existingAd.Title = ad.Title;
+                existingAd.Description = ad.Description;
+
+                // 🔄 aktualizacja kategorii
+                existingAd.AdCategories.Clear();
+                foreach (var catId in SelectedCategoryIds)
                 {
-                    _context.Update(ad);
-                    await _context.SaveChangesAsync();
+                    existingAd.AdCategories.Add(new AdCategory
+                    {
+                        AdId = id,
+                        CategoryId = catId
+                    });
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AdExists(ad.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
+
+                _context.Update(existingAd);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Categories = new MultiSelectList(_context.Categories, "Id", "Name", SelectedCategoryIds);
             return View(ad);
         }
 
@@ -164,7 +215,10 @@ namespace UncAds.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ad = await _context.Ads.FindAsync(id);
+            var ad = await _context.Ads
+                .Include(a => a.AdCategories)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (ad == null) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
@@ -172,8 +226,11 @@ namespace UncAds.Controllers
             if (ad.UserId != user.Id && !isAdmin)
                 return Forbid();
 
+            // usuń powiązania
+            _context.AdCategories.RemoveRange(ad.AdCategories);
             _context.Ads.Remove(ad);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
