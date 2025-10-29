@@ -12,7 +12,7 @@ using UncAds.Data;
 namespace UncAds.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251024153846_init")]
+    [Migration("20251029121249_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -253,6 +253,44 @@ namespace UncAds.Migrations
                     b.ToTable("Ads");
                 });
 
+            modelBuilder.Entity("UncAds.Models.AdCategory", b =>
+                {
+                    b.Property<int>("AdId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AdId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("AdCategories");
+                });
+
+            modelBuilder.Entity("UncAds.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -311,6 +349,47 @@ namespace UncAds.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UncAds.Models.AdCategory", b =>
+                {
+                    b.HasOne("UncAds.Models.Ad", "Ad")
+                        .WithMany("AdCategories")
+                        .HasForeignKey("AdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UncAds.Models.Category", "Category")
+                        .WithMany("AdCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ad");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("UncAds.Models.Category", b =>
+                {
+                    b.HasOne("UncAds.Models.Category", "ParentCategory")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("UncAds.Models.Ad", b =>
+                {
+                    b.Navigation("AdCategories");
+                });
+
+            modelBuilder.Entity("UncAds.Models.Category", b =>
+                {
+                    b.Navigation("AdCategories");
+
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }
