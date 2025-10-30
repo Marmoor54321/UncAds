@@ -19,7 +19,7 @@ namespace UncAds.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        private readonly string[] _allowedMediaExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf" };
+        private readonly string[] _allowedMediaExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf",".mp4" };
         private readonly string[] _allowedAttachmentExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf", ".mp4", ".avi", ".pdf", ".doc", ".docx", ".zip", ".rar", ".txt", ".csv" };
 
         public AdsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
@@ -231,6 +231,7 @@ namespace UncAds.Controllers
                     {
                         ".jpg" or ".jpeg" or ".png" or ".gif" => "image",
                         ".mp3" or ".wav" or ".ogg" => "audio",
+                        ".mp4" => "video",
                         ".swf" => "flash",
                         _ => "other"
                     };

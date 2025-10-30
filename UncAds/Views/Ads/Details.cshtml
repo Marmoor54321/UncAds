@@ -24,6 +24,13 @@
                     Twoja przeglądarka nie obsługuje odtwarzania audio.
                 </audio>
             }
+            else if (m.MediaType == "video")
+            {
+                <video controls class="w-100 mb-2" style="max-height: 400px;">
+                    <source src="@m.FilePath" type="video/mp4">
+                    Twoja przeglądarka nie obsługuje wideo.
+                </video>
+            }
             else if (m.MediaType == "flash")
             {
                 <object data="@m.FilePath" type="application/x-shockwave-flash" width="400" height="300"></object>
