@@ -128,12 +128,25 @@ namespace UncAds.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories
+                .Include(c => c.Children)
+                .Include(c => c.CategoryAttributes)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (category != null)
             {
+                // usuń atrybuty kategorii
+                if (category.CategoryAttributes?.Any() == true)
+                    _context.CategoryAttributes.RemoveRange(category.CategoryAttributes);
+
+                // usuń dzieci (rekurencyjnie lub pojedynczo)
+                if (category.Children?.Any() == true)
+                    _context.Categories.RemoveRange(category.Children);
+
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
             }
+
             return RedirectToAction(nameof(Index));
         }
     }
