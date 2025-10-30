@@ -45,10 +45,14 @@
             </div>
         </nav>
         @if (User.IsInRole("Admin"))
-        {
+        {<ul>
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-controller="Admin" asp-action="Users">Panel admina</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Settings">Ustawienia admina</a>
+            </li>
+         </ul>
         }
 
     </header>

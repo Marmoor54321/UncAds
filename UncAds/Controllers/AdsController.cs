@@ -19,6 +19,9 @@ namespace UncAds.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
+        private readonly string[] _allowedMediaExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf" };
+        private readonly string[] _allowedAttachmentExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf", ".mp4", ".avi", ".pdf", ".doc", ".docx", ".zip", ".rar", ".txt", ".csv" };
+
         public AdsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
@@ -96,6 +99,11 @@ namespace UncAds.Controllers
         public IActionResult Create()
         {
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
+
+            var settings = _context.AdminSettings.FirstOrDefault() ?? new AdminSettings();
+            ViewBag.MaxAttachments = settings.MaxAttachments;
+            ViewBag.MaxFileSizeMB = settings.MaxFileSizeMB;
+            ViewBag.MaxMediaFiles = settings.MaxMediaFiles; // Nowe!
             return View();
         }
 
@@ -116,27 +124,62 @@ namespace UncAds.Controllers
             // Pobranie ustawień admina
             var settings = await _context.AdminSettings.FirstOrDefaultAsync() ?? new AdminSettings();
 
-            // WALIDACJA ZAŁĄCZNIKÓW PRZED ZAPISANIEM
-            if (attachmentFiles != null && attachmentFiles.Count > settings.MaxAttachments)
-            {
-                ModelState.AddModelError("", $"Maksymalna liczba załączników to {settings.MaxAttachments}.");
-            }
-
             if (attachmentFiles != null)
             {
+                if (attachmentFiles.Count > settings.MaxAttachments)
+                {
+                    ModelState.AddModelError("", $"Maksymalna liczba załączników to {settings.MaxAttachments}.");
+                }
                 for (int i = 0; i < attachmentFiles.Count; i++)
                 {
-                    if (attachmentFiles[i].Length > settings.MaxFileSizeMB * 1024 * 1024)
+                    var file = attachmentFiles[i];
+                    var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+                    if (!_allowedAttachmentExtensions.Contains(ext))
                     {
-                        ModelState.AddModelError("", $"Plik {attachmentFiles[i].FileName} przekracza limit {settings.MaxFileSizeMB} MB.");
+                        ModelState.AddModelError("", $"Nieobsługiwany typ pliku dla załączników: {file.FileName}. Dozwolone: obrazy, dźwięki, video, pdf, doc/docx, zip/rar, txt/csv itp.");
+                    }
+                    if (file.Length > settings.MaxFileSizeMB * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("", $"Plik {file.FileName} przekracza limit {settings.MaxFileSizeMB} MB.");
                     }
                 }
             }
+            if (mediaFiles != null)
+            {
+                if (mediaFiles.Count > settings.MaxMediaFiles)
+                {
+                    ModelState.AddModelError("", $"Maksymalna liczba plików multimedialnych to {settings.MaxMediaFiles}.");
+                }
+                foreach (var file in mediaFiles)
+                {
+                    var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
 
+                    // 1. Typ pliku
+                    if (!_allowedMediaExtensions.Contains(ext))
+                    {
+                        ModelState.AddModelError("", $"Nieobsługiwany typ pliku dla multimediów: {file.FileName}. Dozwolone: jpg, png, gif, mp3, wav, ogg, swf.");
+                        continue;
+                    }
+
+                    // 2. Rozmiar
+                    if (file.Length > settings.MaxFileSizeMB * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("", $"Plik multimedialny {file.FileName} przekracza limit {settings.MaxFileSizeMB} MB.");
+                        continue;
+                    }
+
+                    // 3. Pusty plik
+                    if (file.Length == 0)
+                    {
+                        ModelState.AddModelError("", $"Plik {file.FileName} jest pusty.");
+                        continue;
+                    }
+                }
+            }
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
-                return View(ad); // <-- brak zapisu do bazy jeśli walidacja nie przeszła
+                return View(ad);
             }
 
             // Zapis ogłoszenia
@@ -174,30 +217,36 @@ namespace UncAds.Controllers
 
                 foreach (var file in mediaFiles)
                 {
-                    if (file.Length > 0)
+                    var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                    // PONOWNA walidacja (na wszelki wypadek)
+                    if (!_allowedMediaExtensions.Contains(ext) ||
+                        file.Length > settings.MaxFileSizeMB * 1024 * 1024 ||
+                        file.Length == 0)
                     {
-                        var ext = Path.GetExtension(file.FileName).ToLower();
-                        string mediaType = "other";
-                        if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif")
-                            mediaType = "image";
-                        else if (ext == ".mp3" || ext == ".wav" || ext == ".ogg")
-                            mediaType = "audio";
-                        else if (ext == ".swf")
-                            mediaType = "flash";
-
-                        var fileName = Guid.NewGuid().ToString() + ext;
-                        var filePath = Path.Combine(uploadDir, fileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                            await file.CopyToAsync(stream);
-
-                        var relativePath = $"/uploads/ads/{ad.Id}/{fileName}";
-                        _context.AdMedia.Add(new AdMedia
-                        {
-                            AdId = ad.Id,
-                            FilePath = relativePath,
-                            MediaType = mediaType
-                        });
+                        continue; // pomiń zapis
                     }
+
+                    string mediaType = ext switch
+                    {
+                        ".jpg" or ".jpeg" or ".png" or ".gif" => "image",
+                        ".mp3" or ".wav" or ".ogg" => "audio",
+                        ".swf" => "flash",
+                        _ => "other"
+                    };
+
+                    var fileName = Guid.NewGuid().ToString() + ext;
+                    var filePath = Path.Combine(uploadDir, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                        await file.CopyToAsync(stream);
+
+                    var relativePath = $"/uploads/ads/{ad.Id}/{fileName}";
+                    _context.AdMedia.Add(new AdMedia
+                    {
+                        AdId = ad.Id,
+                        FilePath = relativePath,
+                        MediaType = mediaType
+                    });
                 }
                 await _context.SaveChangesAsync();
             }
@@ -211,7 +260,17 @@ namespace UncAds.Controllers
                 for (int i = 0; i < attachmentFiles.Count; i++)
                 {
                     var file = attachmentFiles[i];
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                    // Pomijaj niepoprawne (już sprawdzone w walidacji)
+                    if (!_allowedAttachmentExtensions.Contains(ext) ||
+                        file.Length > settings.MaxFileSizeMB * 1024 * 1024 ||
+                        file.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    var fileName = Guid.NewGuid().ToString() + ext;
                     var filePath = Path.Combine(attachDir, fileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                         await file.CopyToAsync(stream);
@@ -226,7 +285,6 @@ namespace UncAds.Controllers
                         Description = desc
                     });
                 }
-
                 await _context.SaveChangesAsync();
             }
 
@@ -350,6 +408,8 @@ namespace UncAds.Controllers
         {
             var ad = await _context.Ads
                 .Include(a => a.AdCategories)
+                .Include(a => a.Media)
+                .Include(a => a.Attachments)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (ad == null) return NotFound();
@@ -359,8 +419,35 @@ namespace UncAds.Controllers
             if (ad.UserId != user.Id && !isAdmin)
                 return Forbid();
 
-            // usuń powiązania
             _context.AdCategories.RemoveRange(ad.AdCategories);
+
+            if (ad.Media != null)
+            {
+                foreach (var media in ad.Media)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", media.FilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+                _context.AdMedia.RemoveRange(ad.Media);
+            }
+
+            if (ad.Attachments != null)
+            {
+                foreach (var attach in ad.Attachments)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attach.FilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+                _context.AdAttachments.RemoveRange(ad.Attachments);
+            }
+
+            // usuń ogłoszenie
             _context.Ads.Remove(ad);
             await _context.SaveChangesAsync();
 

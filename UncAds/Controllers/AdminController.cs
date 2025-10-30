@@ -113,6 +113,7 @@ namespace UncAds.Controllers
 
             settings.MaxAttachments = model.MaxAttachments;
             settings.MaxFileSizeMB = model.MaxFileSizeMB;
+            settings.MaxMediaFiles = model.MaxMediaFiles;
 
             await _context.SaveChangesAsync();
             ViewBag.Message = "Zapisano ustawienia.";

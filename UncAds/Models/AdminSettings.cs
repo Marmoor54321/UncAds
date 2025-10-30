@@ -11,5 +11,9 @@ namespace UncAds.Models
 
         [Display(Name = "Maksymalny rozmiar pliku (MB)")]
         public int MaxFileSizeMB { get; set; } = 10;
+
+        [Display(Name = "Maksymalna liczba plików multimedialnych na ogłoszenie")]
+        public int MaxMediaFiles { get; set; } = 5;
     }
+
 }

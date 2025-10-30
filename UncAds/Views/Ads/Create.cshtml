@@ -29,14 +29,18 @@
     <h4>Multimedia</h4>
     <div class="form-group">
         <label>Dodaj pliki (obrazy, dźwięki, Flash)</label>
-        <input type="file" name="mediaFiles" multiple class="form-control" />
+        <input type="file" name="mediaFiles" multiple class="form-control media-file" accept="image/jpeg,image/png,image/gif,audio/mpeg,audio/wav,audio/ogg,.swf"/>
+        <small class="text-muted d-block">
+            Maks. @ViewBag.MaxMediaFiles plików, każdy do @ViewBag.MaxFileSizeMB MB
+        </small>
     </div>
     <hr />
     <h4>Załączniki</h4>
     <div id="attachmentsContainer">
         <div class="attachment-group mb-2">
-            <input type="file" name="attachmentFiles" class="form-control mb-1" />
+            <input type="file" name="attachmentFiles" class="form-control mb-1 attachment-file" accept="image/*,audio/*,video/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/zip,application/x-rar-compressed,text/plain,text/csv,.swf" />
             <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
+            <small class="text-muted d-block">Maks. rozmiar: @ViewBag.MaxFileSizeMB MB</small>
         </div>
     </div>
     <button type="button" id="addAttachment" class="btn btn-secondary btn-sm mt-2">+ Dodaj kolejny</button>
@@ -46,16 +50,98 @@
 
 @section Scripts {
     <script>
-         document.getElementById('addAttachment').addEventListener('click', function () {
-                const container = document.getElementById('attachmentsContainer');
-                const div = document.createElement('div');
-                div.classList.add('attachment-group', 'mb-2');
-                div.innerHTML = `
-                    <input type="file" name="attachmentFiles" class="form-control mb-1" />
-                    <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
-                `;
-                container.appendChild(div);
+
+        const maxAttachments = @ViewBag.MaxAttachments ?? 5;
+        const maxFileSizeBytes = @ViewBag.MaxFileSizeMB * 1024 * 1024;
+        const container = document.getElementById('attachmentsContainer');
+        const addBtn = document.getElementById('addAttachment');
+        const maxMediaFiles = @ViewBag.MaxMediaFiles ?? 5;
+        const mediaInput = document.querySelector('input[name="mediaFiles"]');
+
+        mediaInput.addEventListener('change', function () {
+            if (this.files.length > maxMediaFiles) {
+                alert(`Maksymalnie możesz dodać ${maxMediaFiles} plików multimedialnych.`);
+                this.value = ''; // wyczyść
+            }
+
+            // Walidacja rozmiaru (już masz, ale dla kompletności)
+            Array.from(this.files).forEach(file => {
+                if (file.size > maxFileSizeBytes) {
+                    alert(`Plik "${file.name}" jest za duży! Maks: @ViewBag.MaxFileSizeMB MB.`);
+                    this.value = '';
+                }
             });
+        });
+        // Funkcja: walidacja rozmiaru pliku
+        function validateFileSize(input) {
+            if (!input.files || input.files.length === 0) return true;
+
+            const file = input.files[0];
+            if (file.size > maxFileSizeBytes) {
+                alert(`Plik "${file.name}" jest za duży! Maksymalny rozmiar: @ViewBag.MaxFileSizeMB MB.`);
+                input.value = ''; // wyczyść pole
+                return false;
+            }
+            return true;
+        }
+
+        // Funkcja: podpinanie walidacji do inputa
+        function attachValidationToFileInput(input) {
+            if (!input || input.dataset.validationAttached) return; // unikaj podwójnego podpięcia
+
+            input.addEventListener('change', function () {
+                validateFileSize(this);
+            });
+
+            input.dataset.validationAttached = 'true'; // oznacz jako podpięte
+        }
+
+        // === INICJALIZACJA: podłącz walidację do WSZYSTKICH istniejących pól ===
+        document.querySelectorAll('.attachment-file').forEach(attachValidationToFileInput);
+
+        // === DODAWANIE NOWEGO ZAŁĄCZNIKA ===
+        addBtn.addEventListener('click', function () {
+            const currentCount = container.querySelectorAll('.attachment-group').length;
+            if (currentCount >= maxAttachments) {
+                alert(`Nie możesz dodać więcej niż ${maxAttachments} załączników.`);
+                return;
+            }
+
+            const div = document.createElement('div');
+            div.classList.add('attachment-group', 'mb-2');
+            div.innerHTML = `
+                <input type="file" name="attachmentFiles" class="form-control mb-1 attachment-file" />
+                <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
+                <small class="text-muted d-block">Maks. rozmiar: @ViewBag.MaxFileSizeMB MB</small>
+                <button type="button" class="btn btn-danger btn-sm mt-1 remove-attachment">Usuń</button>
+            `;
+            container.appendChild(div);
+
+            // Podłącz walidację do NOWEGO inputa
+            const newFileInput = div.querySelector('.attachment-file');
+            attachValidationToFileInput(newFileInput);
+
+            // Usuwanie załącznika
+            div.querySelector('.remove-attachment').addEventListener('click', function () {
+                div.remove();
+            });
+        });
+
+        // === OPCJONALNIE: Walidacja multimediów (jeśli chcesz) ===
+        document.querySelectorAll('.media-file').forEach(input => {
+            input.addEventListener('change', function () {
+                Array.from(this.files).forEach(file => {
+                    if (file.size > maxFileSizeBytes) {
+                        alert(`Plik multimedialny "${file.name}" jest za duży!`);
+                        this.value = ''; // wyczyść całe pole
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+
+        
         document.getElementById('categorySelect').addEventListener('change', function () {
             const selected = Array.from(this.selectedOptions).map(o => o.value);
             fetch(`/Ads/GetCategoryAttributes?` + new URLSearchParams({ categoryIds: selected }))
