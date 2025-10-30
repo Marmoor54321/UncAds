@@ -44,6 +44,8 @@ namespace UncAds.Controllers
         {
             var ads = await _context.Ads
                 .Include(a => a.User)
+                .Include(a => a.Media)
+                .Include(a => a.Attachments)
                 .Include(a => a.AdCategories)
                     .ThenInclude(ac => ac.Category)
                 .ToListAsync();
@@ -58,7 +60,9 @@ namespace UncAds.Controllers
                 return NotFound();
 
             var ad = await _context.Ads
-                .Include(a => a.User)
+                 .Include(a => a.User)
+                .Include(a => a.Media)
+                .Include(a => a.Attachments)
                 .Include(a => a.AdCategories)
                     .ThenInclude(ac => ac.Category)
                 .Include(a => a.AttributeValues)
@@ -101,44 +105,135 @@ namespace UncAds.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Ad ad, int[] SelectedCategoryIds, Dictionary<int, string> AttributeValues)
+        public async Task<IActionResult> Create(
+    Ad ad,
+    int[] SelectedCategoryIds,
+    Dictionary<int, string> AttributeValues,
+    List<IFormFile> mediaFiles,
+    List<IFormFile> attachmentFiles,
+    List<string> attachmentDescriptions)
         {
-            if (ModelState.IsValid)
+            // Pobranie ustawień admina
+            var settings = await _context.AdminSettings.FirstOrDefaultAsync() ?? new AdminSettings();
+
+            // WALIDACJA ZAŁĄCZNIKÓW PRZED ZAPISANIEM
+            if (attachmentFiles != null && attachmentFiles.Count > settings.MaxAttachments)
             {
-                ad.Date = DateTime.Now;
-                ad.UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-                _context.Ads.Add(ad);
-                await _context.SaveChangesAsync();
-
-                // relacja z kategoriami
-                foreach (var categoryId in SelectedCategoryIds)
-                {
-                    _context.AdCategories.Add(new AdCategory { AdId = ad.Id, CategoryId = categoryId });
-                }
-                await _context.SaveChangesAsync();
-
-                // zapis wartości atrybutów
-                if (AttributeValues != null)
-                {
-                    foreach (var kv in AttributeValues)
-                    {
-                        _context.AdAttributeValues.Add(new AdAttributeValue
-                        {
-                            AdId = ad.Id,
-                            CategoryAttributeId = kv.Key,
-                            Value = kv.Value
-                        });
-                    }
-                    await _context.SaveChangesAsync();
-                }
-
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", $"Maksymalna liczba załączników to {settings.MaxAttachments}.");
             }
 
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
-            return View(ad);
+            if (attachmentFiles != null)
+            {
+                for (int i = 0; i < attachmentFiles.Count; i++)
+                {
+                    if (attachmentFiles[i].Length > settings.MaxFileSizeMB * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("", $"Plik {attachmentFiles[i].FileName} przekracza limit {settings.MaxFileSizeMB} MB.");
+                    }
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
+                return View(ad); // <-- brak zapisu do bazy jeśli walidacja nie przeszła
+            }
+
+            // Zapis ogłoszenia
+            ad.Date = DateTime.Now;
+            ad.UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            _context.Ads.Add(ad);
+            await _context.SaveChangesAsync();
+
+            // Kategorie
+            foreach (var catId in SelectedCategoryIds)
+                _context.AdCategories.Add(new AdCategory { AdId = ad.Id, CategoryId = catId });
+            await _context.SaveChangesAsync();
+
+            // Atrybuty
+            if (AttributeValues != null)
+            {
+                foreach (var kv in AttributeValues)
+                {
+                    _context.AdAttributeValues.Add(new AdAttributeValue
+                    {
+                        AdId = ad.Id,
+                        CategoryAttributeId = kv.Key,
+                        Value = kv.Value
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // Multimedia
+            if (mediaFiles != null && mediaFiles.Any())
+            {
+                var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "ads", ad.Id.ToString());
+                Directory.CreateDirectory(uploadDir);
+
+                foreach (var file in mediaFiles)
+                {
+                    if (file.Length > 0)
+                    {
+                        var ext = Path.GetExtension(file.FileName).ToLower();
+                        string mediaType = "other";
+                        if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif")
+                            mediaType = "image";
+                        else if (ext == ".mp3" || ext == ".wav" || ext == ".ogg")
+                            mediaType = "audio";
+                        else if (ext == ".swf")
+                            mediaType = "flash";
+
+                        var fileName = Guid.NewGuid().ToString() + ext;
+                        var filePath = Path.Combine(uploadDir, fileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                            await file.CopyToAsync(stream);
+
+                        var relativePath = $"/uploads/ads/{ad.Id}/{fileName}";
+                        _context.AdMedia.Add(new AdMedia
+                        {
+                            AdId = ad.Id,
+                            FilePath = relativePath,
+                            MediaType = mediaType
+                        });
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            // Załączniki
+            if (attachmentFiles != null && attachmentFiles.Any())
+            {
+                var attachDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "attachments", ad.Id.ToString());
+                Directory.CreateDirectory(attachDir);
+
+                for (int i = 0; i < attachmentFiles.Count; i++)
+                {
+                    var file = attachmentFiles[i];
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var filePath = Path.Combine(attachDir, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                        await file.CopyToAsync(stream);
+
+                    var relativePath = $"/uploads/attachments/{ad.Id}/{fileName}";
+                    string? desc = i < attachmentDescriptions.Count ? attachmentDescriptions[i] : null;
+
+                    _context.AdAttachments.Add(new AdAttachment
+                    {
+                        AdId = ad.Id,
+                        FilePath = relativePath,
+                        Description = desc
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
+
+
 
         // GET: Ads/Edit/5
         [Authorize]

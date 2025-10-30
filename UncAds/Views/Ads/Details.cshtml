@@ -1,14 +1,55 @@
 ﻿@model UncAds.Models.Ad
-
 @{
-    ViewData["Title"] = "Details";
+    ViewBag.Title = Model.Title;
 }
 
-<h1>Details</h1>
+<h2>@Model.Title</h2>
+<p>@Model.Description</p>
 
-<div>
-    <h4>@Model.Title</h4>
-    <p>@Model.Description</p>
+@if (Model.Media != null && Model.Media.Any())
+{
+    <hr />
+    <h4>Multimedia</h4>
+    <div>
+        @foreach (var m in Model.Media)
+        {
+            if (m.MediaType == "image")
+            {
+                <img src="@m.FilePath" alt="obraz" style="max-width:300px; margin:10px;" />
+            }
+            else if (m.MediaType == "audio")
+            {
+                <audio controls style="display:block; margin:10px;">
+                    <source src="@m.FilePath" type="audio/mpeg" />
+                    Twoja przeglądarka nie obsługuje odtwarzania audio.
+                </audio>
+            }
+            else if (m.MediaType == "flash")
+            {
+                <object data="@m.FilePath" type="application/x-shockwave-flash" width="400" height="300"></object>
+            }
+        }
+    </div>
+}
+@if (Model.Attachments != null && Model.Attachments.Any())
+{
+    <hr />
+    <h4>Załączniki</h4>
+    <ul>
+        @foreach (var a in Model.Attachments)
+        {
+            <li>
+                <a href="@a.FilePath" target="_blank">@System.IO.Path.GetFileName(a.FilePath)</a>
+                @if (!string.IsNullOrEmpty(a.Description))
+                {
+                    <span> — @a.Description</span>
+                }
+            </li>
+        }
+    </ul>
+}
+
+
     <p><strong>Date:</strong> @Model.Date.ToString("g")</p>
     <p><strong>Author:</strong> @Model.User?.UserName</p>
 

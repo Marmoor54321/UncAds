@@ -6,11 +6,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UncAds.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AdminSettings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MaxAttachments = table.Column<int>(type: "int", nullable: false),
+                    MaxFileSizeMB = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdminSettings", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -220,6 +234,27 @@ namespace UncAds.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AdAttachments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    AdId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdAttachments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AdAttachments_Ads_AdId",
+                        column: x => x.AdId,
+                        principalTable: "Ads",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AdCategories",
                 columns: table => new
                 {
@@ -239,6 +274,27 @@ namespace UncAds.Migrations
                         name: "FK_AdCategories_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AdMedia",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MediaType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdMedia", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AdMedia_Ads_AdId",
+                        column: x => x.AdId,
+                        principalTable: "Ads",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -271,6 +327,11 @@ namespace UncAds.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AdAttachments_AdId",
+                table: "AdAttachments",
+                column: "AdId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AdAttributeValues_AdId",
                 table: "AdAttributeValues",
                 column: "AdId");
@@ -284,6 +345,11 @@ namespace UncAds.Migrations
                 name: "IX_AdCategories_CategoryId",
                 table: "AdCategories",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdMedia_AdId",
+                table: "AdMedia",
+                column: "AdId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ads_UserId",
@@ -344,10 +410,19 @@ namespace UncAds.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AdAttachments");
+
+            migrationBuilder.DropTable(
                 name: "AdAttributeValues");
 
             migrationBuilder.DropTable(
                 name: "AdCategories");
+
+            migrationBuilder.DropTable(
+                name: "AdMedia");
+
+            migrationBuilder.DropTable(
+                name: "AdminSettings");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");

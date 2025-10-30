@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using UncAds.Data;
+using UncAds.Models;
 
 namespace UncAds.Controllers
 {
@@ -11,11 +14,13 @@ namespace UncAds.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
 
-        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         // GET: Admin/Users
@@ -77,6 +82,41 @@ namespace UncAds.Controllers
 
             await _userManager.DeleteAsync(user);
             return RedirectToAction(nameof(Users));
+        }
+        // GET: Admin/Settings
+        public async Task<IActionResult> Settings()
+        {
+            var settings = await _context.AdminSettings.FirstOrDefaultAsync();
+            if (settings == null)
+            {
+                settings = new AdminSettings();
+                _context.AdminSettings.Add(settings);
+                await _context.SaveChangesAsync();
+            }
+            return View(settings);
+        }
+
+        // POST: Admin/Settings
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Settings(AdminSettings model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var settings = await _context.AdminSettings.FirstOrDefaultAsync();
+            if (settings == null)
+            {
+                settings = new AdminSettings();
+                _context.AdminSettings.Add(settings);
+            }
+
+            settings.MaxAttachments = model.MaxAttachments;
+            settings.MaxFileSizeMB = model.MaxFileSizeMB;
+
+            await _context.SaveChangesAsync();
+            ViewBag.Message = "Zapisano ustawienia.";
+            return View(settings);
         }
     }
 }

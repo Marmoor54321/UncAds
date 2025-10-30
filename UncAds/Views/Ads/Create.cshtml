@@ -5,7 +5,7 @@
 
 <h2>Nowe ogłoszenie</h2>
 <div asp-validation-summary="All" class="text-danger"></div>
-<form asp-action="Create" method="post">
+<form asp-action="Create" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label>Tytuł</label>
         <input asp-for="Title" class="form-control" />
@@ -25,12 +25,37 @@
     <hr />
     <h4>Atrybuty</h4>
     <div id="attributesContainer"></div>
+    <hr />
+    <h4>Multimedia</h4>
+    <div class="form-group">
+        <label>Dodaj pliki (obrazy, dźwięki, Flash)</label>
+        <input type="file" name="mediaFiles" multiple class="form-control" />
+    </div>
+    <hr />
+    <h4>Załączniki</h4>
+    <div id="attachmentsContainer">
+        <div class="attachment-group mb-2">
+            <input type="file" name="attachmentFiles" class="form-control mb-1" />
+            <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
+        </div>
+    </div>
+    <button type="button" id="addAttachment" class="btn btn-secondary btn-sm mt-2">+ Dodaj kolejny</button>
 
     <button type="submit" class="btn btn-primary">Zapisz</button>
 </form>
 
 @section Scripts {
     <script>
+         document.getElementById('addAttachment').addEventListener('click', function () {
+                const container = document.getElementById('attachmentsContainer');
+                const div = document.createElement('div');
+                div.classList.add('attachment-group', 'mb-2');
+                div.innerHTML = `
+                    <input type="file" name="attachmentFiles" class="form-control mb-1" />
+                    <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
+                `;
+                container.appendChild(div);
+            });
         document.getElementById('categorySelect').addEventListener('change', function () {
             const selected = Array.from(this.selectedOptions).map(o => o.value);
             fetch(`/Ads/GetCategoryAttributes?` + new URLSearchParams({ categoryIds: selected }))

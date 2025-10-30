@@ -250,6 +250,32 @@ namespace UncAds.Migrations
                     b.ToTable("Ads");
                 });
 
+            modelBuilder.Entity("UncAds.Models.AdAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdId");
+
+                    b.ToTable("AdAttachments");
+                });
+
             modelBuilder.Entity("UncAds.Models.AdAttributeValue", b =>
                 {
                     b.Property<int>("Id")
@@ -290,6 +316,51 @@ namespace UncAds.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("AdCategories");
+                });
+
+            modelBuilder.Entity("UncAds.Models.AdMedia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MediaType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdId");
+
+                    b.ToTable("AdMedia");
+                });
+
+            modelBuilder.Entity("UncAds.Models.AdminSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("MaxAttachments")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxFileSizeMB")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdminSettings");
                 });
 
             modelBuilder.Entity("UncAds.Models.Category", b =>
@@ -403,6 +474,17 @@ namespace UncAds.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("UncAds.Models.AdAttachment", b =>
+                {
+                    b.HasOne("UncAds.Models.Ad", "Ad")
+                        .WithMany("Attachments")
+                        .HasForeignKey("AdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ad");
+                });
+
             modelBuilder.Entity("UncAds.Models.AdAttributeValue", b =>
                 {
                     b.HasOne("UncAds.Models.Ad", "Ad")
@@ -441,6 +523,17 @@ namespace UncAds.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("UncAds.Models.AdMedia", b =>
+                {
+                    b.HasOne("UncAds.Models.Ad", "Ad")
+                        .WithMany("Media")
+                        .HasForeignKey("AdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ad");
+                });
+
             modelBuilder.Entity("UncAds.Models.Category", b =>
                 {
                     b.HasOne("UncAds.Models.Category", "ParentCategory")
@@ -466,7 +559,11 @@ namespace UncAds.Migrations
                 {
                     b.Navigation("AdCategories");
 
+                    b.Navigation("Attachments");
+
                     b.Navigation("AttributeValues");
+
+                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("UncAds.Models.Category", b =>

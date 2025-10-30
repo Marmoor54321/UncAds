@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
@@ -23,12 +25,13 @@ namespace UncAds.Models
 
         [ForeignKey("User")]
         public string? UserId { get; set; }
-
         public IdentityUser? User { get; set; }
-        public ICollection<AdCategory>? AdCategories { get; set; }
 
+        public ICollection<AdCategory>? AdCategories { get; set; }
         public ICollection<AdAttributeValue>? AttributeValues { get; set; }
 
+        public ICollection<AdMedia>? Media { get; set; }
+        public ICollection<AdAttachment>? Attachments { get; set; }
 
     }
 }

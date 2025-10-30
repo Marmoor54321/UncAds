@@ -15,6 +15,10 @@ namespace UncAds.Data
         public DbSet<AdCategory> AdCategories { get; set; }
         public DbSet<CategoryAttribute> CategoryAttributes { get; set; }
         public DbSet<AdAttributeValue> AdAttributeValues { get; set; }
+        public DbSet<AdMedia> AdMedia { get; set; }
+        public DbSet<AdAttachment> AdAttachments { get; set; }
+        public DbSet<AdminSettings> AdminSettings { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)
