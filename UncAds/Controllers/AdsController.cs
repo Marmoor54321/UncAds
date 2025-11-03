@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using UncAds.Data;
 using UncAds.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using UncAds.Services;
 
 
 namespace UncAds.Controllers
@@ -43,16 +43,28 @@ namespace UncAds.Controllers
 
 
         // GET: Ads
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string query)
         {
+            // Najpierw pobierz wszystkie dane (z include'ami)
             var ads = await _context.Ads
                 .Include(a => a.User)
                 .Include(a => a.Media)
                 .Include(a => a.Attachments)
                 .Include(a => a.AdCategories)
                     .ThenInclude(ac => ac.Category)
-                .ToListAsync();
+                        .ThenInclude(c => c!.ParentCategory) // dla FullPath
+                .Include(a => a.AttributeValues)
+                    .ThenInclude(av => av.CategoryAttribute)
+                .ToListAsync(); // ← PRZENOSIMY DO C#
 
+            // Teraz filtrujemy w pamięci
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                var trimmedQuery = query.Trim();
+                ads = ads.Where(ad => AdSearch.Matches(ad, trimmedQuery)).ToList();
+            }
+
+            ViewData["Query"] = query;
             return View(ads);
         }
 

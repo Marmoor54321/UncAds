@@ -8,18 +8,34 @@
 <p>Zalogowany użytkownik: @User?.Identity?.Name</p>
 <p>Rola Admin: @User.IsInRole("Admin")</p>
 
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="query" class="form-control"
+               placeholder="Szukaj: auto AND diesel OR benzyna NOT manual &quot;silnik 2.0&quot;"
+               value="@Context.Request.Query["query"]" />
+        <button type="submit" class="btn btn-primary">Szukaj</button>
+    </div>
+    <small class="form-text text-muted">
+        Obsługiwane: <code>AND</code>, <code>OR</code>, <code>NOT</code>, <code>"frazy w cudzysłowie"</code>
+    </small>
+</form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (!string.IsNullOrEmpty(Context.Request.Query["query"]))
+{
+    <p>Wyniki dla: <strong>@Context.Request.Query["query"]</strong></p>
+}
+
+<p><a asp-action="Create">Create New</a></p>
+
 <table class="table">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.Title)</th>
             <th>@Html.DisplayNameFor(model => model.Description)</th>
             <th>@Html.DisplayNameFor(model => model.Date)</th>
-            <th>Categories</th>
-            <th>Author</th>
+            <th>Kategorie</th>
+            <th>Atrybuty</th>
+            <th>Autor</th>
             <th></th>
         </tr>
     </thead>
@@ -32,29 +48,47 @@
                 <td>@item.Date.ToString("g")</td>
 
                 <td>
-                    @if (item.AdCategories != null && item.AdCategories.Any())
+                    @if (item.AdCategories?.Any() == true)
                     {
-                        <ul class="list-unstyled">
+                        <ul class="list-unstyled mb-0">
                             @foreach (var ac in item.AdCategories)
                             {
-                                <li>@ac.Category.Name</li>
+                                <li>@ac.Category.FullPath</li>
                             }
                         </ul>
                     }
                     else
                     {
-                        <span class="text-muted">No categories</span>
+                        <span class="text-muted">Brak</span>
+                    }
+                </td>
+
+                <td>
+                    @if (item.AttributeValues?.Any() == true)
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var av in item.AttributeValues)
+                            {
+                                <li><strong>@av.CategoryAttribute.Name</strong>: @av.Value</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Brak</span>
                     }
                 </td>
 
                 <td>@item.User?.UserName</td>
 
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a>
                     @if (item.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <text> | </text>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a>
+                        <text> | </text>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
                     }
                 </td>
             </tr>
