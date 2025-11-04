@@ -207,17 +207,30 @@ namespace UncAds.Controllers
             await _context.SaveChangesAsync();
 
             // Atrybuty
-            if (AttributeValues != null)
+            if (AttributeValues != null && AttributeValues.Any())
             {
                 foreach (var kv in AttributeValues)
                 {
-                    _context.AdAttributeValues.Add(new AdAttributeValue
+                    // pomiń puste lub nullowe wartości
+                    if (string.IsNullOrWhiteSpace(kv.Value))
+                        continue;
+
+                    try
                     {
-                        AdId = ad.Id,
-                        CategoryAttributeId = kv.Key,
-                        Value = kv.Value
-                    });
+                        _context.AdAttributeValues.Add(new AdAttributeValue
+                        {
+                            AdId = ad.Id,
+                            CategoryAttributeId = kv.Key,
+                            Value = kv.Value
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        // opcjonalnie logowanie błędu do konsoli / logów
+                        Console.WriteLine($"Błąd przy dodawaniu atrybutu {kv.Key}: {ex.Message}");
+                    }
                 }
+
                 await _context.SaveChangesAsync();
             }
 

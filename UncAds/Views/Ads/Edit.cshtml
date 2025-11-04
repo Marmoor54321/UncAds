@@ -43,10 +43,13 @@
                         }
                     </select>
                 }
-                else if (attr.Type == UncAds.Models.AttributeType.Boolean)
-                {
-                    <input type="checkbox" name="AttributeValues[@attr.Id]" value="true" @(existingValue == "true" ? "checked" : "") />
-                }
+                    else if (attr.Type == UncAds.Models.AttributeType.Boolean)
+                    {
+                        <select name="AttributeValues[@attr.Id]" class="form-control">
+                            <option value="true" selected="@(existingValue == "true")">Tak</option>
+                            <option value="false" selected="@(existingValue == "false")">Nie</option>
+                        </select>
+                    }
                 else if (attr.Type == UncAds.Models.AttributeType.Number)
                 {
                     <input type="number" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />

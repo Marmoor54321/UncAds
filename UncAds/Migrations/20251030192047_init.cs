@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UncAds.Migrations
 {
     /// <inheritdoc />
-    public partial class initCreate : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,8 @@ namespace UncAds.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MaxAttachments = table.Column<int>(type: "int", nullable: false),
-                    MaxFileSizeMB = table.Column<int>(type: "int", nullable: false)
+                    MaxFileSizeMB = table.Column<int>(type: "int", nullable: false),
+                    MaxMediaFiles = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

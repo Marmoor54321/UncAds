@@ -164,10 +164,16 @@
                 input.type = 'number';
                 break;
             case 2: // Boolean
-                input = document.createElement('input');
-                input.type = 'checkbox';
-                input.value = 'true';
-                break;
+                input = document.createElement('select');
+                const trueOpt = document.createElement('option');
+                trueOpt.value = 'true';
+                trueOpt.textContent = 'Tak';
+                const falseOpt = document.createElement('option');
+                falseOpt.value = 'false';
+                falseOpt.textContent = 'Nie';
+                input.appendChild(trueOpt);
+                input.appendChild(falseOpt);
+        break;
             case 3: // Date
                 input = document.createElement('input');
                 input.type = 'date';
