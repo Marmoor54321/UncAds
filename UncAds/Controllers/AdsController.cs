@@ -488,14 +488,22 @@ namespace UncAds.Controllers
         [HttpGet]
         public IActionResult GetCategoryAttributes([FromQuery] int[] categoryIds)
         {
-            var attrs = GetAttributesForCategories(categoryIds)
-                .Select(a => new
-                {
-                    a.Id,
-                    a.Name,
-                    a.Type,
-                    a.Options
-                }).ToList();
+            var attrs = _context.CategoryAttributes
+            .Include(a => a.Dictionary)
+            .ThenInclude(d => d.Values)
+            .Where(a => categoryIds.Contains(a.CategoryId))
+            .Select(a => new
+            {
+                a.Id,
+                a.Name,
+                a.Type,
+                a.Options,
+                a.AllowMultiple,
+                DictionaryValues = a.Dictionary != null
+                    ? a.Dictionary.Values.Select(v => v.Value).ToList()
+                    : null
+            })
+            .ToList();
 
             return Json(attrs);
         }

@@ -1,0 +1,18 @@
+﻿@model UncAds.Models.AttributeDictionary
+
+@{
+    ViewData["Title"] = "Nowy słownik";
+}
+
+<h2>Nowy słownik</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Nazwa słownika</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Anuluj</a>
+</form>

@@ -31,13 +31,20 @@
                         </li>
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
-                                
+                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+         
                         </li>
-                            <li class="nav-item">
+
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="CategoryAttributes" asp-action="Index">Attributes</a>
+                        </li
+
+                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AttributeDictionaries" asp-action="Index">Dictionaries</a>
                         </li>
+
+
                         }
                     </ul>
                     <partial name="_LoginPartial" />

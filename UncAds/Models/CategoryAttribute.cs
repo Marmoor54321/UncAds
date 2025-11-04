@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UncAds.Models
 {
@@ -18,6 +19,12 @@ namespace UncAds.Models
         // relacja z kategorią
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
+
+        public int? DictionaryId { get; set; }
+        public AttributeDictionary? Dictionary { get; set; }
+
+        // czy można wybrać wiele wartości?
+        public bool AllowMultiple { get; set; } = false;
     }
 
     public enum AttributeType
@@ -26,7 +33,8 @@ namespace UncAds.Models
         Number,
         Boolean,
         Date,
-        Select
+        Select,
+        Dictionary
     }
 
  
@@ -43,6 +51,28 @@ namespace UncAds.Models
             [Required]
             public string Value { get; set; } = string.Empty;
         }
-    
+    public class AttributeDictionary
+    {
+        public int Id { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        public ICollection<AttributeDictionaryValue> Values { get; set; } = new List<AttributeDictionaryValue>();
+    }
+
+    public class AttributeDictionaryValue
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public string Value { get; set; } = string.Empty;
+
+        [ForeignKey(nameof(Dictionary))]
+        public int DictionaryId { get; set; }
+
+        public AttributeDictionary? Dictionary { get; set; }
+    }
 
 }

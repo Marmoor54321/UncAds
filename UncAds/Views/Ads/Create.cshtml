@@ -189,6 +189,20 @@
                     input.appendChild(opt);
                 });
                 break;
+
+                case 5: // Dictionary
+        input = document.createElement('select');
+        if (attr.allowMultiple)
+            input.multiple = true;
+
+        (attr.dictionaryValues ?? []).forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v;
+            opt.textContent = v;
+            input.appendChild(opt);
+        });
+        break;
+
         }
 
 

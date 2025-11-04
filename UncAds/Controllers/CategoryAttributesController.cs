@@ -36,6 +36,8 @@ namespace UncAds.Controllers
 
             var attribute = await _context.CategoryAttributes
                 .Include(a => a.Category)
+                .Include(a => a.Dictionary)
+                    .ThenInclude(d => d.Values)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (attribute == null) return NotFound();
@@ -48,6 +50,7 @@ namespace UncAds.Controllers
         public IActionResult Create()
         {
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
+            ViewBag.Dictionaries = new SelectList(_context.AttributeDictionaries, "Id", "Name");
 
             return View("~/Views/AdminCategoryAttributes/Create.cshtml");
 
@@ -66,6 +69,7 @@ namespace UncAds.Controllers
             }
 
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", categoryAttribute.CategoryId);
+            ViewBag.Dictionaries = new SelectList(_context.AttributeDictionaries, "Id", "Name", categoryAttribute.DictionaryId);
 
             return View("~/Views/AdminCategoryAttributes/Create.cshtml", categoryAttribute);
 
@@ -80,6 +84,7 @@ namespace UncAds.Controllers
             if (categoryAttribute == null) return NotFound();
 
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", categoryAttribute.CategoryId);
+            ViewBag.Dictionaries = new SelectList(_context.AttributeDictionaries, "Id", "Name");
             return View("~/Views/AdminCategoryAttributes/Edit.cshtml", categoryAttribute);
 
         }
@@ -109,6 +114,7 @@ namespace UncAds.Controllers
             }
 
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", categoryAttribute.CategoryId);
+            ViewBag.Dictionaries = new SelectList(_context.AttributeDictionaries, "Id", "Name", categoryAttribute.DictionaryId);
             return View("~/Views/AdminCategoryAttributes/Edit.cshtml", categoryAttribute);
 
         }

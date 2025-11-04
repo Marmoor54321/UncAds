@@ -18,6 +18,7 @@ namespace UncAds.Data
         public DbSet<AdMedia> AdMedia { get; set; }
         public DbSet<AdAttachment> AdAttachments { get; set; }
         public DbSet<AdminSettings> AdminSettings { get; set; }
+        public DbSet<AttributeDictionary> AttributeDictionaries { get; set; }
 
 
 
