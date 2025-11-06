@@ -18,14 +18,16 @@ namespace UncAds.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IHtmlSanitizationService _htmlSanitizer;
 
         private readonly string[] _allowedMediaExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf",".mp4" };
         private readonly string[] _allowedAttachmentExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf", ".mp4", ".avi", ".pdf", ".doc", ".docx", ".zip", ".rar", ".txt", ".csv" };
 
-        public AdsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public AdsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IHtmlSanitizationService htmlSanitizer)
         {
             _context = context;
             _userManager = userManager;
+            _htmlSanitizer = htmlSanitizer;
         }
         // pomocnicza: pobiera atrybuty dla wybranych kategorii
         private List<CategoryAttribute> GetAttributesForCategories(int[] categoryIds)
@@ -197,9 +199,10 @@ namespace UncAds.Controllers
             // Zapis ogłoszenia
             ad.Date = DateTime.Now;
             ad.UserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            ad.Description = _htmlSanitizer.Sanitize(ad.Description);
 
             _context.Ads.Add(ad);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();  
 
             // Kategorie
             foreach (var catId in SelectedCategoryIds)
@@ -376,7 +379,7 @@ namespace UncAds.Controllers
             if (ModelState.IsValid)
             {
                 existingAd.Title = ad.Title;
-                existingAd.Description = ad.Description;
+                existingAd.Description = _htmlSanitizer.Sanitize(ad.Description);
 
                 // 🔄 aktualizacja kategorii
                 existingAd.AdCategories.Clear();

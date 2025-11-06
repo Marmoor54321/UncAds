@@ -18,6 +18,10 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 .AddDefaultTokenProviders()
 .AddDefaultUI();
 
+builder.Services.Configure<UncAds.Services.HtmlSanitizerSettings>(builder.Configuration.GetSection("HtmlSanitizerSettings"));
+builder.Services.AddSingleton<UncAds.Services.IHtmlSanitizationService, UncAds.Services.HtmlSanitizationService>();
+
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
