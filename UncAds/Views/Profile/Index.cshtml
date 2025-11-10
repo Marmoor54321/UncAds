@@ -1,0 +1,14 @@
+﻿@model UncAds.Models.ApplicationUser
+
+<h2>Twój profil</h2>
+
+<p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Nazwa wyświetlana:</strong> @Model.DisplayName</p>
+<p><strong>Bio:</strong> @Model.Bio</p>
+
+@if (!string.IsNullOrEmpty(Model.AvatarUrl))
+{
+    <img src="@Model.AvatarUrl" width="150" />
+}
+
+<a class="btn btn-primary" asp-action="Edit">Edytuj profil</a>

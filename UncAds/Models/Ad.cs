@@ -25,7 +25,7 @@ namespace UncAds.Models
 
         [ForeignKey("User")]
         public string? UserId { get; set; }
-        public IdentityUser? User { get; set; }
+        public ApplicationUser? User { get; set; }
 
         public ICollection<AdCategory>? AdCategories { get; set; }
         public ICollection<AdAttributeValue>? AttributeValues { get; set; }

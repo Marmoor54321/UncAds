@@ -17,13 +17,13 @@ namespace UncAds.Controllers
     public class AdsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHtmlSanitizationService _htmlSanitizer;
 
         private readonly string[] _allowedMediaExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf",".mp4" };
         private readonly string[] _allowedAttachmentExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".wav", ".ogg", ".swf", ".mp4", ".avi", ".pdf", ".doc", ".docx", ".zip", ".rar", ".txt", ".csv" };
 
-        public AdsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IHtmlSanitizationService htmlSanitizer)
+        public AdsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHtmlSanitizationService htmlSanitizer)
         {
             _context = context;
             _userManager = userManager;

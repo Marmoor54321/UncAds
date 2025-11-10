@@ -1,0 +1,23 @@
+﻿@model UncAds.Models.ApplicationUser
+
+<h2>Edycja profilu</h2>
+
+<form asp-action="Edit" method="post">
+
+    <div class="mb-3">
+        <label class="form-label">Nazwa wyświetlana</label>
+        <input asp-for="DisplayName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Bio</label>
+        <textarea asp-for="Bio" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Avatar URL</label>
+        <input asp-for="AvatarUrl" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+</form>
