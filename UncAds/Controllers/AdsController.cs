@@ -44,34 +44,48 @@ namespace UncAds.Controllers
         }
 
 
-        // GET: Ads
-        public async Task<IActionResult> Index(string query)
-        {
-            // Najpierw pobierz wszystkie dane (z include'ami)
-            var ads = await _context.Ads
-                .Include(a => a.User)
-                .Include(a => a.Media)
-                .Include(a => a.Attachments)
-                .Include(a => a.AdCategories)
-                    .ThenInclude(ac => ac.Category)
-                        .ThenInclude(c => c!.ParentCategory) // dla FullPath
-                .Include(a => a.AttributeValues)
-                    .ThenInclude(av => av.CategoryAttribute)
-                .ToListAsync(); // ← PRZENOSIMY DO C#
+		// GET: Ads
+		public async Task<IActionResult> Index(string query, int page = 1)
+		{
+			// Pobierz zalogowanego użytkownika, aby sprawdzić liczbę ogłoszeń na stronę
+			var user = await _userManager.GetUserAsync(User);
+			int pageSize = user?.AdsPerPage > 0 ? user.AdsPerPage : 10;
 
-            // Teraz filtrujemy w pamięci
-            if (!string.IsNullOrWhiteSpace(query))
-            {
-                var trimmedQuery = query.Trim();
-                ads = ads.Where(ad => AdSearch.Matches(ad, trimmedQuery)).ToList();
-            }
+			// Pobieramy wszystkie ogłoszenia wraz z powiązaniami
+			var ads = await _context.Ads
+				.Include(a => a.User)
+				.Include(a => a.Media)
+				.Include(a => a.Attachments)
+				.Include(a => a.AdCategories)
+					.ThenInclude(ac => ac.Category)
+				.Include(a => a.AttributeValues)
+					.ThenInclude(av => av.CategoryAttribute)
+				.ToListAsync(); // pobieramy do pamięci
 
-            ViewData["Query"] = query;
-            return View(ads);
-        }
+			// Filtrowanie po zapytaniu w pamięci
+			if (!string.IsNullOrWhiteSpace(query))
+			{
+				var trimmedQuery = query.Trim();
+				ads = ads.Where(ad => AdSearch.Matches(ad, trimmedQuery)).ToList();
+			}
 
-        // GET: Ads/Details/5
-        public async Task<IActionResult> Details(int? id)
+			// Sortowanie po dacie malejąco
+			ads = ads.OrderByDescending(a => a.Date).ToList();
+
+			// Stronicowanie
+			int totalItems = ads.Count;
+			var pagedAds = ads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+			// Przekazanie do widoku dodatkowych informacji o paginacji
+			ViewBag.CurrentPage = page;
+			ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+			ViewBag.Query = query;
+
+			return View(pagedAds);
+		}
+
+		// GET: Ads/Details/5
+		public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
                 return NotFound();

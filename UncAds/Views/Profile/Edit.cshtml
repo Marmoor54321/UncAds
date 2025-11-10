@@ -18,6 +18,10 @@
         <label class="form-label">Avatar URL</label>
         <input asp-for="AvatarUrl" class="form-control" />
     </div>
+    <div class="mb-3">
+        <label class="form-label">Liczba ogłoszeń na stronie</label>
+        <input asp-for="AdsPerPage" type="number" min="1" max="100" class="form-control" />
+    </div>
 
     <button type="submit" class="btn btn-primary">Zapisz</button>
 </form>

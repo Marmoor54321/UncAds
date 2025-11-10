@@ -37,6 +37,7 @@ namespace UncAds.Controllers
             user.DisplayName = model.DisplayName;
             user.Bio = model.Bio;
             user.AvatarUrl = model.AvatarUrl;
+            user.AdsPerPage = model.AdsPerPage;
 
             await _userManager.UpdateAsync(user);
 
