@@ -208,6 +208,26 @@ namespace UncAds.Controllers
                     }
                 }
             }
+
+            // sprawdzenie czy ogloszenie nie ma zakazanych slow
+            var forbidden = await _context.ForbiddenWords
+                .Select(f => f.Word.ToLower())
+                .ToListAsync();
+
+            string textToCheck = $"{ad.Title} {ad.Description}".ToLower();
+
+            foreach (var word in forbidden)
+            {
+                if (!string.IsNullOrWhiteSpace(word) && textToCheck.Contains(word))
+                {
+                    ModelState.AddModelError("",
+                        $"Ogłoszenie zawiera zakazane słowo: '{word}'. Nie można go dodać.");
+
+                    ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
+                    return View(ad);
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
@@ -394,6 +414,30 @@ namespace UncAds.Controllers
             if (existingAd.UserId != user.Id && !isAdmin)
                 return Forbid();
 
+            //sprawdzenie czy ogloszenie nie ma slow zakazanych
+            var forbidden = await _context.ForbiddenWords
+                .Select(f => f.Word.ToLower())
+                .ToListAsync();
+
+            string textToCheck = $"{ad.Title} {ad.Description}".ToLower();
+
+            foreach (var word in forbidden)
+            {
+                if (textToCheck.Contains(word))
+                {
+                    ModelState.AddModelError("", $"Ogłoszenie zawiera zakazane słowo: '{word}'.");
+
+                    var selectedIds = SelectedCategoryIds?.ToList() ?? new List<int>();
+                    ViewBag.Categories = new MultiSelectList(_context.Categories, "Id", "Name", selectedIds);
+
+                    var attributes = GetAttributesForCategories(selectedIds.ToArray());
+                    ViewBag.Attributes = attributes;
+
+                    return View(ad);
+                }
+            }
+
+
             if (ModelState.IsValid)
             {
                 existingAd.Title = ad.Title;
@@ -410,6 +454,9 @@ namespace UncAds.Controllers
                 {
                     foreach (var kv in AttributeValues)
                     {
+                        if (string.IsNullOrWhiteSpace(kv.Value))
+                            continue;
+
                         _context.AdAttributeValues.Add(new AdAttributeValue
                         {
                             AdId = id,

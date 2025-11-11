@@ -1,0 +1,25 @@
+﻿@model IEnumerable<UncAds.Models.ForbiddenWord>
+
+<h2>Słownik słów zakazanych</h2>
+
+<a class="btn btn-primary mb-3" asp-action="Create">Dodaj słowo</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Słowo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var w in Model)
+        {
+            <tr>
+                <td>@w.Word</td>
+                <td>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@w.Id">Usuń</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

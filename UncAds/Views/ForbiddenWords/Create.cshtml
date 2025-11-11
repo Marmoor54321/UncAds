@@ -1,0 +1,13 @@
+﻿@model UncAds.Models.ForbiddenWord
+
+<h2>Dodaj słowo zakazane</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label>Słowo</label>
+        <input asp-for="Word" class="form-control" />
+        <span asp-validation-for="Word" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary">Zapisz</button>
+</form>

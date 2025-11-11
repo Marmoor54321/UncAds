@@ -1,6 +1,7 @@
 ﻿@model UncAds.Models.Ad
 
 <h2>Edit Ad</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
     <div class="form-group">
