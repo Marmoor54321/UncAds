@@ -290,6 +290,9 @@ namespace UncAds.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("HomePageMessage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaxAttachments")
                         .HasColumnType("int");
 

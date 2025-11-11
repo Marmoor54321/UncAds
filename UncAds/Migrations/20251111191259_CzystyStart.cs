@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UncAds.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class CzystyStart : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,6 +45,10 @@ namespace UncAds.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdsPerPage = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -66,6 +70,19 @@ namespace UncAds.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AttributeDictionaries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AttributeDictionaries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -83,6 +100,19 @@ namespace UncAds.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForbiddenWords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Word = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForbiddenWords", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -115,7 +145,8 @@ namespace UncAds.Migrations
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ViewCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,6 +244,26 @@ namespace UncAds.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AttributeDictionaryValue",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DictionaryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AttributeDictionaryValue", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AttributeDictionaryValue_AttributeDictionaries_DictionaryId",
+                        column: x => x.DictionaryId,
+                        principalTable: "AttributeDictionaries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CategoryAttributes",
                 columns: table => new
                 {
@@ -221,11 +272,18 @@ namespace UncAds.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Options = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    DictionaryId = table.Column<int>(type: "int", nullable: true),
+                    AllowMultiple = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CategoryAttributes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CategoryAttributes_AttributeDictionaries_DictionaryId",
+                        column: x => x.DictionaryId,
+                        principalTable: "AttributeDictionaries",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CategoryAttributes_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -397,6 +455,11 @@ namespace UncAds.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AttributeDictionaryValue_DictionaryId",
+                table: "AttributeDictionaryValue",
+                column: "DictionaryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentCategoryId",
                 table: "Categories",
                 column: "ParentCategoryId");
@@ -405,6 +468,11 @@ namespace UncAds.Migrations
                 name: "IX_CategoryAttributes_CategoryId",
                 table: "CategoryAttributes",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryAttributes_DictionaryId",
+                table: "CategoryAttributes",
+                column: "DictionaryId");
         }
 
         /// <inheritdoc />
@@ -441,6 +509,12 @@ namespace UncAds.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "AttributeDictionaryValue");
+
+            migrationBuilder.DropTable(
+                name: "ForbiddenWords");
+
+            migrationBuilder.DropTable(
                 name: "CategoryAttributes");
 
             migrationBuilder.DropTable(
@@ -448,6 +522,9 @@ namespace UncAds.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AttributeDictionaries");
 
             migrationBuilder.DropTable(
                 name: "Categories");

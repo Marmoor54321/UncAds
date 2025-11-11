@@ -1,5 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
+    var homepageMessage = ViewData["HomePageMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(homepageMessage))
+{
+    <div class="alert alert-info text-center" role="alert">@homepageMessage</div>
 }
 
 <div class="text-center">

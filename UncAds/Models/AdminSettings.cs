@@ -14,6 +14,11 @@ namespace UncAds.Models
 
         [Display(Name = "Maksymalna liczba plików multimedialnych na ogłoszenie")]
         public int MaxMediaFiles { get; set; } = 5;
+
+
+        [Display(Name = "Wiadomość na stronie głównej")]
+        [DataType(DataType.MultilineText)]
+        public string? HomePageMessage { get; set; }
     }
 
 }

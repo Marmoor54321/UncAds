@@ -5,25 +5,24 @@
 namespace UncAds.Migrations
 {
     /// <inheritdoc />
-    public partial class AddPagination : Migration
+    public partial class AddHomePageMessageToAdminSettings : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "AdsPerPage",
-                table: "AspNetUsers",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
+            migrationBuilder.AddColumn<string>(
+                name: "HomePageMessage",
+                table: "AdminSettings",
+                type: "nvarchar(max)",
+                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "AdsPerPage",
-                table: "AspNetUsers");
+                name: "HomePageMessage",
+                table: "AdminSettings");
         }
     }
 }
