@@ -106,6 +106,10 @@ namespace UncAds.Controllers
             foreach (var adCat in ad.AdCategories)
                 await LoadCategoryPath(adCat.Category);
 
+            // Zwiększ licznik wyświetleń
+            ad.ViewCount++;
+            await _context.SaveChangesAsync();
+
             return View(ad);
         }
 
@@ -142,12 +146,12 @@ namespace UncAds.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-    Ad ad,
-    int[] SelectedCategoryIds,
-    Dictionary<int, string> AttributeValues,
-    List<IFormFile> mediaFiles,
-    List<IFormFile> attachmentFiles,
-    List<string> attachmentDescriptions)
+            Ad ad,
+            int[] SelectedCategoryIds,
+            Dictionary<int, string> AttributeValues,
+            List<IFormFile> mediaFiles,
+            List<IFormFile> attachmentFiles,
+            List<string> attachmentDescriptions)
         {
             // Pobranie ustawień admina
             var settings = await _context.AdminSettings.FirstOrDefaultAsync() ?? new AdminSettings();

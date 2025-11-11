@@ -33,5 +33,6 @@ namespace UncAds.Models
         public ICollection<AdMedia>? Media { get; set; }
         public ICollection<AdAttachment>? Attachments { get; set; }
 
+        public int ViewCount { get; set; } = 0; 
     }
 }

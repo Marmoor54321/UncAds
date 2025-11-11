@@ -36,6 +36,7 @@
             <th>Kategorie</th>
             <th>Atrybuty</th>
             <th>Autor</th>
+            <th>Liczba wyświetleń</th>
             <th></th>
         </tr>
     </thead>
@@ -80,6 +81,8 @@
                 </td>
 
                 <td>@item.User?.UserName</td>
+
+                <td> @item.ViewCount</td>
 
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a>
