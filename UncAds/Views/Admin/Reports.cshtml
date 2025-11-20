@@ -1,0 +1,31 @@
+﻿@model List<UncAds.Models.AdReport>
+
+<h2>Zgłoszenia ogłoszeń</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ogłoszenie</th>
+            <th>Zgłaszający</th>
+            <th>Powód</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Ad.Title</td>
+                <td>@r.Reporter.Email</td>
+                <td>@r.Reason</td>
+                <td>@r.ReportDate</td>
+                <td>@(r.Resolved ? "Zamknięte" : "Oczekuje")</td>
+                <td>
+                    <a asp-action="ResolveReport" asp-route-id="@r.Id" class="btn btn-primary btn-sm">Otwórz</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

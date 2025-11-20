@@ -1,0 +1,32 @@
+﻿@model UncAds.Models.AdReport
+
+<h2>Zgłoszenie ogłoszenia</h2>
+
+<p><strong>Ogłoszenie:</strong> @Model.Ad.Title</p>
+<p><strong>Powód zgłoszenia:</strong> @Model.Reason</p>
+<p><strong>Data:</strong> @Model.ReportDate</p>
+
+@if (Model.Resolved  && !string.IsNullOrWhiteSpace(Model.ResolutionNote))
+{
+    <div class="alert alert-info mt-3">
+        <h5>Status: Zamknięte</h5>
+        <p><strong>Notatka moderatora:</strong></p>
+        <p>@Model.ResolutionNote</p>
+    </div>
+}
+else
+{
+    <form method="post" asp-action="ResolveReport" asp-route-id="@Model.Id">
+        @Html.AntiForgeryToken()
+
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="deleteAd" name="deleteAd" value="true">
+            <input type="hidden" name="deleteAd" value="false" />
+            <label for="deleteAd">Usuń ogłoszenie</label>
+        </div>
+
+        <textarea name="resolutionNote" class="form-control" placeholder="Notatka"></textarea>
+
+        <button type="submit" class="btn btn-success mt-3">Zatwierdź</button>
+    </form>
+}

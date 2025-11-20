@@ -20,6 +20,7 @@ namespace UncAds.Data
         public DbSet<AdminSettings> AdminSettings { get; set; }
         public DbSet<AttributeDictionary> AttributeDictionaries { get; set; }
         public DbSet<ForbiddenWord> ForbiddenWords { get; set; }
+        public DbSet<AdReport> AdReports { get; set; }
 
 
 

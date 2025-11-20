@@ -576,5 +576,29 @@ namespace UncAds.Controllers
             return Json(attrs);
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Report(int id, string reason)
+        {
+            var ad = await _context.Ads.FindAsync(id);
+            if (ad == null) return NotFound();
+
+            var user = await _userManager.GetUserAsync(User);
+
+            var report = new AdReport
+            {
+                AdId = id,
+                ReporterId = user.Id,
+                Reason = reason
+            };
+
+            _context.AdReports.Add(report);
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Dziękujemy. Zgłoszenie zostało przekazane moderatorowi.";
+            return RedirectToAction("Details", new { id });
+        }
+
+
     }
 }

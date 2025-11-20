@@ -98,6 +98,15 @@
     <a asp-action="Index" class="btn btn-secondary">Back</a>
 </p>
 
+@if (User.Identity.IsAuthenticated)
+{
+    <form method="post" asp-action="Report" asp-route-id="@Model.Id">
+        <textarea name="reason" required placeholder="Powód zgłoszenia..." class="form-control"></textarea>
+        <button class="btn btn-warning mt-2">Zgłoś do moderacji</button>
+    </form>
+}
+
+
 <style>
     .category-tree {
         padding-left: 0.5rem;

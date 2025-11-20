@@ -1,13 +1,18 @@
 ﻿@model IEnumerable<UncAds.Models.ApplicationUser>
 
-
 @{
     ViewData["Title"] = "Zarządzanie użytkownikami";
 }
 
-<h2>Zarządzanie użytkownikami</h2>
+<h2 class="d-flex justify-content-between align-items-center">
+    Zarządzanie użytkownikami
 
-<table class="table table-bordered">
+    <a asp-action="Reports" class="btn btn-warning">
+        Zgłoszenia do moderacji
+    </a>
+</h2>
+
+<table class="table table-bordered mt-3">
     <thead>
         <tr>
             <th>Email</th>

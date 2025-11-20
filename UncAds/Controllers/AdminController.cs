@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UncAds.Data;
@@ -120,5 +121,51 @@ namespace UncAds.Controllers
             ViewBag.Message = "Zapisano ustawienia.";
             return View(settings);
         }
+        public async Task<IActionResult> Reports()
+        {
+            var reports = await _context.AdReports
+                .Include(r => r.Ad)
+                .Include(r => r.Reporter)
+                .OrderBy(r => r.Resolved)
+                .ThenByDescending(r => r.ReportDate)
+                .ToListAsync();
+
+            return View(reports);
+        }
+        public async Task<IActionResult> ResolveReport(int id)
+        {
+            var report = await _context.AdReports
+                .Include(r => r.Ad)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (report == null) return NotFound();
+
+            return View(report);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResolveReport(int id, bool deleteAd, string resolutionNote)
+        {
+            var report = await _context.AdReports
+                .Include(r => r.Ad)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (report == null) return NotFound();
+
+            report.Resolved = true;
+            report.ResolutionNote = resolutionNote;
+
+            if (deleteAd)
+            {
+                _context.Ads.Remove(report.Ad);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Reports");
+        }
+
+
     }
 }
