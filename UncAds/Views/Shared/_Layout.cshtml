@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UncAds.styles.css" asp-append-version="true" />
+    <link rel="alternate" type="application/rss+xml" title="UncAds - RSS" href="/feed" />
 </head>
 <body>
     <header>
@@ -83,6 +84,8 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - UncAds - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            | <a href="/feed" target="_blank" style="color: #ee802f; font-weight: bold;">
+            <i class="bi bi-rss-fill"></i> RSS
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
