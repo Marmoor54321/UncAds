@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using UncAds.Data;
 using UncAds.Models;
 using UncAds.Services;
+using UncAds.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,14 @@ builder.Services.AddSingleton<UncAds.Services.IHtmlSanitizationService, UncAds.S
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddScoped<INewsletterService, NewsletterService>();
+// 1. Konfiguracja EmailSettings z appsettings.json
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+// 2. Rejestracja serwisu wysyłkowego
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+// 3. Rejestracja NewsletterService (już to masz, ale upewnij się)
 builder.Services.AddScoped<INewsletterService, NewsletterService>();
 
 var app = builder.Build();

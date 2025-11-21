@@ -14,16 +14,16 @@ namespace UncAds.Services
     public class NewsletterService : INewsletterService
     {
         private readonly ApplicationDbContext _context;
-        // Tutaj wstrzyknąłbyś też IEmailSender, gdybyś miał prawdziwą wysyłkę
+        private readonly IEmailSender _emailSender; // Wstrzykujemy to
 
-        public NewsletterService(ApplicationDbContext context)
+        public NewsletterService(ApplicationDbContext context, IEmailSender emailSender)
         {
             _context = context;
+            _emailSender = emailSender;
         }
 
         public async Task SendNewsletterAsync()
         {
-            // 1. Pobierz użytkowników, którzy mają jakiekolwiek subskrypcje
             var usersWithSubs = await _context.Users
                 .Include(u => u.CategorySubscriptions)
                 .Where(u => u.CategorySubscriptions.Any())
@@ -31,15 +31,9 @@ namespace UncAds.Services
 
             foreach (var user in usersWithSubs)
             {
-                // Data od której szukamy ogłoszeń (od ostatniej wysyłki lub od zawsze jeśli null)
                 var dateFrom = user.LastNewsletterSent ?? DateTime.MinValue;
-
-                // Lista ID kategorii subskrybowanych przez usera
                 var userCatIds = user.CategorySubscriptions.Select(s => s.CategoryId).ToList();
 
-                // 2. Znajdź nowe ogłoszenia
-                // Ogłoszenie jest "nowe", jeśli powstało po 'dateFrom'
-                // I należy do jednej z subskrybowanych kategorii
                 var newAds = await _context.Ads
                     .Include(a => a.AdCategories)
                     .Where(a => a.Date > dateFrom)
@@ -49,30 +43,52 @@ namespace UncAds.Services
 
                 if (newAds.Any())
                 {
-                    // 3. Symulacja wysłania e-maila
-                    string emailContent = GenerateEmailBody(user.DisplayName, newAds);
+                    // Generujemy ładny HTML
+                    string emailSubject = $"UncAds: Mamy dla Ciebie {newAds.Count} nowych ogłoszeń!";
+                    string emailBody = GenerateHtmlEmailBody(user.DisplayName ?? "Użytkowniku", newAds);
 
-                    // TODO: Tutaj wywołanie np. _emailSender.SendEmailAsync(user.Email, "Nowe ogłoszenia", emailContent);
-                    Console.WriteLine($"[NEWSLETTER] Wysyłanie do {user.Email}. Liczba ogłoszeń: {newAds.Count}");
-                    Debug.WriteLine($"[NEWSLETTER] Wysyłanie do {user.Email}. Liczba ogłoszeń: {newAds.Count}");
+                    // WYSYŁKA PRAWDZIWEGO MAILA
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(user.Email, emailSubject, emailBody);
 
-                    // 4. Zaktualizuj datę ostatniej wysyłki
-                    user.LastNewsletterSent = DateTime.Now;
+                        // Aktualizujemy datę tylko jeśli wysyłka się udała
+                        user.LastNewsletterSent = DateTime.Now;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Logowanie błędu, ale nie przerywamy pętli dla innych użytkowników
+                        Console.WriteLine($"Nie udało się wysłać do {user.Email}: {ex.Message}");
+                    }
                 }
             }
 
             await _context.SaveChangesAsync();
         }
 
-        private string GenerateEmailBody(string userName, List<Ad> ads)
+        private string GenerateHtmlEmailBody(string userName, List<Ad> ads)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"Cześć {userName}, oto nowe ogłoszenia w Twoich kategoriach:");
+            sb.Append($"<h3>Cześć {userName}!</h3>");
+            sb.Append("<p>W kategoriach, które obserwujesz, pojawiły się nowe ogłoszenia:</p>");
+
+            sb.Append("<table style='width:100%; border-collapse: collapse;'>");
             foreach (var ad in ads)
             {
-                sb.AppendLine($"- {ad.Title} ({ad.Date.ToShortDateString()})");
-                // Tutaj można dodać link do ogłoszenia
+                // Zakładam, że aplikacja stoi np. na localhost:5000. 
+                // W produkcji powinieneś tu wstawić prawdziwy adres domeny.
+                // Można go też pobrać z konfiguracji.
+                string adLink = $"https://localhost:7234/Ad/Details/{ad.Id}";
+
+                sb.Append("<tr>");
+                sb.Append($"<td style='padding: 8px; border-bottom: 1px solid #ddd;'><strong>{ad.Title}</strong></td>");
+                sb.Append($"<td style='padding: 8px; border-bottom: 1px solid #ddd;'>{ad.Date:dd.MM.yyyy}</td>");
+                sb.Append($"<td style='padding: 8px; border-bottom: 1px solid #ddd;'><a href='{adLink}'>Zobacz</a></td>");
+                sb.Append("</tr>");
             }
+            sb.Append("</table>");
+            sb.Append("<br/><p>Pozdrawiamy,<br/>Zespół UncAds</p>");
+
             return sb.ToString();
         }
     }
