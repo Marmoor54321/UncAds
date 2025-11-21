@@ -9,5 +9,8 @@ namespace UncAds.Models
         public string? AvatarUrl { get; set; }
 
         public int AdsPerPage { get; set; } = 10;
+
+        public DateTime? LastNewsletterSent { get; set; } // Kiedy ostatnio dostał maila
+        public ICollection<UserCategorySubscription>? CategorySubscriptions { get; set; }
     }
 }

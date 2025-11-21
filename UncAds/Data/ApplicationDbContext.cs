@@ -21,7 +21,7 @@ namespace UncAds.Data
         public DbSet<AttributeDictionary> AttributeDictionaries { get; set; }
         public DbSet<ForbiddenWord> ForbiddenWords { get; set; }
         public DbSet<AdReport> AdReports { get; set; }
-
+        public DbSet<UserCategorySubscription> UserCategorySubscriptions { get; set; }
 
 
 
@@ -65,6 +65,18 @@ namespace UncAds.Data
                 .WithMany()
                 .HasForeignKey(aav => aav.CategoryAttributeId);
 
+            builder.Entity<UserCategorySubscription>()
+            .HasKey(t => new { t.UserId, t.CategoryId });
+
+            builder.Entity<UserCategorySubscription>()
+                .HasOne(pt => pt.User)
+                .WithMany(p => p.CategorySubscriptions)
+                .HasForeignKey(pt => pt.UserId);
+
+            builder.Entity<UserCategorySubscription>()
+                .HasOne(pt => pt.Category)
+                .WithMany() // Kategoria nie musi wiedzieć o subskrybentach bezpośrednio
+                .HasForeignKey(pt => pt.CategoryId);
         }
     }
 }
