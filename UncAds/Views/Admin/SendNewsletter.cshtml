@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Wyślij Newsletter";
+}
+
+<h2>Newsletter</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success">@ViewBag.Message</div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Ręczna wysyłka powiadomień</h5>
+        <p class="card-text">
+            Ta operacja sprawdzi preferencje wszystkich użytkowników i wyśle im e-maile
+            z ogłoszeniami dodanymi od czasu ostatniej wysyłki.
+        </p>
+        <form asp-action="SendNewsletterConfirmed" method="post">
+            <button type="submit" class="btn btn-primary">Wyślij Newsletter teraz</button>
+            <a asp-action="Settings" class="btn btn-secondary">Powrót</a>
+        </form>
+    </div>
+</div>

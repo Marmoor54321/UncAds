@@ -24,4 +24,27 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Zapisz</button>
+
+    <h3>Ustawienia Newslettera</h3>
+    <p>Wybierz kategorie, z których chcesz otrzymywać powiadomienia:</p>
+
+    <div class="form-group">
+        @if (ViewBag.AllCategories != null)
+        {
+            var selectedIds = ViewBag.SelectedCategoryIds as List<int>;
+            foreach (var category in ViewBag.AllCategories as List<UncAds.Models.Category>)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox"
+                           name="selectedCategories"
+                           value="@category.Id"
+                           id="cat_@category.Id"
+                           @(selectedIds != null && selectedIds.Contains(category.Id) ? "checked" : "")>
+                    <label class="form-check-label" for="cat_@category.Id">
+                        @category.Name
+                    </label>
+                </div>
+            }
+        }
+    </div>
 </form>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UncAds.Data;
 using UncAds.Models;
+using UncAds.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ builder.Services.AddSingleton<UncAds.Services.IHtmlSanitizationService, UncAds.S
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<INewsletterService, NewsletterService>();
 
 var app = builder.Build();
 
