@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UncAds.Data;
 using UncAds.Models;
+using UncAds.Services;
 
 namespace UncAds.Controllers
 {
@@ -16,12 +17,18 @@ namespace UncAds.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
+        private readonly INewsletterService _newsletterService;
 
-        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+        public AdminController(
+    UserManager<ApplicationUser> userManager,
+    RoleManager<IdentityRole> roleManager,
+    ApplicationDbContext context,
+    INewsletterService newsletterService) // wstrzyknięcie
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
+            _newsletterService = newsletterService;
         }
 
         // GET: Admin/Users
@@ -166,6 +173,21 @@ namespace UncAds.Controllers
             return RedirectToAction("Reports");
         }
 
+        // GET: Admin/SendNewsletter
+        [HttpGet]
+        public IActionResult SendNewsletter()
+        {
+            return View();
+        }
 
+        // POST: Admin/SendNewsletter
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendNewsletterConfirmed()
+        {
+            await _newsletterService.SendNewsletterAsync();
+            ViewBag.Message = "Newsletter został wysłany do użytkowników z nowymi ogłoszeniami.";
+            return View("SendNewsletter");
+        }
     }
 }
