@@ -4,10 +4,11 @@
     ViewData["Title"] = "Edycja słownika";
 }
 
-<h2>Edycja słownika: @Model.Name</h2>
+<h2>Słownik</h2>
 
-<form asp-action="Edit" method="post" class="mb-4">
-    <input type="hidden" asp-for="Id" />
+<form asp-action="Create" method="post" id="dictForm">
+    @* Jeśli to edycja, odkomentuj poniższe: *@
+    @* <input type="hidden" asp-for="Id" /> *@
 
     <div class="mb-3">
         <label asp-for="Name" class="form-label">Nazwa słownika</label>
@@ -15,47 +16,116 @@
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
-    <h5>Wartości słownika</h5>
-    <div id="values-container" class="mb-3">
-        @for (int i = 0; i < Model.Values.Count; i++)
+    <h4>Wartości słownika</h4>
+
+    <div id="values-container">
+        @* Renderowanie istniejących wartości (dla Edycji lub błędu walidacji) *@
+        @if (Model?.Values != null)
         {
-            <div class="input-group mb-2">
-                <input type="hidden" name="Values[@i].Id" value="@Model.Values.ElementAt(i).Id" />
-                <input type="text" name="Values[@i].Value" value="@Model.Values.ElementAt(i).Value" class="form-control" />
-                <button type="button" class="btn btn-danger remove-value">Usuń</button>
-            </div>
+            var valuesList = Model.Values.ToList();
+            for (int i = 0; i < valuesList.Count; i++)
+            {
+                <div class="input-group mb-2 value-row">
+                    <input type="text"
+                           name="Values[@i].Value"
+                           value="@valuesList[i].Value"
+                           class="form-control js-value-input"
+                           placeholder="Wpisz wartość"
+                           required />  <button type="button" class="btn btn-outline-danger remove-value-btn">Usuń</button>
+                </div>
+            }
         }
     </div>
 
-    <button type="button" id="add-value" class="btn btn-secondary mb-3">
-        <i class="bi bi-plus-circle"></i> Dodaj wartość
-    </button>
-
-    <div>
-        <button type="submit" class="btn btn-success">Zapisz</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Powrót</a>
+    <div class="mb-3">
+        <button type="button" id="add-value-btn" class="btn btn-success btn-sm">
+            <i class="bi bi-plus"></i> Dodaj kolejną wartość
+        </button>
+        <div id="error-message" class="text-danger mt-2 fw-bold" style="display:none;">
+            Najpierw wpisz tekst w ostatnim polu!
+        </div>
     </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Anuluj</a>
 </form>
 
 @section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <script>
-        document.getElementById('add-value').addEventListener('click', function () {
+        document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('values-container');
-            const index = container.querySelectorAll('.input-group').length;
+            const addBtn = document.getElementById('add-value-btn');
+            const errorMsg = document.getElementById('error-message');
 
-            const group = document.createElement('div');
-            group.classList.add('input-group', 'mb-2');
-            group.innerHTML = `
-                <input type="hidden" name="Values[${index}].Id" value="0" />
-                <input type="text" name="Values[${index}].Value" class="form-control" placeholder="Nowa wartość" />
-                <button type="button" class="btn btn-danger remove-value">Usuń</button>
-            `;
-            container.appendChild(group);
-        });
+            addBtn.addEventListener('click', function () {
+                // 1. Znajdź wszystkie inputy z naszą specjalną klasą 'js-value-input'
+                const inputs = container.querySelectorAll('.js-value-input');
 
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('remove-value')) {
-                e.target.closest('.input-group').remove();
+                // 2. Sprawdź OSTATNI input (jeśli istnieje)
+                if (inputs.length > 0) {
+                    const lastInput = inputs[inputs.length - 1];
+
+                    // Jeśli wartość jest pusta (po usunięciu spacji)
+                    if (!lastInput.value || lastInput.value.trim() === "") {
+                        // Pokaż błąd
+                        errorMsg.style.display = 'block';
+                        // Zafocusuj puste pole, żeby użytkownik wiedział gdzie pisać
+                        lastInput.focus();
+                        // Zablokuj dodawanie - wychodzimy z funkcji
+                        return;
+                    }
+                }
+
+                // 3. Jeśli wszystko OK, ukryj błąd i dodaj nowe pole
+                errorMsg.style.display = 'none';
+
+                // Obliczamy nowy indeks na podstawie obecnej liczby wierszy
+                // (Uwaga: w MVC przy usuwaniu wierszy indeksy mogą się pomieszać,
+                // ale przy prostym dodawaniu na koniec to wystarczy).
+                const newIndex = container.querySelectorAll('.value-row').length;
+
+                const html = `
+                    <div class="input-group mb-2 value-row">
+                        <input type="text"
+                               name="Values[${newIndex}].Value"
+                               class="form-control js-value-input"
+                               placeholder="Wpisz wartość"
+                               required />
+                        <button type="button" class="btn btn-outline-danger remove-value-btn">Usuń</button>
+                    </div>`;
+
+                container.insertAdjacentHTML('beforeend', html);
+
+                // Ustaw kursor w nowym polu
+                const newInputs = container.querySelectorAll('.js-value-input');
+                newInputs[newInputs.length - 1].focus();
+            });
+
+            // Obsługa usuwania
+            container.addEventListener('click', function (e) {
+                if (e.target.classList.contains('remove-value-btn')) {
+                    e.target.closest('.value-row').remove();
+                    // Ukryj błąd, jeśli usunęliśmy akurat ten pusty wiersz, który blokował dodawanie
+                    errorMsg.style.display = 'none';
+
+                    // Opcjonalnie: Tutaj przydałby się skrypt do przenumerowania indeksów Values[0], Values[1]...
+                    // aby formularz wysłał się poprawnie, jeśli usuniesz element ze środka.
+                    reindexInputs();
+                }
+            });
+
+            // Funkcja naprawiająca indeksy [0], [1], [2] po usunięciu wiersza
+            function reindexInputs() {
+                const rows = container.querySelectorAll('.value-row');
+                rows.forEach((row, index) => {
+                    const input = row.querySelector('input');
+                    // Zmieniamy name="Values[X].Value" na poprawne X
+                    input.name = `Values[${index}].Value`;
+                });
             }
         });
     </script>
