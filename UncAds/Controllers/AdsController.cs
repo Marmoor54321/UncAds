@@ -148,7 +148,7 @@ namespace UncAds.Controllers
         public async Task<IActionResult> Create(
             Ad ad,
             int[] SelectedCategoryIds,
-            Dictionary<int, string> AttributeValues,
+            Dictionary<int, string[]> AttributeValues,
             List<IFormFile> mediaFiles,
             List<IFormFile> attachmentFiles,
             List<string> attachmentDescriptions)
@@ -252,26 +252,33 @@ namespace UncAds.Controllers
             {
                 foreach (var kv in AttributeValues)
                 {
-                    // pomiń puste lub nullowe wartości
-                    if (string.IsNullOrWhiteSpace(kv.Value))
-                        continue;
+                    var attributeId = kv.Key;
+                    var valuesArray = kv.Value; // To jest teraz tablica string[]
 
-                    try
+                    if (valuesArray == null) continue;
+
+                    // Iterujemy po każdej wybranej wartości dla danego atrybutu
+                    foreach (var singleValue in valuesArray)
                     {
-                        _context.AdAttributeValues.Add(new AdAttributeValue
+                        // Pomiń puste
+                        if (string.IsNullOrWhiteSpace(singleValue)) continue;
+
+                        try
                         {
-                            AdId = ad.Id,
-                            CategoryAttributeId = kv.Key,
-                            Value = kv.Value
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        // opcjonalnie logowanie błędu do konsoli / logów
-                        Console.WriteLine($"Błąd przy dodawaniu atrybutu {kv.Key}: {ex.Message}");
+                            _context.AdAttributeValues.Add(new AdAttributeValue
+                            {
+                                AdId = ad.Id,
+                                CategoryAttributeId = attributeId,
+                                Value = singleValue // Zapisujemy konkretną wartość
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Błąd przy dodawaniu atrybutu {attributeId}: {ex.Message}");
+                        }
                     }
                 }
-
+                // Zapisujemy wszystko raz po pętli
                 await _context.SaveChangesAsync();
             }
 
