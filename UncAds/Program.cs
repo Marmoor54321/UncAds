@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using UncAds.Configuration;
 using UncAds.Data;
 using UncAds.Models;
 using UncAds.Services;
-using UncAds.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,32 +12,35 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// Konfiguracja Identity z obsługą Ról i Tokenów (dla resetu hasła)
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders()
+.AddDefaultTokenProviders() // Kluczowe dla generowania tokenów resetu hasła
 .AddDefaultUI();
 
+// Konfiguracja serwisu sanitacji HTML
 builder.Services.Configure<UncAds.Services.HtmlSanitizerSettings>(builder.Configuration.GetSection("HtmlSanitizerSettings"));
 builder.Services.AddSingleton<UncAds.Services.IHtmlSanitizationService, UncAds.Services.HtmlSanitizationService>();
-
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<INewsletterService, NewsletterService>();
+
 // 1. Konfiguracja EmailSettings z appsettings.json
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
-// 2. Rejestracja serwisu wysyłkowego
+// 2. Rejestracja serwisu wysyłkowego (korzysta z Microsoft.AspNetCore.Identity.UI.Services)
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-// 3. Rejestracja NewsletterService (już to masz, ale upewnij się)
+// 3. Rejestracja NewsletterService
 builder.Services.AddScoped<INewsletterService, NewsletterService>();
+
 
 var app = builder.Build();
 
@@ -50,6 +54,7 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -66,7 +71,7 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
-    //Opcjonalnie: utwórz konto administratora przy starcie
+    // Utwórz konto administratora przy starcie
     var adminEmail = "admin@uncads.local";
     var adminPassword = "Admin123!";
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
@@ -86,6 +91,7 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
+
 app.UseHttpsRedirection();
 app.UseRouting();
 
