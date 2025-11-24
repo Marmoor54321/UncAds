@@ -45,120 +45,137 @@ namespace UncAds.Controllers
 
 
         // GET: Ads
-        public async Task<IActionResult> Index(string query, int? categoryId, int page = 1)
+        public async Task<IActionResult> Index(string query, int? categoryId, Dictionary<int, string> attributeFilters, int page = 1)
         {
-            // 1. Pobieramy wszystkie kategorie
+            // 1. Pobieramy kategorie (do nawigacji i dropdowna)
             var allCats = await _context.Categories
                 .Include(c => c.ParentCategory)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
 
-            // 2. Obsługa Dropdowna w wyszukiwarce
-            // Pobieramy kategorie główne
+            // 2. Obsługa Dropdowna (Logika z poprzedniego kroku - naprawa "znikającej" kategorii)
             var dropdownSource = allCats.Where(c => c.ParentCategoryId == null).ToList();
-
-            // === NAPRAWA ===
-            // Jeśli użytkownik jest w podkategorii (np. Samochody), której nie ma na liście głównej,
-            // musimy ją dodać do źródła dropdowna, żeby formularz wysłał poprawne ID przy kliknięciu "Szukaj".
             if (categoryId.HasValue)
             {
                 var currentSelected = allCats.FirstOrDefault(c => c.Id == categoryId.Value);
-
-                // Sprawdzamy, czy wybrana kategoria jest na liście rootów. Jeśli nie - dodajemy ją.
                 if (currentSelected != null && !dropdownSource.Any(c => c.Id == currentSelected.Id))
                 {
-                    // Tworzymy tymczasową listę, żeby nie psuć oryginalnej kolekcji
-                    // Dodajemy "klona" lub po prostu ten obiekt, ale zmieniamy mu nazwę wizualnie dla dropdowna
-                    // Uwaga: Zmieniamy nazwę tylko na potrzeby listy, nie zapisujemy tego do bazy!
-                    var categoryForDropdown = new Category
-                    {
-                        Id = currentSelected.Id,
-                        Name = $"» {currentSelected.Name}" // Wizualne wcięcie: "» Samochody"
-                    };
-
-                    // Dodajemy na początek listy, żeby było widać co jest wybrane
-                    dropdownSource.Insert(0, categoryForDropdown);
+                    dropdownSource.Insert(0, new Category { Id = currentSelected.Id, Name = $"» {currentSelected.Name}" });
                 }
             }
-
             ViewBag.SearchCategories = new SelectList(dropdownSource, "Id", "Name", categoryId);
 
-
-            // 3. Obsługa Kafelków (Drill-down + Rodzeństwo) - BEZ ZMIAN
-            List<Category> categoriesToDisplay;
+            // 3. LOGIKA WYŚWIETLANIA: KAFELKI VS ATRYBUTY
+            List<Category> categoriesToDisplay = new List<Category>();
             Category currentCategoryObj = null;
+            bool showAttributes = false;
+            List<CategoryAttribute> attributesToDisplay = new List<CategoryAttribute>();
 
             if (categoryId.HasValue)
             {
-                currentCategoryObj = allCats.FirstOrDefault(c => c.Id == categoryId.Value);
-                var children = allCats.Where(c => c.ParentCategoryId == categoryId.Value).ToList();
+                // Pobierz aktualną kategorię wraz z jej definicjami atrybutów i słownikami
+                currentCategoryObj = await _context.Categories
+                    .Include(c => c.CategoryAttributes)
+                        .ThenInclude(ca => ca.Dictionary)
+                            .ThenInclude(d => d.Values)
+                    .FirstOrDefaultAsync(c => c.Id == categoryId.Value);
 
-                if (children.Any())
+                // SPRAWDZENIE: Czy kategoria ma atrybuty?
+                if (currentCategoryObj != null && currentCategoryObj.CategoryAttributes != null && currentCategoryObj.CategoryAttributes.Any())
                 {
-                    categoriesToDisplay = children;
+                    // WARUNEK ZREALIZOWANY: Ma atrybuty -> wyświetlamy atrybuty zamiast kafelków
+                    showAttributes = true;
+                    attributesToDisplay = currentCategoryObj.CategoryAttributes.ToList();
                 }
                 else
                 {
-                    if (currentCategoryObj?.ParentCategoryId != null)
+                    // Nie ma atrybutów -> sprawdzamy dzieci (stara logika)
+                    var children = allCats.Where(c => c.ParentCategoryId == categoryId.Value).ToList();
+                    if (children.Any())
                     {
-                        categoriesToDisplay = allCats
-                            .Where(c => c.ParentCategoryId == currentCategoryObj.ParentCategoryId.Value)
-                            .ToList();
+                        categoriesToDisplay = children;
                     }
                     else
                     {
-                        categoriesToDisplay = dropdownSource.Where(c => !c.Name.StartsWith("»")).ToList(); // Pokaż główne (bez tego dodanego wyżej)
+                        // Brak dzieci i brak atrybutów -> pokaż rodzeństwo
+                        if (currentCategoryObj?.ParentCategoryId != null)
+                        {
+                            categoriesToDisplay = allCats
+                                .Where(c => c.ParentCategoryId == currentCategoryObj.ParentCategoryId.Value)
+                                .ToList();
+                        }
+                        else
+                        {
+                            categoriesToDisplay = allCats.Where(c => c.ParentCategoryId == null).ToList();
+                        }
                     }
                 }
             }
             else
             {
+                // Strona główna
                 categoriesToDisplay = allCats.Where(c => c.ParentCategoryId == null).ToList();
             }
 
             ViewBag.DisplayCategories = categoriesToDisplay;
             ViewBag.CurrentCategory = currentCategoryObj;
 
+            // Nowe ViewBagi do obsługi atrybutów
+            ViewBag.ShowAttributes = showAttributes;
+            ViewBag.AttributesToDisplay = attributesToDisplay;
+            ViewBag.AttributeFilters = attributeFilters; // Żeby wypełnić formularz po przeładowaniu
 
-            // 4. Budowanie zapytania i filtrowanie
+            // 4. Budowanie zapytania ADS
             var adsQuery = _context.Ads
                 .Include(a => a.User)
                 .Include(a => a.Media)
-                .Include(a => a.Attachments)
                 .Include(a => a.AdCategories)
                     .ThenInclude(ac => ac.Category)
-                .Include(a => a.AttributeValues)
-                    .ThenInclude(av => av.CategoryAttribute)
+                .Include(a => a.AttributeValues) // Ważne dla filtrowania
                 .AsQueryable();
 
-            // Filtrowanie po kategorii (rekurencyjne - pobiera też ogłoszenia dzieci)
+            // Filtrowanie po kategorii
             if (categoryId.HasValue)
             {
                 var categoryIdsToSearch = await GetCategoryAndChildrenIdsAsync(categoryId.Value);
                 adsQuery = adsQuery.Where(a => a.AdCategories.Any(ac => categoryIdsToSearch.Contains(ac.CategoryId)));
             }
 
-            // Pobranie danych do pamięci
+            // --- NOWOŚĆ: FILTROWANIE PO ATRYBUTACH ---
+            if (attributeFilters != null && attributeFilters.Any())
+            {
+                foreach (var filter in attributeFilters)
+                {
+                    int attrId = filter.Key;
+                    string filterValue = filter.Value;
+
+                    if (string.IsNullOrWhiteSpace(filterValue)) continue;
+
+                    // Dla każdego filtra dodajemy warunek "WHERE", że ogłoszenie musi mieć atrybut o danym ID i wartości
+                    // Uwaga: To jest proste porównanie stringów. Dla liczb/dat można to rozbudować o zakresy.
+                    adsQuery = adsQuery.Where(ad => ad.AttributeValues.Any(av =>
+                        av.CategoryAttributeId == attrId && av.Value == filterValue));
+                }
+            }
+            // ------------------------------------------
+
             var ads = await adsQuery.ToListAsync();
 
-            // 5. Filtrowanie po TEKŚCIE (z wykorzystaniem Twojej klasy AdSearch)
+            // Filtrowanie po tekście (AdSearch)
             if (!string.IsNullOrWhiteSpace(query))
             {
-                var trimmedQuery = query.Trim();
-                // Tutaj używamy Twojej logiki z AdSearch
-                ads = ads.Where(ad => AdSearch.Matches(ad, trimmedQuery)).ToList();
+                ads = ads.Where(ad => AdSearch.Matches(ad, query.Trim())).ToList();
             }
 
-            // Sortowanie i Paginacja
+            // Sortowanie, Paginacja
             ads = ads.OrderByDescending(a => a.Date).ToList();
-
             var user = await _userManager.GetUserAsync(User);
             int pageSize = user?.AdsPerPage > 0 ? user.AdsPerPage : 10;
-            int totalItems = ads.Count;
+
             var pagedAds = ads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)ads.Count / pageSize);
             ViewBag.Query = query;
             ViewBag.SelectedCategoryId = categoryId;
 
@@ -175,7 +192,7 @@ namespace UncAds.Controllers
                 foreach (var childId in children)
                 {
                     resultIds.Add(childId);
-                    AddChildren(childId); // Rekurencja
+                    AddChildren(childId);
                 }
             }
 
