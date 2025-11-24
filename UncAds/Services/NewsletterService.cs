@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using UncAds.Data;
 using UncAds.Models;
@@ -14,7 +14,7 @@ namespace UncAds.Services
     public class NewsletterService : INewsletterService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IEmailSender _emailSender; // Wstrzykujemy to
+        private readonly IEmailSender _emailSender; // Teraz to jest oficjalny interfejs Microsoftu
 
         public NewsletterService(ApplicationDbContext context, IEmailSender emailSender)
         {
@@ -47,9 +47,10 @@ namespace UncAds.Services
                     string emailSubject = $"UncAds: Mamy dla Ciebie {newAds.Count} nowych ogłoszeń!";
                     string emailBody = GenerateHtmlEmailBody(user.DisplayName ?? "Użytkowniku", newAds);
 
-                    // WYSYŁKA PRAWDZIWEGO MAILA
+                    // WYSYŁKA MAILA
                     try
                     {
+                        // Metoda SendEmailAsync w interfejsie Microsoftu przyjmuje (email, subject, htmlMessage)
                         await _emailSender.SendEmailAsync(user.Email, emailSubject, emailBody);
 
                         // Aktualizujemy datę tylko jeśli wysyłka się udała
@@ -57,7 +58,7 @@ namespace UncAds.Services
                     }
                     catch (Exception ex)
                     {
-                        // Logowanie błędu, ale nie przerywamy pętli dla innych użytkowników
+                        // Logowanie błędu
                         Console.WriteLine($"Nie udało się wysłać do {user.Email}: {ex.Message}");
                     }
                 }
@@ -75,10 +76,8 @@ namespace UncAds.Services
             sb.Append("<table style='width:100%; border-collapse: collapse;'>");
             foreach (var ad in ads)
             {
-                // Zakładam, że aplikacja stoi np. na localhost:5000. 
-                // W produkcji powinieneś tu wstawić prawdziwy adres domeny.
-                // Można go też pobrać z konfiguracji.
-                string adLink = $"https://localhost:7234/Ad/Details/{ad.Id}";
+                // Link do ogłoszenia
+                string adLink = $"https://localhost:7006/Ads/Details/{ad.Id}";
 
                 sb.Append("<tr>");
                 sb.Append($"<td style='padding: 8px; border-bottom: 1px solid #ddd;'><strong>{ad.Title}</strong></td>");

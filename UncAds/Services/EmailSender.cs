@@ -1,15 +1,11 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 using UncAds.Configuration;
 
 namespace UncAds.Services
 {
-    public interface IEmailSender
-    {
-        Task SendEmailAsync(string email, string subject, string message);
-    }
-
     public class EmailSender : IEmailSender
     {
         private readonly EmailSettings _emailSettings;
@@ -19,7 +15,7 @@ namespace UncAds.Services
             _emailSettings = emailSettings.Value;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             // Konfiguracja klienta SMTP
             var client = new SmtpClient(_emailSettings.MailServer, _emailSettings.MailPort)
@@ -33,7 +29,7 @@ namespace UncAds.Services
             {
                 From = new MailAddress(_emailSettings.SenderEmail, _emailSettings.SenderName),
                 Subject = subject,
-                Body = message,
+                Body = htmlMessage,
                 IsBodyHtml = true // Pozwala na używanie HTML w treści maila
             };
 
@@ -47,7 +43,7 @@ namespace UncAds.Services
             {
                 // Tutaj możesz zalogować błąd, jeśli mail nie wyjdzie
                 Console.WriteLine($"Błąd wysyłania maila: {ex.Message}");
-                throw; // Rzucamy dalej, żeby NewsletterService wiedział o błędzie
+                throw; // Rzucamy dalej, żeby serwis wywołujący wiedział o błędzie
             }
         }
     }
