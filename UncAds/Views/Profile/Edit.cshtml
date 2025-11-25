@@ -1,50 +1,133 @@
 ﻿@model UncAds.Models.ApplicationUser
+@using UncAds.Models
+@using Newtonsoft.Json
 
 <h2>Edycja profilu</h2>
 
 <form asp-action="Edit" method="post">
-
     <div class="mb-3">
         <label class="form-label">Nazwa wyświetlana</label>
         <input asp-for="DisplayName" class="form-control" />
     </div>
-
     <div class="mb-3">
-        <label class="form-label">Bio</label>
-        <textarea asp-for="Bio" class="form-control"></textarea>
+        <label class="form-label">Email (do newslettera)</label>
+        <input asp-for="Email" class="form-control" readonly />
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Avatar URL</label>
-        <input asp-for="AvatarUrl" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Liczba ogłoszeń na stronie</label>
-        <input asp-for="AdsPerPage" type="number" min="1" max="100" class="form-control" />
-    </div>
+    <hr />
+    <h3>Sprofilowany Newsletter</h3>
+    <p class="text-muted">Zaznacz kategorie i określ dokładne kryteria, aby otrzymywać powiadomienia tylko o interesujących Cię ogłoszeniach.</p>
 
-    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <div class="accordion" id="categoriesAccordion">
+        @{
+            var allCategories = ViewBag.AllCategories as List<Category>;
+            var currentSubs = Model.CategorySubscriptions ?? new List<UserCategorySubscription>();
+        }
 
-    <h3>Ustawienia Newslettera</h3>
-    <p>Wybierz kategorie, z których chcesz otrzymywać powiadomienia:</p>
-
-    <div class="form-group">
-        @if (ViewBag.AllCategories != null)
+        @if (allCategories != null)
         {
-            var selectedIds = ViewBag.SelectedCategoryIds as List<int>;
-            foreach (var category in ViewBag.AllCategories as List<UncAds.Models.Category>)
+            foreach (var category in allCategories)
             {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox"
-                           name="selectedCategories"
-                           value="@category.Id"
-                           id="cat_@category.Id"
-                           @(selectedIds != null && selectedIds.Contains(category.Id) ? "checked" : "")>
-                    <label class="form-check-label" for="cat_@category.Id">
-                        @category.Name
-                    </label>
+                // Check if user has a subscription for this category
+                var existingSub = currentSubs.FirstOrDefault(s => s.CategoryId == category.Id);
+                bool isChecked = existingSub != null;
+
+                // Deserialize existing filters if present
+                Dictionary<int, string> existingFilters = new Dictionary<int, string>();
+                if (existingSub != null && !string.IsNullOrEmpty(existingSub.FiltersJson))
+                {
+                    try { existingFilters = JsonConvert.DeserializeObject<Dictionary<int, string>>(existingSub.FiltersJson) ?? new Dictionary<int, string>(); }
+                    catch { /* ignore error */ }
+                }
+
+                <div class="card mb-2">
+                    <div class="card-header d-flex align-items-center">
+                        <div class="form-check m-0">
+                            <input class="form-check-input category-toggle"
+                                   type="checkbox"
+                                   name="selectedCategories"
+                                   value="@category.Id"
+                                   id="cat_@category.Id"
+                                   data-target="#settings_@category.Id"
+                                   @(isChecked ? "checked" : "")>
+                            <label class="form-check-label fw-bold" for="cat_@category.Id">
+                                @category.Name
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="settings_@category.Id" class="collapse @(isChecked ? "show" : "") ps-4 py-3 bg-light border-top">
+                        <div class="row g-3">
+                            <p class="small text-muted mb-2">Pozostaw puste, aby otrzymywać wszystko z działu <strong>@category.Name</strong>.</p>
+
+                            @if (category.CategoryAttributes != null && category.CategoryAttributes.Any())
+                            {
+                                foreach (var attr in category.CategoryAttributes)
+                                {
+                                    string val = existingFilters.ContainsKey(attr.Id) ? existingFilters[attr.Id] : "";
+
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold">@attr.Name</label>
+
+                                        @* Naming convention: 
+                                           Filters[{CategoryId}][{AttributeId}] 
+                                           This allows the Controller to bind it to a Dictionary structure.
+                                        *@
+
+                                        @if (attr.Type == AttributeType.Dictionary && attr.Dictionary != null)
+                                        {
+                                            <select name="Filters[@category.Id][@attr.Id]" class="form-select form-select-sm">
+                                                <option value="">- Dowolne -</option>
+                                                @foreach (var dVal in attr.Dictionary.Values)
+                                                {
+                                                    <!option value="@dVal.Value" @(val == dVal.Value ? "selected" : "")>@dVal.Value</!option>
+                                                }
+                                            </select>
+                                        }
+                                        else if (attr.Type == AttributeType.Boolean)
+                                        {
+                                            <select name="Filters[@category.Id][@attr.Id]" class="form-select form-select-sm">
+                                                <option value="">- Dowolne -</option>
+                                                <!option value="true" @(val == "true" ? "selected" : "")>Tak</!option>
+                                                <!option value="false" @(val == "false" ? "selected" : "")>Nie</!option>
+                                            </select>
+                                        }
+                                        else if (attr.Type == AttributeType.Number)
+                                        {
+                                            <input type="number" name="Filters[@category.Id][@attr.Id]" class="form-control form-control-sm" value="@val" placeholder="Dokładna wartość" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" name="Filters[@category.Id][@attr.Id]" class="form-control form-control-sm" value="@val" />
+                                        }
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Brak dodatkowych filtrów dla tej kategorii.</span>
+                            }
+                        </div>
+                    </div>
                 </div>
             }
         }
     </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Zapisz ustawienia</button>
 </form>
+
+<script>
+    // Simple script to toggle visibility based on checkbox
+    document.querySelectorAll('.category-toggle').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const targetId = this.getAttribute('data-target');
+            const targetEl = document.querySelector(targetId);
+            if(this.checked) {
+                targetEl.classList.add('show');
+            } else {
+                targetEl.classList.remove('show');
+            }
+        });
+    });
+</script>
