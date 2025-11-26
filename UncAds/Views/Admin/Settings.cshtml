@@ -1,34 +1,82 @@
 ﻿@model UncAds.Models.AdminSettings
 @{
-    ViewBag.Title = "Ustawienia administracyjne";
+    ViewData["Title"] = "Ustawienia systemu";
 }
 
-<h2>Ustawienia administracyjne</h2>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
 
-@if (ViewBag.Message != null)
-{
-    <div class="alert alert-success">@ViewBag.Message</div>
-}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="m-0"><i class="bi bi-sliders"></i> Konfiguracja systemu</h2>
+            </div>
 
-<form asp-action="Settings" method="post">
-    <div class="form-group">
-        <label asp-for="MaxAttachments"></label>
-        <input asp-for="MaxAttachments" class="form-control" />
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-check-circle-fill"></i> @ViewBag.Message
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <form asp-action="Settings" method="post">
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-hdd-stack"></i> Limity plików</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="MaxAttachments" class="form-label fw-bold">Max. załączników</label>
+                                <div class="input-group">
+                                    <input asp-for="MaxAttachments" class="form-control" type="number" />
+                                    <span class="input-group-text">szt.</span>
+                                </div>
+                                <div class="form-text">Ilość plików na ogłoszenie.</div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="MaxMediaFiles" class="form-label fw-bold">Max. multimediów</label>
+                                <div class="input-group">
+                                    <input asp-for="MaxMediaFiles" class="form-control" type="number" />
+                                    <span class="input-group-text">szt.</span>
+                                </div>
+                                <div class="form-text">Ilość zdjęć/wideo na ogłoszenie.</div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="MaxFileSizeMB" class="form-label fw-bold">Limit rozmiaru</label>
+                                <div class="input-group">
+                                    <input asp-for="MaxFileSizeMB" class="form-control" type="number" />
+                                    <span class="input-group-text">MB</span>
+                                </div>
+                                <div class="form-text">Maksymalny rozmiar jednego pliku.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-chat-quote"></i> Treści globalne</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label asp-for="HomePageMessage" class="form-label fw-bold">Komunikat na stronie głównej</label>
+                            <textarea asp-for="HomePageMessage" class="form-control" rows="4" placeholder="Wpisz wiadomość powitalną lub ogłoszenie systemowe..."></textarea>
+                            <div class="form-text">Ten tekst pojawi się na samej górze strony głównej (jeśli zaimplementowano).</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
+                        <i class="bi bi-save"></i> Zapisz ustawienia
+                    </button>
+                </div>
+            </form>
+
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="MaxFileSizeMB"></label>
-        <input asp-for="MaxFileSizeMB" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="MaxMediaFiles"></label>
-        <input asp-for="MaxMediaFiles" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="HomePageMessage"></label>
-        <textarea asp-for="HomePageMessage" class="form-control" rows="3"></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-2">Zapisz</button>
-</form>
+</div>

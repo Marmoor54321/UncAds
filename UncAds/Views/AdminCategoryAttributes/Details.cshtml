@@ -1,45 +1,99 @@
 ﻿@model UncAds.Models.CategoryAttribute
 
-<h2>Szczegóły atrybutu</h2>
+@{
+    ViewData["Title"] = "Szczegóły atrybutu";
+}
 
-<dl class="row">
-    <dt class="col-sm-2">Nazwa</dt>
-    <dd class="col-sm-10">@Model.Name</dd>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0"><i class="bi bi-info-circle"></i> Szczegóły atrybutu</h5>
+                    <span class="badge bg-primary">ID: @Model.Id</span>
+                </div>
+                <div class="card-body p-4">
 
-    <dt class="col-sm-2">Typ</dt>
-    <dd class="col-sm-10">@Model.Type</dd>
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <th class="text-muted w-25">Nazwa:</th>
+                                <td class="fw-bold fs-5">@Model.Name</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Kategoria:</th>
+                                <td><span class="badge bg-light text-dark border"><i class="bi bi-folder"></i> @Model.Category.Name</span></td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Typ pola:</th>
+                                <td><code>@Model.Type</code></td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Multi-wybór:</th>
+                                <td>
+                                    @if (Model.AllowMultiple)
+                                    {
+                                        <span class="text-success fw-bold"><i class="bi bi-check-circle"></i> Tak</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-secondary"><i class="bi bi-x-circle"></i> Nie</span>
+                                    }
+                                </td>
+                            </tr>
 
-    <dt class="col-sm-2">Opcje</dt>
-    <dd class="col-sm-10">@Model.Options</dd>
+                            @if (!string.IsNullOrEmpty(Model.Options))
+                            {
+                                <tr>
+                                    <th class="text-muted align-top">Opcje:</th>
+                                    <td>
+                                        @foreach (var opt in Model.Options.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                                        {
+                                            <span class="badge bg-secondary me-1">@opt</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
 
-    <dt class="col-sm-2">Kategoria</dt>
-    <dd class="col-sm-10">@Model.Category.Name</dd>
+                            <tr>
+                                <th class="text-muted align-top">Słownik:</th>
+                                <td>
+                                    @if (Model.Dictionary != null)
+                                    {
+                                        <div class="fw-bold mb-1"><i class="bi bi-book"></i> @Model.Dictionary.Name</div>
+                                        @if (Model.Dictionary.Values != null && Model.Dictionary.Values.Any())
+                                        {
+                                            <div class="d-flex flex-wrap gap-1">
+                                                @foreach (var v in Model.Dictionary.Values.Take(10))
+                                                {
+                                                    <span class="badge bg-light text-secondary border">@v.Value</span>
+                                                }
+                                                @if (Model.Dictionary.Values.Count > 10)
+                                                {
+                                                    <span class="badge bg-light text-muted border">...</span>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <em class="small text-muted">Słownik jest pusty</em>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-    <dt class="col-sm-2">Słownik</dt>
-    <dd class="col-sm-10">
-        @if (Model.Dictionary != null)
-        {
-            <span>@Model.Dictionary.Name</span>
-            <br />
-            @if (Model.Dictionary.Values != null && Model.Dictionary.Values.Any())
-            {
-                <ul>
-                    @foreach (var v in Model.Dictionary.Values)
-                    {
-                        <li>@v.Value</li>
-                    }
-                </ul>
-            }
-        }
-        else
-        {
-            <span class="text-muted">Brak</span>
-        }
-    </dd>
-
-    <dt class="col-sm-2">Wiele wartości</dt>
-    <dd class="col-sm-10">@(Model.AllowMultiple ? "Tak" : "Nie")</dd>
-</dl>
-
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edytuj</a>
-<a asp-action="Index" class="btn btn-secondary">Powrót</a>
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4">Edytuj</a>
+                        <a asp-action="Index" class="btn btn-secondary px-4">Wróć</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,13 +1,34 @@
 ﻿@model UncAds.Models.ForbiddenWord
 
-<h2>Dodaj słowo zakazane</h2>
+@{
+    ViewData["Title"] = "Dodaj słowo";
+}
 
-<form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label>Słowo</label>
-        <input asp-for="Word" class="form-control" />
-        <span asp-validation-for="Word" class="text-danger"></span>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="m-0 text-danger"><i class="bi bi-shield-plus"></i> Nowe słowo zakazane</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="Word" class="form-label fw-bold">Słowo lub fraza</label>
+                            <input asp-for="Word" class="form-control" placeholder="np. spam" autofocus />
+                            <span asp-validation-for="Word" class="text-danger small"></span>
+                            <div class="form-text">System będzie blokował ogłoszenia zawierające to słowo.</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success fw-bold">Zapisz</button>
+                            <a asp-action="Index" class="btn btn-light border">Anuluj</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <button class="btn btn-primary">Zapisz</button>
-</form>
+</div>

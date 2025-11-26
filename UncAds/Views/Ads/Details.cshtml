@@ -1,127 +1,286 @@
 ﻿@model UncAds.Models.Ad
+
 @{
-    ViewBag.Title = Model.Title;
+    ViewData["Title"] = Model.Title;
+    bool isOwnerOrAdmin = (User.Identity.IsAuthenticated && Model.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value) || User.IsInRole("Admin");
+
+    // Filtrujemy media raz, żeby użyć ich w widoku
+    var images = Model.Media?.Where(m => m.MediaType == "image").ToList() ?? new List<UncAds.Models.AdMedia>();
+    var videos = Model.Media?.Where(m => m.MediaType == "video").ToList();
+    var audios = Model.Media?.Where(m => m.MediaType == "audio").ToList();
+    var otherMedia = Model.Media?.Where(m => m.MediaType == "flash").ToList(); // Flash jest przestarzały, ale zostawiamy obsługę
 }
 
-<h2>@Model.Title</h2>
-@Html.Raw(Model.Description)
+<div class="container py-4 mb-4">
 
-@if (Model.Media != null && Model.Media.Any())
-{
-    <hr />
-    <h4>Multimedia</h4>
-    <div>
-        @foreach (var m in Model.Media)
-        {
-            if (m.MediaType == "image")
+    <div class="mb-4 border-bottom pb-2">
+        <div class="d-flex justify-content-between align-items-start flex-wrap">
+            <div>
+                <h1 class="display-5 fw-bold text-break">@Model.Title</h1>
+                <div class="text-muted small">
+                    <i class="bi bi-calendar3"></i> Dodano: @Model.Date.ToString("dd.MM.yyyy HH:mm") &nbsp;|&nbsp;
+                    <i class="bi bi-eye"></i> Wyświetleń: @Model.ViewCount
+                </div>
+            </div>
+
+            @if (isOwnerOrAdmin)
             {
-                <img src="@m.FilePath" alt="obraz" style="max-width:300px; margin:10px;" />
+                <div class="mt-2 mt-md-0">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm me-1">
+                        <i class="bi bi-pencil"></i> Edytuj
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Usuń
+                    </a>
+                </div>
             }
-            else if (m.MediaType == "audio")
-            {
-                <audio controls style="display:block; margin:10px;">
-                    <source src="@m.FilePath" type="audio/mpeg" />
-                    Twoja przeglądarka nie obsługuje odtwarzania audio.
-                </audio>
-            }
-            else if (m.MediaType == "video")
-            {
-                <video controls class="w-100 mb-2" style="max-height: 400px;">
-                    <source src="@m.FilePath" type="video/mp4">
-                    Twoja przeglądarka nie obsługuje wideo.
-                </video>
-            }
-            else if (m.MediaType == "flash")
-            {
-                <object data="@m.FilePath" type="application/x-shockwave-flash" width="400" height="300"></object>
-            }
-        }
+        </div>
     </div>
-}
-@if (Model.Attachments != null && Model.Attachments.Any())
-{
-    <hr />
-    <h4>Załączniki</h4>
-    <ul>
-        @foreach (var a in Model.Attachments)
-        {
-            <li>
-                <a href="@a.FilePath" target="_blank">@System.IO.Path.GetFileName(a.FilePath)</a>
-                @if (!string.IsNullOrEmpty(a.Description))
-                {
-                    <span> — @a.Description</span>
-                }
-            </li>
-        }
-    </ul>
-}
 
+    <div class="row">
+        <div class="col-lg-8">
 
-    <p><strong>Date:</strong> @Model.Date.ToString("g")</p>
-    <p><strong>Author:</strong> @Model.User?.UserName</p>
-
-    <h5>Kategorie:</h5>
-    @if (Model.AdCategories != null && Model.AdCategories.Any())
-    {
-        <ul class="category-tree list-unstyled">
-            @foreach (var ac in Model.AdCategories)
+            @if (images.Any())
             {
-                <li>
-                    <i class="bi bi-folder"></i> @ac.Category.FullPath
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p class="text-muted">Brak przypisanych kategorii</p>
-    }
-    @if (Model.AttributeValues != null && Model.AttributeValues.Any())
-    {
-        <h5>Atrybuty:</h5>
-        <ul>
-            @foreach (var av in Model.AttributeValues)
-            {
-                <li><strong>@av.CategoryAttribute.Name:</strong> @av.Value</li>
-            }
-        </ul>
-    }
+                <div id="adCarousel" class="carousel slide mb-4 shadow-sm rounded overflow-hidden bg-light" data-bs-ride="carousel">
+                    @if (images.Count > 1)
+                    {
+                        <div class="carousel-indicators">
+                            @for (int i = 0; i < images.Count; i++)
+                            {
+                                <button type="button" data-bs-target="#adCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true"></button>
+                            }
+                        </div>
+                    }
 
+                    <div class="carousel-inner" style="max-height: 500px;">
+                        @for (int i = 0; i < images.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "") h-100 bg-dark text-center">
+                                <img src="@images[i].FilePath" class="d-block w-100" style="object-fit: contain; max-height: 500px; margin: 0 auto;" alt="Zdjęcie ogłoszenia">
+                            </div>
+                        }
+                    </div>
+
+                    @if (images.Count > 1)
+                    {
+                        <button class="carousel-control-prev" type="button" data-bs-target="#adCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Poprzedni</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#adCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Następny</span>
+                        </button>
+                    }
+                </div>
+            }
+
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-primary border-bottom pb-2 mb-3">Opis</h4>
+                    <div class="ad-description text-break">
+                        @Html.Raw(Model.Description)
+                    </div>
+                </div>
+            </div>
+
+            @if ((videos != null && videos.Any()) || (audios != null && audios.Any()) || (otherMedia != null && otherMedia.Any()))
+            {
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary border-bottom pb-2 mb-3">Multimedia</h4>
+
+                        @if (videos != null && videos.Any())
+                        {
+                            <h6 class="fw-bold"><i class="bi bi-camera-video"></i> Wideo</h6>
+                            <div class="row g-3 mb-3">
+                                @foreach (var vid in videos)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="ratio ratio-16x9 bg-dark rounded">
+                                            <video controls>
+                                                <source src="@vid.FilePath" type="video/mp4">
+                                                Twoja przeglądarka nie obsługuje wideo.
+                                            </video>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        @if (audios != null && audios.Any())
+                        {
+                            <h6 class="fw-bold"><i class="bi bi-music-note-beamed"></i> Audio</h6>
+                            <div class="vstack gap-2 mb-3">
+                                @foreach (var aud in audios)
+                                {
+                                    <div class="bg-light p-2 rounded border">
+                                        <audio controls class="w-100">
+                                            <source src="@aud.FilePath" type="audio/mpeg" />
+                                            Twoja przeglądarka nie obsługuje audio.
+                                        </audio>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        @if (otherMedia != null && otherMedia.Any())
+                        {
+                            <div class="alert alert-warning">
+                                <strong>Uwaga:</strong> Ogłoszenie zawiera pliki Flash/SWF, które mogą nie być obsługiwane przez nowoczesne przeglądarki.
+                                @foreach (var om in otherMedia)
+                                {
+                                    <div class="mt-2"><a href="@om.FilePath" target="_blank" class="btn btn-outline-dark btn-sm">Pobierz/Otwórz plik: @System.IO.Path.GetFileName(om.FilePath)</a></div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (Model.Attachments != null && Model.Attachments.Any())
+            {
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary border-bottom pb-2 mb-3">Pliki do pobrania</h4>
+                        <div class="list-group">
+                            @foreach (var att in Model.Attachments)
+                            {
+                                <a href="@att.FilePath" target="_blank" class="list-group-item list-group-item-action d-flex align-items-center">
+                                    <i class="bi bi-file-earmark-arrow-down fs-4 me-3 text-secondary"></i>
+                                    <div>
+                                        <div class="fw-bold">@System.IO.Path.GetFileName(att.FilePath)</div>
+                                        @if (!string.IsNullOrEmpty(att.Description))
+                                        {
+                                            <small class="text-muted">@att.Description</small>
+                                        }
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="card mb-4 border-primary shadow-sm">
+                <div class="card-header bg-primary text-white fw-bold">
+                    <i class="bi bi-person-circle"></i> Sprzedający
+                </div>
+                <div class="card-body text-center">
+                    @if (Model.User != null)
+                    {
+                        var avatar = !string.IsNullOrEmpty(Model.User.AvatarUrl) ? Model.User.AvatarUrl : "https://via.placeholder.com/100?text=User";
+                        <img src="@avatar" class="rounded-circle mb-3 border p-1" width="80" height="80" style="object-fit: cover;">
+                        <h5 class="card-title">@Model.User.DisplayName</h5>
+                        <p class="text-muted small">@Model.User.Email</p>
+     @if (!string.IsNullOrEmpty(Model.User.Bio))
+                        {
+                            <hr />
+                            <p class="small fst-italic text-muted">"@Model.User.Bio"</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Konto usunięte</p>
+                    }
+                    <div class="d-grid mt-3">
+                        <button class="btn btn-outline-primary btn-sm">Skontaktuj się</button>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.AttributeValues != null && Model.AttributeValues.Any())
+            {
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header bg-white fw-bold">
+                        <i class="bi bi-list-check"></i> Szczegóły
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var av in Model.AttributeValues)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="text-muted">@av.CategoryAttribute.Name</span>
+                                <span class="fw-bold">@av.Value</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Kategorie</h6>
+                    @if (Model.AdCategories != null && Model.AdCategories.Any())
+                    {
+                        @foreach (var ac in Model.AdCategories)
+                        {
+                            <span class="badge bg-secondary mb-1 p-2">
+                                <i class="bi bi-folder2-open"></i> @ac.Category.Name
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted small">Brak</span>
+                    }
+                </div>
+            </div>
+
+            @if (User.Identity.IsAuthenticated && Model.UserId != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+            {
+                <div class="accordion mb-4" id="reportAccordion">
+                    <div class="accordion-item border-danger">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed text-danger bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReport" aria-expanded="false" aria-controls="collapseReport">
+                                <i class="bi bi-flag-fill me-2"></i> Zgłoś nadużycie
+                            </button>
+                        </h2>
+                        <div id="collapseReport" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#reportAccordion">
+                            <div class="accordion-body">
+                                <form method="post" asp-action="Report" asp-route-id="@Model.Id">
+                                    <div class="mb-2">
+                                        <textarea name="reason" rows="3" required placeholder="Opisz powód zgłoszenia..." class="form-control form-control-sm"></textarea>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-danger btn-sm">Wyślij zgłoszenie</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="d-grid">
+                <a asp-action="Index" class="btn btn-light border">Wróć do listy</a>
+            </div>
+
+        </div>
+    </div>
 </div>
 
-<p>
-    @if (Model.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
-    }
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</p>
-
-@if (User.Identity.IsAuthenticated)
-{
-    <form method="post" asp-action="Report" asp-route-id="@Model.Id">
-        <textarea name="reason" required placeholder="Powód zgłoszenia..." class="form-control"></textarea>
-        <button class="btn btn-warning mt-2">Zgłoś do moderacji</button>
-    </form>
-}
-
-
 <style>
-    .category-tree {
-        padding-left: 0.5rem;
-        border-left: 2px solid #ccc;
-        margin-bottom: 1rem;
+    /* Style, aby obrazki w opisie HTML nie wychodziły poza kontener */
+    .ad-description img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
     }
 
-        .category-tree li {
-            margin: 4px 0;
-            padding-left: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .category-tree i {
-            color: #f0ad4e;
-            margin-right: 6px;
-        }
+    .ad-description {
+        line-height: 1.6;
+        color: #333;
+    }
+    /* Powiększenie ikonek karuzeli */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(0,0,0,0.5);
+        border-radius: 50%;
+        padding: 20px;
+    }
 </style>

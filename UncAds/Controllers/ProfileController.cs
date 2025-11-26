@@ -58,7 +58,9 @@ namespace UncAds.Controllers
             if (user == null) return NotFound();
 
             user.DisplayName = model.DisplayName;
-            // ... update other user fields ...
+            user.Bio = model.Bio; 
+            user.AdsPerPage = model.AdsPerPage; 
+            user.AvatarUrl = model.AvatarUrl;
 
             // 1. Clear old subscriptions
             var currentSubscriptions = user.CategorySubscriptions.ToList();

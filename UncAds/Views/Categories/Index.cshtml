@@ -1,35 +1,65 @@
 ﻿@model IEnumerable<UncAds.Models.Category>
 
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Kategorie";
 }
 
-<h2>Categories</h2>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0"><i class="bi bi-folder2-open"></i> Kategorie ogłoszeń</h2>
+        <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm">
+            <i class="bi bi-folder-plus"></i> Nowa kategoria
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add New Category</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Parent Category</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.ParentCategory?.Name</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Nazwa kategorii</th>
+                            <th>Kategoria nadrzędna</th>
+                            <th class="text-end pe-4">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">
+                                    <i class="bi bi-folder2 me-2 text-secondary"></i> @item.Name
+                                </td>
+                                <td>
+                                    @if (item.ParentCategory != null)
+                                    {
+                                        <span class="badge bg-light text-dark border">
+                                            <i class="bi bi-arrow-return-right"></i> @item.ParentCategory.Name
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Główna</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Edytuj">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Szczegóły">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Usuń">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

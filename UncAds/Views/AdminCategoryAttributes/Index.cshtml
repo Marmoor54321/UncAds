@@ -4,36 +4,76 @@
     ViewData["Title"] = "Atrybuty kategorii";
 }
 
-<h2>Atrybuty kategorii</h2>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0"><i class="bi bi-list-check"></i> Atrybuty ogłoszeń</h2>
+        <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-lg"></i> Dodaj atrybut
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">+ Dodaj nowy atrybut</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nazwa</th>
-            <th>Typ</th>
-            <th>Opcje</th>
-            <th>Kategoria</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Type</td>
-                <td>@item.Options</td>
-                <td>@item.Category.Name</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Nazwa</th>
+                            <th>Typ pola</th>
+                            <th>Konfiguracja</th>
+                            <th>Kategoria</th>
+                            <th class="text-end pe-4">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">@item.Name</td>
+                                <td>
+                                    <span class="badge bg-info text-dark">@item.Type</span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Options))
+                                    {
+                                        <small class="text-muted" title="@item.Options">
+                                            <i class="bi bi-ui-checks"></i> Opcje zdefiniowane
+                                        </small>
+                                    }
+                                    else if (item.DictionaryId.HasValue)
+                                    {
+                                        <small class="text-primary">
+                                            <i class="bi bi-book"></i> Słownik
+                                        </small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        <i class="bi bi-folder"></i> @item.Category.Name
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Edytuj">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Szczegóły">
+                                            <i class="bi bi-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Usuń">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

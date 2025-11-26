@@ -2,131 +2,191 @@
 @using UncAds.Models
 @using Newtonsoft.Json
 
-<h2>Edycja profilu</h2>
+@{
+    ViewData["Title"] = "Edycja profilu";
+}
 
-<form asp-action="Edit" method="post">
-    <div class="mb-3">
-        <label class="form-label">Nazwa wyświetlana</label>
-        <input asp-for="DisplayName" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Email (do newslettera)</label>
-        <input asp-for="Email" class="form-control" readonly />
-    </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
 
-    <hr />
-    <h3>Sprofilowany Newsletter</h3>
-    <p class="text-muted">Zaznacz kategorie i określ dokładne kryteria, aby otrzymywać powiadomienia tylko o interesujących Cię ogłoszeniach.</p>
+            <h2 class="mb-4">Edytuj profil</h2>
 
-    <div class="accordion" id="categoriesAccordion">
-        @{
-            var allCategories = ViewBag.AllCategories as List<Category>;
-            var currentSubs = Model.CategorySubscriptions ?? new List<UserCategorySubscription>();
-        }
+            <form asp-action="Edit" method="post">
 
-        @if (allCategories != null)
-        {
-            foreach (var category in allCategories)
-            {
-                // Check if user has a subscription for this category
-                var existingSub = currentSubs.FirstOrDefault(s => s.CategoryId == category.Id);
-                bool isChecked = existingSub != null;
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-person-gear"></i> Dane podstawowe</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="DisplayName" class="form-label fw-bold">Nazwa wyświetlana</label>
+                                <input asp-for="DisplayName" class="form-control" />
+                                <span asp-validation-for="DisplayName" class="text-danger"></span>
+                            </div>
 
-                // Deserialize existing filters if present
-                Dictionary<int, string> existingFilters = new Dictionary<int, string>();
-                if (existingSub != null && !string.IsNullOrEmpty(existingSub.FiltersJson))
-                {
-                    try { existingFilters = JsonConvert.DeserializeObject<Dictionary<int, string>>(existingSub.FiltersJson) ?? new Dictionary<int, string>(); }
-                    catch { /* ignore error */ }
-                }
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-bold">Email (login)</label>
+                                <input asp-for="Email" class="form-control bg-light" readonly />
+                                <div class="form-text">Adresu email nie można zmienić w tym panelu.</div>
+                            </div>
 
-                <div class="card mb-2">
-                    <div class="card-header d-flex align-items-center">
-                        <div class="form-check m-0">
-                            <input class="form-check-input category-toggle"
-                                   type="checkbox"
-                                   name="selectedCategories"
-                                   value="@category.Id"
-                                   id="cat_@category.Id"
-                                   data-target="#settings_@category.Id"
-                                   @(isChecked ? "checked" : "")>
-                            <label class="form-check-label fw-bold" for="cat_@category.Id">
-                                @category.Name
-                            </label>
+                            <div class="col-12">
+                                <label asp-for="AvatarUrl" class="form-label fw-bold">Link do awatara (URL)</label>
+                                <input asp-for="AvatarUrl" class="form-control" placeholder="https://..." />
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Bio" class="form-label fw-bold">Bio (O mnie)</label>
+                                <textarea asp-for="Bio" class="form-control" rows="4" placeholder="Napisz coś o sobie..."></textarea>
+                                <span asp-validation-for="Bio" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="AdsPerPage" class="form-label fw-bold">Liczba ogłoszeń na stronę</label>
+                                <input asp-for="AdsPerPage" class="form-control" type="number" min="5" max="100" />
+                                <div class="form-text">Domyślnie 10. Max 100.</div>
+                                <span asp-validation-for="AdsPerPage" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div id="settings_@category.Id" class="collapse @(isChecked ? "show" : "") ps-4 py-3 bg-light border-top">
-                        <div class="row g-3">
-                            <p class="small text-muted mb-2">Pozostaw puste, aby otrzymywać wszystko z działu <strong>@category.Name</strong>.</p>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-envelope-paper"></i> Sprofilowany Newsletter</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-4">
+                            Zaznacz kategorie i określ dokładne kryteria, aby otrzymywać powiadomienia mailowe tylko o interesujących Cię ogłoszeniach.
+                        </p>
 
-                            @if (category.CategoryAttributes != null && category.CategoryAttributes.Any())
+                        <div class="accordion" id="categoriesAccordion">
+                            @{
+                                var allCategories = ViewBag.AllCategories as List<Category>;
+                                var currentSubs = Model.CategorySubscriptions ?? new List<UserCategorySubscription>();
+                            }
+
+                            @if (allCategories != null)
                             {
-                                foreach (var attr in category.CategoryAttributes)
+                                foreach (var category in allCategories)
                                 {
-                                    string val = existingFilters.ContainsKey(attr.Id) ? existingFilters[attr.Id] : "";
+                                    var existingSub = currentSubs.FirstOrDefault(s => s.CategoryId == category.Id);
+                                    bool isChecked = existingSub != null;
+                                    Dictionary<int, string> existingFilters = new Dictionary<int, string>();
 
-                                    <div class="col-md-4">
-                                        <label class="form-label small fw-bold">@attr.Name</label>
+                                    if (existingSub != null && !string.IsNullOrEmpty(existingSub.FiltersJson))
+                                    {
+                                        try { existingFilters = JsonConvert.DeserializeObject<Dictionary<int, string>>(existingSub.FiltersJson) ?? new Dictionary<int, string>(); }
+                                        catch { }
+                                    }
 
-                                        @* Naming convention: 
-                                           Filters[{CategoryId}][{AttributeId}] 
-                                           This allows the Controller to bind it to a Dictionary structure.
-                                        *@
+                                    <div class="card mb-2 border">
+                                        <div class="card-header d-flex align-items-center bg-light">
+                                            <div class="form-check m-0 w-100">
+                                                <input class="form-check-input category-toggle"
+                                                       type="checkbox"
+                                                       name="selectedCategories"
+                                                       value="@category.Id"
+                                                       id="cat_@category.Id"
+                                                       data-target="#settings_@category.Id"
+                                                       @(isChecked ? "checked" : "")
+                                                       style="cursor: pointer;">
+                                                <label class="form-check-label fw-bold w-100" for="cat_@category.Id" style="cursor: pointer;">
+                                                    @category.Name
+                                                </label>
+                                            </div>
+                                        </div>
 
-                                        @if (attr.Type == AttributeType.Dictionary && attr.Dictionary != null)
-                                        {
-                                            <select name="Filters[@category.Id][@attr.Id]" class="form-select form-select-sm">
-                                                <option value="">- Dowolne -</option>
-                                                @foreach (var dVal in attr.Dictionary.Values)
-                                                {
-                                                    <!option value="@dVal.Value" @(val == dVal.Value ? "selected" : "")>@dVal.Value</!option>
-                                                }
-                                            </select>
-                                        }
-                                        else if (attr.Type == AttributeType.Boolean)
-                                        {
-                                            <select name="Filters[@category.Id][@attr.Id]" class="form-select form-select-sm">
-                                                <option value="">- Dowolne -</option>
-                                                <!option value="true" @(val == "true" ? "selected" : "")>Tak</!option>
-                                                <!option value="false" @(val == "false" ? "selected" : "")>Nie</!option>
-                                            </select>
-                                        }
-                                        else if (attr.Type == AttributeType.Number)
-                                        {
-                                            <input type="number" name="Filters[@category.Id][@attr.Id]" class="form-control form-control-sm" value="@val" placeholder="Dokładna wartość" />
-                                        }
-                                        else
-                                        {
-                                            <input type="text" name="Filters[@category.Id][@attr.Id]" class="form-control form-control-sm" value="@val" />
-                                        }
+                                        <div id="settings_@category.Id" class="collapse @(isChecked ? "show" : "") border-top">
+                                            <div class="card-body bg-white">
+                                                <div class="row g-3">
+                                                    @if (category.CategoryAttributes != null && category.CategoryAttributes.Any())
+                                                    {
+                                                        <div class="col-12">
+                                                            <div class="alert alert-info py-2 px-3 small mb-2">
+                                                                <i class="bi bi-info-circle"></i> Pozostaw puste, aby otrzymywać <strong>wszystkie</strong> ogłoszenia z działu @category.Name.
+                                                            </div>
+                                                        </div>
+
+                                                        foreach (var attr in category.CategoryAttributes)
+                                                        {
+                                                            string val = existingFilters.ContainsKey(attr.Id) ? existingFilters[attr.Id] : "";
+
+                                                            <div class="col-md-6 col-lg-4">
+                                                                <label class="form-label small fw-bold text-secondary">@attr.Name</label>
+
+                                                                @if (attr.Type == AttributeType.Dictionary && attr.Dictionary != null)
+                                                                {
+                                                                    <select name="Filters[@category.Id][@attr.Id]" class="form-select form-select-sm">
+                                                                        <option value="">- Dowolne -</option>
+                                                                        @foreach (var dVal in attr.Dictionary.Values)
+                                                                        {
+                                                                            <!option value="@dVal.Value" @(val == dVal.Value ? "selected" : "")>@dVal.Value</!option>
+                                                                        }
+                                                                    </select>
+                                                                }
+                                                                else if (attr.Type == AttributeType.Boolean)
+                                                                {
+                                                                    <select name="Filters[@category.Id][@attr.Id]" class="form-select form-select-sm">
+                                                                        <option value="">- Dowolne -</option>
+                                                                        <!option value="true" @(val == "true" ? "selected" : "")>Tak</!option>
+                                                                        <!option value="false" @(val == "false" ? "selected" : "")>Nie</!option>
+                                                                    </select>
+                                                                }
+                                                                else if (attr.Type == AttributeType.Number)
+                                                                {
+                                                                    <input type="number" name="Filters[@category.Id][@attr.Id]" class="form-control form-control-sm" value="@val" placeholder="Wartość" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="text" name="Filters[@category.Id][@attr.Id]" class="form-control form-control-sm" value="@val" />
+                                                                }
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-12 text-muted small fst-italic">
+                                                            Ta kategoria nie posiada dodatkowych filtrów. Otrzymasz powiadomienia o wszystkich nowych ogłoszeniach w dziale @category.Name.
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 }
-                            }
-                            else
-                            {
-                                <span class="text-muted small">Brak dodatkowych filtrów dla tej kategorii.</span>
                             }
                         </div>
                     </div>
                 </div>
-            }
-        }
-    </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Zapisz ustawienia</button>
-</form>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+                    <a asp-action="Index" class="btn btn-outline-secondary me-md-2 px-4">Anuluj</a>
+                    <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">Zapisz zmiany</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 
 <script>
-    // Simple script to toggle visibility based on checkbox
+    // Skrypt do pokazywania/ukrywania ustawień kategorii
     document.querySelectorAll('.category-toggle').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const targetId = this.getAttribute('data-target');
             const targetEl = document.querySelector(targetId);
             if(this.checked) {
+                // Używamy Bootstrap collapse API jeśli dostępne, lub prostej klasy
                 targetEl.classList.add('show');
             } else {
                 targetEl.classList.remove('show');
+
+                // Opcjonalnie: wyczyść inputy po odznaczeniu kategorii
+                const inputs = targetEl.querySelectorAll('input, select');
+                inputs.forEach(i => i.value = '');
             }
         });
     });

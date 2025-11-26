@@ -1,19 +1,35 @@
 ﻿@model UncAds.Models.CategoryAttribute
 
-<h2>Usuń atrybut</h2>
+@{
+    ViewData["Title"] = "Usuń atrybut";
+}
 
-<h4>Czy na pewno chcesz usunąć ten atrybut?</h4>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white text-center py-3">
+                    <h4 class="m-0"><i class="bi bi-exclamation-triangle"></i> Potwierdź usunięcie</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <p class="text-muted mb-4">Czy na pewno chcesz usunąć ten atrybut? Operacja jest nieodwracalna.</p>
 
-<dl class="row">
-    <dt class="col-sm-2">Nazwa</dt>
-    <dd class="col-sm-10">@Model.Name</dd>
+                    <h3 class="fw-bold text-dark mb-1">@Model.Name</h3>
+                    <div class="mb-4">
+                        <span class="badge bg-light text-dark border">@Model.Category.Name</span>
+                    </div>
 
-    <dt class="col-sm-2">Kategoria</dt>
-    <dd class="col-sm-10">@Model.Category.Name</dd>
-</dl>
+                    <div class="alert alert-warning small text-start">
+                        <i class="bi bi-exclamation-circle-fill"></i> Uwaga: Usunięcie atrybutu spowoduje utratę wartości tego pola we wszystkich istniejących ogłoszeniach w tej kategorii.
+                    </div>
 
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Usuń</button>
-    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
-</form>
+                    <form asp-action="Delete" class="d-flex justify-content-center gap-3 mt-4">
+                        <input type="hidden" asp-for="Id" />
+                        <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
+                        <button type="submit" class="btn btn-danger px-4 fw-bold">Tak, usuń</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

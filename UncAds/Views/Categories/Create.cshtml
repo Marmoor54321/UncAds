@@ -1,25 +1,41 @@
 ﻿@model UncAds.Models.Category
 
 @{
-    ViewData["Title"] = "Create Category";
+    ViewData["Title"] = "Nowa kategoria";
 }
 
-<h2>Create Category</h2>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="m-0 text-success"><i class="bi bi-folder-plus"></i> Dodaj nową kategorię</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Nazwa</label>
+                            <input asp-for="Name" class="form-control" placeholder="np. Motoryzacja" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ParentCategoryId" class="form-label fw-bold">Kategoria nadrzędna</label>
+                            <select asp-for="ParentCategoryId" class="form-select" asp-items="ViewBag.ParentCategoryId">
+                                <option value="">-- To jest kategoria główna --</option>
+                            </select>
+                            <div class="form-text">Wybierz "Główna", jeśli kategoria nie ma rodzica.</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success fw-bold">Zapisz</button>
+                            <a asp-action="Index" class="btn btn-light border">Anuluj</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="ParentCategoryId">Parent Category</label>
-        <select asp-for="ParentCategoryId" class="form-control" asp-items="ViewBag.ParentCategoryId">
-            <option value="">(None)</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+</div>

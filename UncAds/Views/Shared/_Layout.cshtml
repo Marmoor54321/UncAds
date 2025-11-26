@@ -1,82 +1,108 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - UncAds</title>
-    <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UncAds.styles.css" asp-append-version="true" />
     <link rel="alternate" type="application/rss+xml" title="UncAds - RSS" href="/feed" />
+
+    <style>
+        /* Drobne poprawki stylu dla layoutu */
+        body {
+            background-color: #f8f9fa; /* Bardzo jasne tło dla całej strony */
+        }
+
+        .navbar {
+            background-color: #ffffff !important;
+        }
+
+        .nav-link {
+            font-weight: 500;
+        }
+
+        main {
+            min-height: 80vh; /* Żeby stopka nie uciekała do góry na pustych stronach */
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UncAds</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-light border-bottom shadow-sm mb-4">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-primary fs-4" asp-area="" asp-controller="Ads" asp-action="Index">
+                    <i class="bi bi-megaphone-fill"></i> UncAds
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Ads" asp-action="Index">Ads</a>
-                        </li>
-                        @if (User.IsInRole("Admin"))
-                        {
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
-         
-                        </li>
 
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CategoryAttributes" asp-action="Index">Attributes</a>
-                        </li
-
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AttributeDictionaries" asp-action="Index">Dictionaries</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="ForbiddenWords" asp-action="Index">
-                                Forbidden Words
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Ads" asp-action="Index">
+                                <i class="bi bi-grid"></i> Przeglądaj ogłoszenia
                             </a>
                         </li>
-
-                        }
                     </ul>
-                    <partial name="_LoginPartial" />
+
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown me-2">
+                                <a class="nav-link dropdown-toggle text-danger fw-bold" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-shield-lock"></i> Panel Admina
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="adminDropdown">
+                                    <li><h6 class="dropdown-header">Zarządzanie treścią</h6></li>
+                                    <li><a class="dropdown-item" asp-controller="Categories" asp-action="Index">Kategorie</a></li>
+                                    <li><a class="dropdown-item" asp-controller="CategoryAttributes" asp-action="Index">Atrybuty</a></li>
+                                    <li><a class="dropdown-item" asp-controller="AttributeDictionaries" asp-action="Index">Słowniki</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><h6 class="dropdown-header">System</h6></li>
+                                    <li><a class="dropdown-item" asp-controller="ForbiddenWords" asp-action="Index">Zakazane słowa</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">Użytkownicy</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Settings">Ustawienia globalne</a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">
+                                    <i class="bi bi-person-circle"></i> Mój profil
+                                </a>
+                            </li>
+                        }
+
+                        <partial name="_LoginPartial" />
+
+                     
+                    </ul>
                 </div>
             </div>
         </nav>
-        @if (User.Identity.IsAuthenticated)
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">Mój profil</a>
-    </li>
-}
-
-        @if (User.IsInRole("Admin"))
-        {<ul>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Users">Panel admina</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Settings">Ustawienia admina</a>
-            </li>
-         </ul>
-        }
-
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Message"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
             @RenderBody()
         </main>
     </div>

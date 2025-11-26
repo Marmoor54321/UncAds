@@ -1,32 +1,86 @@
 ﻿@model UncAds.Models.AdReport
 
-<h2>Zgłoszenie ogłoszenia</h2>
-
-<p><strong>Ogłoszenie:</strong> @Model.Ad.Title</p>
-<p><strong>Powód zgłoszenia:</strong> @Model.Reason</p>
-<p><strong>Data:</strong> @Model.ReportDate</p>
-
-@if (Model.Resolved  && !string.IsNullOrWhiteSpace(Model.ResolutionNote))
-{
-    <div class="alert alert-info mt-3">
-        <h5>Status: Zamknięte</h5>
-        <p><strong>Notatka moderatora:</strong></p>
-        <p>@Model.ResolutionNote</p>
-    </div>
+@{
+    ViewData["Title"] = "Rozpatrz zgłoszenie";
 }
-else
-{
-    <form method="post" asp-action="ResolveReport" asp-route-id="@Model.Id">
-        @Html.AntiForgeryToken()
 
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="deleteAd" name="deleteAd" value="true">
-            <input type="hidden" name="deleteAd" value="false" />
-            <label for="deleteAd">Usuń ogłoszenie</label>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 text-primary"><i class="bi bi-hammer"></i> Panel Moderatora</h5>
+                    <span class="badge bg-secondary">Zgłoszenie #@Model.Id</span>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">Ogłoszenie</label>
+                            <div class="fs-5 fw-bold">
+                                @if (Model.Ad != null)
+                                {
+                                    <a asp-controller="Ads" asp-action="Details" asp-route-id="@Model.AdId" target="_blank">
+                                        @Model.Ad.Title <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">Ogłoszenie nie istnieje (usunięte)</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">Data zgłoszenia</label>
+                            <div>@Model.ReportDate</div>
+                        </div>
+                        <div class="col-12 bg-light p-3 rounded border">
+                            <label class="small text-muted text-uppercase fw-bold mb-1">Powód zgłoszenia (Reporter)</label>
+                            <p class="m-0 fst-italic">"@Model.Reason"</p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    @if (Model.Resolved)
+                    {
+                        <div class="alert alert-success border-success">
+                            <h5 class="alert-heading"><i class="bi bi-check-circle-fill"></i> Zgłoszenie zamknięte</h5>
+                            <p class="mb-0"><strong>Notatka moderatora:</strong> @(Model.ResolutionNote ?? "Brak notatki.")</p>
+                        </div>
+                        <div class="d-grid">
+                            <a asp-action="Reports" class="btn btn-secondary">Wróć do listy</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <h5 class="mb-3"><i class="bi bi-pencil-square"></i> Decyzja</h5>
+                        <form method="post" asp-action="ResolveReport" asp-route-id="@Model.Id">
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-check form-switch mb-3 p-3 bg-danger bg-opacity-10 border border-danger rounded">
+                                <input type="checkbox" class="form-check-input" id="deleteAd" name="deleteAd" value="true" style="cursor: pointer;">
+                                <input type="hidden" name="deleteAd" value="false" />
+                                <label for="deleteAd" class="form-check-label fw-bold text-danger" style="cursor: pointer;">
+                                    Usuń ogłoszenie definitywnie
+                                </label>
+                                <div class="form-text text-danger">Zaznacz, jeśli ogłoszenie narusza regulamin i ma zostać usunięte.</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Notatka / Uzasadnienie</label>
+                                <textarea name="resolutionNote" class="form-control" rows="3" placeholder="Wpisz uzasadnienie decyzji (widoczne dla adminów)..."></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a asp-action="Reports" class="btn btn-light border px-4">Anuluj</a>
+                                <button type="submit" class="btn btn-success px-4 fw-bold">Zatwierdź decyzję</button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
         </div>
-
-        <textarea name="resolutionNote" class="form-control" placeholder="Notatka"></textarea>
-
-        <button type="submit" class="btn btn-success mt-3">Zatwierdź</button>
-    </form>
-}
+    </div>
+</div>

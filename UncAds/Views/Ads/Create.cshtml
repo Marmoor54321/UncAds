@@ -1,221 +1,283 @@
 ﻿@model UncAds.Models.Ad
 @{
-    ViewBag.Title = "Nowe ogłoszenie";
+    ViewData["Title"] = "Nowe ogłoszenie";
 }
 
-<h2>Nowe ogłoszenie</h2>
-<div asp-validation-summary="All" class="text-danger"></div>
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label>Tytuł</label>
-        <input asp-for="Title" class="form-control" />
-    </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
 
-    <div class="form-group">
-        <label>Opis</label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-    </div>
+            <h2 class="mb-4"><i class="bi bi-plus-circle-dotted"></i> Dodaj nowe ogłoszenie</h2>
 
-    <div class="form-group">
-        <label>Kategorie</label>
-        <select id="categorySelect" name="SelectedCategoryIds" multiple class="form-control"
-                asp-items="ViewBag.Categories"></select>
-    </div>
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none"></div>
 
-    <hr />
-    <h4>Atrybuty</h4>
-    <div id="attributesContainer"></div>
-    <hr />
-    <h4>Multimedia</h4>
-    <div class="form-group">
-        <label>Dodaj pliki (obrazy, dźwięki, Flash)</label>
-        <input type="file" name="mediaFiles" multiple class="form-control media-file" accept="video/mp4,image/jpeg,image/png,image/gif,audio/mpeg,audio/wav,audio/ogg,.swf" />
-        <small class="text-muted d-block">
-            Maks. @ViewBag.MaxMediaFiles plików, każdy do @ViewBag.MaxFileSizeMB MB
-        </small>
-    </div>
-    <hr />
-    <h4>Załączniki</h4>
-    <div id="attachmentsContainer">
-        <div class="attachment-group mb-2">
-            <input type="file" name="attachmentFiles" class="form-control mb-1 attachment-file" accept="image/*,audio/*,video/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/zip,application/x-rar-compressed,text/plain,text/csv,.swf" />
-            <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
-            <small class="text-muted d-block">Maks. rozmiar: @ViewBag.MaxFileSizeMB MB</small>
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-card-text"></i> Informacje podstawowe</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label asp-for="Title" class="form-label fw-bold">Tytuł ogłoszenia</label>
+                                <input asp-for="Title" class="form-control" placeholder="np. Sprzedam Opla Corsa..." />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Kategorie</label>
+                                <select id="categorySelect" name="SelectedCategoryIds" multiple class="form-select" style="height: 50px;"
+                                        asp-items="ViewBag.Categories">
+                                </select>
+                                <div class="form-text small">Możesz wybrać kilka (Ctrl + Click)</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label fw-bold">Opis szczegółowy</label>
+                                <textarea asp-for="Description" class="form-control" rows="6" placeholder="Opisz dokładnie przedmiot..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> Szczegóły kategorii</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="attributesContainer">
+                            <p class="text-muted text-center fst-italic">Wybierz kategorię powyżej, aby zobaczyć dodatkowe pola.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-images"></i> Zdjęcia i pliki</h5>
+                    </div>
+                    <div class="card-body p-4">
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Galeria (Zdjęcia/Wideo)</label>
+                            <input type="file" name="mediaFiles" multiple class="form-control media-file" accept="video/mp4,image/jpeg,image/png,image/gif,audio/mpeg,audio/wav,audio/ogg,.swf" />
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i> Maksymalnie @ViewBag.MaxMediaFiles plików. Każdy do @ViewBag.MaxFileSizeMB MB.
+                            </div>
+                        </div>
+
+                        <hr class="text-muted">
+
+                        <div>
+                            <label class="form-label fw-bold mb-3">Załączniki (Dokumenty)</label>
+                            <div id="attachmentsContainer">
+                                <div class="attachment-group row g-2 mb-2 align-items-center bg-light p-2 rounded border">
+                                    <div class="col-md-5">
+                                        <input type="file" name="attachmentFiles" class="form-control attachment-file" />
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" name="attachmentDescriptions" placeholder="Opis pliku (opcjonalne)" class="form-control" />
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="addAttachment" class="btn btn-outline-secondary btn-sm mt-2">
+                                <i class="bi bi-plus-lg"></i> Dodaj kolejny plik
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mb-5">
+                    <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
+                    <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">Opublikuj ogłoszenie</button>
+                </div>
+
+            </form>
         </div>
     </div>
-    <button type="button" id="addAttachment" class="btn btn-secondary btn-sm mt-2">+ Dodaj kolejny</button>
-
-    <button type="submit" class="btn btn-primary">Zapisz</button>
-</form>
+</div>
 
 @section Scripts {
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Konfiguracja
+            const maxAttachments = @(ViewBag.MaxAttachments ?? 5);
+            const maxMediaFiles = @(ViewBag.MaxMediaFiles ?? 5);
+            const maxFileSizeMB = @(ViewBag.MaxFileSizeMB ?? 5);
+            const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024;
 
-        const maxAttachments = @ViewBag.MaxAttachments ?? 5;
-        const maxFileSizeBytes = @ViewBag.MaxFileSizeMB * 1024 * 1024;
-        const container = document.getElementById('attachmentsContainer');
-        const addBtn = document.getElementById('addAttachment');
-        const maxMediaFiles = @ViewBag.MaxMediaFiles ?? 5;
-        const mediaInput = document.querySelector('input[name="mediaFiles"]');
+            // Elementy DOM
+            const container = document.getElementById('attachmentsContainer');
+            const addBtn = document.getElementById('addAttachment');
+            const mediaInput = document.querySelector('input[name="mediaFiles"]');
+            const categorySelect = document.getElementById('categorySelect');
+            const attributesContainer = document.getElementById('attributesContainer');
 
-        mediaInput.addEventListener('change', function () {
-            if (this.files.length > maxMediaFiles) {
-                alert(`Maksymalnie możesz dodać ${maxMediaFiles} plików multimedialnych.`);
-                this.value = ''; // wyczyść
-            }
-
-            // Walidacja rozmiaru (już masz, ale dla kompletności)
-            Array.from(this.files).forEach(file => {
-                if (file.size > maxFileSizeBytes) {
-                    alert(`Plik "${file.name}" jest za duży! Maks: @ViewBag.MaxFileSizeMB MB.`);
-                    this.value = '';
-                }
-            });
-        });
-        // Funkcja: walidacja rozmiaru pliku
-        function validateFileSize(input) {
-            if (!input.files || input.files.length === 0) return true;
-
-            const file = input.files[0];
-            if (file.size > maxFileSizeBytes) {
-                alert(`Plik "${file.name}" jest za duży! Maksymalny rozmiar: @ViewBag.MaxFileSizeMB MB.`);
-                input.value = ''; // wyczyść pole
-                return false;
-            }
-            return true;
-        }
-
-        // Funkcja: podpinanie walidacji do inputa
-        function attachValidationToFileInput(input) {
-            if (!input || input.dataset.validationAttached) return; // unikaj podwójnego podpięcia
-
-            input.addEventListener('change', function () {
-                validateFileSize(this);
-            });
-
-            input.dataset.validationAttached = 'true'; // oznacz jako podpięte
-        }
-
-        // === INICJALIZACJA: podłącz walidację do WSZYSTKICH istniejących pól ===
-        document.querySelectorAll('.attachment-file').forEach(attachValidationToFileInput);
-
-        // === DODAWANIE NOWEGO ZAŁĄCZNIKA ===
-        addBtn.addEventListener('click', function () {
-            const currentCount = container.querySelectorAll('.attachment-group').length;
-            if (currentCount >= maxAttachments) {
-                alert(`Nie możesz dodać więcej niż ${maxAttachments} załączników.`);
-                return;
-            }
-
-            const div = document.createElement('div');
-            div.classList.add('attachment-group', 'mb-2');
-            div.innerHTML = `
-                <input type="file" name="attachmentFiles" class="form-control mb-1 attachment-file" />
-                <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
-                <small class="text-muted d-block">Maks. rozmiar: @ViewBag.MaxFileSizeMB MB</small>
-                <button type="button" class="btn btn-danger btn-sm mt-1 remove-attachment">Usuń</button>
-            `;
-            container.appendChild(div);
-
-            // Podłącz walidację do NOWEGO inputa
-            const newFileInput = div.querySelector('.attachment-file');
-            attachValidationToFileInput(newFileInput);
-
-            // Usuwanie załącznika
-            div.querySelector('.remove-attachment').addEventListener('click', function () {
-                div.remove();
-            });
-        });
-
-        // === OPCJONALNIE: Walidacja multimediów (jeśli chcesz) ===
-        document.querySelectorAll('.media-file').forEach(input => {
-            input.addEventListener('change', function () {
-                Array.from(this.files).forEach(file => {
-                    if (file.size > maxFileSizeBytes) {
-                        alert(`Plik multimedialny "${file.name}" jest za duży!`);
-                        this.value = ''; // wyczyść całe pole
+            // --- 1. Obsługa Multimediów ---
+            if(mediaInput){
+                mediaInput.addEventListener('change', function () {
+                    if (this.files.length > maxMediaFiles) {
+                        alert(`Maksymalnie możesz dodać ${maxMediaFiles} plików multimedialnych.`);
+                        this.value = '';
+                        return;
                     }
-                });
-            });
-        });
-    </script>
-    <script>
-
-        
-        document.getElementById('categorySelect').addEventListener('change', function () {
-            const selected = Array.from(this.selectedOptions).map(o => o.value);
-            fetch(`/Ads/GetCategoryAttributes?` + new URLSearchParams({ categoryIds: selected }))
-                .then(r => r.json())
-                .then(data => {
-                    const container = document.getElementById('attributesContainer');
-                    container.innerHTML = '';
-                    data.forEach(attr => {
-                        const label = document.createElement('label');
-                        label.textContent = attr.name;
-
-                        let input;
-                                switch (attr.type) {
-            case 0: // Text
-                input = document.createElement('input');
-                input.type = 'text';
-                break;
-            case 1: // Number
-                input = document.createElement('input');
-                input.type = 'number';
-                break;
-            case 2: // Boolean
-                input = document.createElement('select');
-                const trueOpt = document.createElement('option');
-                trueOpt.value = 'true';
-                trueOpt.textContent = 'Tak';
-                const falseOpt = document.createElement('option');
-                falseOpt.value = 'false';
-                falseOpt.textContent = 'Nie';
-                input.appendChild(trueOpt);
-                input.appendChild(falseOpt);
-        break;
-            case 3: // Date
-                input = document.createElement('input');
-                input.type = 'date';
-                break;
-            case 4: // Select
-                input = document.createElement('select');
-                const opts = (attr.options ?? '').split(';');
-                opts.forEach(o => {
-                    if (!o.trim()) return;
-                    const opt = document.createElement('option');
-                    opt.value = o.trim();
-                    opt.textContent = o.trim();
-                    input.appendChild(opt);
-                });
-                break;
-
-                case 5: // Dictionary
-        input = document.createElement('select');
-        if (attr.allowMultiple)
-            input.multiple = true;
-
-        (attr.dictionaryValues ?? []).forEach(v => {
-            const opt = document.createElement('option');
-            opt.value = v;
-            opt.textContent = v;
-            input.appendChild(opt);
-        });
-        break;
-
-        }
-
-
-                        input.name = `AttributeValues[${attr.id}]`;
-                        input.classList.add('form-control');
-
-                        const div = document.createElement('div');
-                        div.classList.add('form-group');
-                        div.appendChild(label);
-                        div.appendChild(input);
-                        container.appendChild(div);
+                    Array.from(this.files).forEach(file => {
+                        if (file.size > maxFileSizeBytes) {
+                            alert(`Plik "${file.name}" jest za duży! Maks: ${maxFileSizeMB} MB.`);
+                            this.value = '';
+                        }
                     });
                 });
+            }
+
+            // --- 2. Obsługa Załączników ---
+            function validateFileSize(input) {
+                if (!input.files || input.files.length === 0) return true;
+                const file = input.files[0];
+                if (file.size > maxFileSizeBytes) {
+                    alert(`Plik "${file.name}" jest za duży! Maksymalny rozmiar: ${maxFileSizeMB} MB.`);
+                    input.value = '';
+                    return false;
+                }
+                return true;
+            }
+
+            function attachValidationToFileInput(input) {
+                if (!input || input.dataset.validationAttached) return;
+                input.addEventListener('change', function () { validateFileSize(this); });
+                input.dataset.validationAttached = 'true';
+            }
+
+            // Inicjalizacja istniejących inputów
+            document.querySelectorAll('.attachment-file').forEach(attachValidationToFileInput);
+
+            // Dodawanie nowego wiersza załącznika
+            if(addBtn){
+                addBtn.addEventListener('click', function () {
+                    const currentCount = container.querySelectorAll('.attachment-group').length;
+                    if (currentCount >= maxAttachments) {
+                        alert(`Limit załączników osiągnięty (${maxAttachments}).`);
+                        return;
+                    }
+
+                    const div = document.createElement('div');
+                    div.classList.add('attachment-group', 'row', 'g-2', 'mb-2', 'align-items-center', 'bg-light', 'p-2', 'rounded', 'border');
+                    div.innerHTML = `
+                        <div class="col-md-5">
+                            <input type="file" name="attachmentFiles" class="form-control attachment-file" />
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-attachment"><i class="bi bi-trash"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+
+                    attachValidationToFileInput(div.querySelector('.attachment-file'));
+
+                    div.querySelector('.remove-attachment').addEventListener('click', function () {
+                        div.remove();
+                    });
+                });
+            }
+
+            // --- 3. Dynamiczne Atrybuty (Pobieranie z serwera) ---
+            if(categorySelect){
+                categorySelect.addEventListener('change', function () {
+                    const selected = Array.from(this.selectedOptions).map(o => o.value);
+
+                    if(selected.length === 0) {
+                        attributesContainer.innerHTML = '<p class="text-muted text-center fst-italic">Wybierz kategorię...</p>';
+                        return;
+                    }
+
+                    // Spinner loading
+                    attributesContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
+
+                    fetch(`/Ads/GetCategoryAttributes?` + new URLSearchParams({ categoryIds: selected }))
+                        .then(r => r.json())
+                        .then(data => {
+                            attributesContainer.innerHTML = '';
+
+                            if(data.length === 0){
+                                attributesContainer.innerHTML = '<p class="text-muted text-center">Brak dodatkowych atrybutów dla wybranych kategorii.</p>';
+                                return;
+                            }
+
+                            const rowDiv = document.createElement('div');
+                            rowDiv.classList.add('row', 'g-3');
+                            attributesContainer.appendChild(rowDiv);
+
+                            data.forEach(attr => {
+                                const colDiv = document.createElement('div');
+                                colDiv.classList.add('col-md-6');
+
+                                const label = document.createElement('label');
+                                label.textContent = attr.name;
+                                label.classList.add('form-label', 'fw-bold', 'small');
+
+                                let input;
+                                // Logika tworzenia inputów (zgodna z Twoją)
+                                switch (attr.type) {
+                                    case 0: // Text
+                                        input = document.createElement('input');
+                                        input.type = 'text';
+                                        break;
+                                    case 1: // Number
+                                        input = document.createElement('input');
+                                        input.type = 'number';
+                                        break;
+                                    case 2: // Boolean
+                                        input = document.createElement('select');
+                                        input.innerHTML = '<option value="true">Tak</option><option value="false">Nie</option>';
+                                        break;
+                                    case 3: // Date
+                                        input = document.createElement('input');
+                                        input.type = 'date';
+                                        break;
+                                    case 4: // Select (String options)
+                                        input = document.createElement('select');
+                                        const opts = (attr.options ?? '').split(';');
+                                        opts.forEach(o => {
+                                            if (!o.trim()) return;
+                                            const opt = document.createElement('option');
+                                            opt.value = o.trim();
+                                            opt.textContent = o.trim();
+                                            input.appendChild(opt);
+                                        });
+                                        break;
+                                    case 5: // Dictionary
+                                        input = document.createElement('select');
+                                        if (attr.allowMultiple) input.multiple = true;
+                                        (attr.dictionaryValues ?? []).forEach(v => {
+                                            const opt = document.createElement('option');
+                                            opt.value = v;
+                                            opt.textContent = v;
+                                            input.appendChild(opt);
+                                        });
+                                        break;
+                                }
+
+                                input.name = `AttributeValues[${attr.id}]`;
+                                input.classList.add('form-control');
+                                if(attr.type === 2 || attr.type === 4 || attr.type === 5) input.classList.add('form-select');
+
+                                colDiv.appendChild(label);
+                                colDiv.appendChild(input);
+                                rowDiv.appendChild(colDiv);
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            attributesContainer.innerHTML = '<div class="alert alert-danger">Błąd pobierania atrybutów.</div>';
+                        });
+                });
+            }
         });
     </script>
 }

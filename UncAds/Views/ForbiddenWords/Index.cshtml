@@ -1,25 +1,54 @@
 ﻿@model IEnumerable<UncAds.Models.ForbiddenWord>
 
-<h2>Słownik słów zakazanych</h2>
+@{
+    ViewData["Title"] = "Zakazane słowa";
+}
 
-<a class="btn btn-primary mb-3" asp-action="Create">Dodaj słowo</a>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0"><i class="bi bi-shield-x"></i> Słownik słów zakazanych</h2>
+        <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-lg"></i> Dodaj słowo
+        </a>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Słowo</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var w in Model)
-        {
-            <tr>
-                <td>@w.Word</td>
-                <td>
-                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@w.Id">Usuń</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-check-circle fs-1 d-block mb-2"></i>
+                    <span>Brak zdefiniowanych słów zakazanych.</span>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Fraza / Słowo</th>
+                                <th class="text-end pe-4">Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var w in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-danger">
+                                        @w.Word
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a asp-action="Delete" asp-route-id="@w.Id" class="btn btn-outline-danger btn-sm" title="Usuń">
+                                            <i class="bi bi-trash"></i> Usuń
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

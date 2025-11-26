@@ -1,49 +1,66 @@
 ﻿@model UncAds.Models.CategoryAttribute
 @{
-    ViewData["Title"] = "Nowy atrybut kategorii";
+    ViewData["Title"] = "Nowy atrybut";
 }
 
-<h2>Nowy atrybut kategorii</h2>
-<div asp-validation-summary="All" class="text-danger"></div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="m-0 text-success"><i class="bi bi-plus-square"></i> Nowy atrybut kategorii</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="All" class="alert alert-danger mb-3" style="display:none"></div>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Nazwa atrybutu</label>
+                            <input asp-for="Name" class="form-control" placeholder="np. Rok produkcji, Kolor, Przebieg" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="Type">Typ pola</label>
-        <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<UncAds.Models.AttributeType>()"></select>
-    </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Type" class="form-label fw-bold">Typ pola</label>
+                                <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<UncAds.Models.AttributeType>()"></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Przypisz do kategorii</label>
+                                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories"></select>
+                            </div>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="Options">Opcje (dla Select — rozdzielone ;)</label>
-        <input asp-for="Options" class="form-control" />
-    </div>
+                        <div class="mb-3">
+                            <label asp-for="Options" class="form-label fw-bold">Opcje wyboru</label>
+                            <input asp-for="Options" class="form-control" placeholder="np. Benzyna;Diesel;LPG" />
+                            <div class="form-text">Wypełnij TYLKO jeśli wybrałeś typ <strong>Select</strong>. Rozdzielaj średnikiem (;).</div>
+                        </div>
 
-    <div class="form-group">
-        <label>Kategoria</label>
-        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
-    </div>
-    <div class="form-group">
-        <label>Słownik (opcjonalny)</label>
-        <select asp-for="DictionaryId" class="form-control" asp-items="ViewBag.Dictionaries">
-            <option value="">— brak —</option>
-        </select>
-    </div>
+                        <div class="mb-3 bg-light p-3 rounded border">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Opcje zaawansowane</label>
 
-    <div class="form-check">
-        <input asp-for="AllowMultiple" class="form-check-input" type="checkbox" />
-        <label asp-for="AllowMultiple" class="form-check-label">Pozwól na wiele wartości</label>
-    </div>
+                            <div class="mb-3">
+                                <label class="form-label">Słownik zewnętrzny</label>
+                                <select asp-for="DictionaryId" class="form-select" asp-items="ViewBag.Dictionaries">
+                                    <option value="">— brak (użyj pola Opcje lub pola tekstowego) —</option>
+                                </select>
+                                <div class="form-text">Wybierz, jeśli typ to <strong>Dictionary</strong>.</div>
+                            </div>
 
-    <button type="submit" class="btn btn-success">Zapisz</button>
-    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
-</form>
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+                            <div class="form-check form-switch">
+                                <input asp-for="AllowMultiple" class="form-check-input" type="checkbox" />
+                                <label asp-for="AllowMultiple" class="form-check-label">Pozwól na wybór wielu wartości</label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
+                            <button type="submit" class="btn btn-success px-4 fw-bold">Zapisz atrybut</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

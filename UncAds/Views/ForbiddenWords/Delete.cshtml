@@ -1,0 +1,30 @@
+﻿@model UncAds.Models.ForbiddenWord
+
+@{
+    ViewData["Title"] = "Usuń słowo";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white text-center py-3">
+                    <h4 class="m-0"><i class="bi bi-trash3"></i> Potwierdź usunięcie</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <p class="text-muted mb-3">Czy na pewno chcesz usunąć to słowo z listy zakazanych?</p>
+
+                    <div class="bg-light p-3 rounded border mb-4">
+                        <h2 class="text-danger fw-bold m-0">"@Model.Word"</h2>
+                    </div>
+
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-center gap-3">
+                        <input type="hidden" asp-for="Id" />
+                        <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
+                        <button type="submit" class="btn btn-danger px-4 fw-bold">Tak, usuń</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,71 +1,131 @@
 ﻿@model UncAds.Models.Ad
 
-<h2>Edit Ad</h2>
-<div asp-validation-summary="All" class="text-danger"></div>
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
-    <div class="form-group">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-    </div>
+@{
+    ViewData["Title"] = "Edycja ogłoszenia";
+}
 
-    <div class="form-group">
-        <label>Categories</label>
-        <select name="SelectedCategoryIds" multiple class="form-control" asp-items="ViewBag.Categories"></select>
-    </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-
-    <hr />
-<h4>Atrybuty</h4>
-<div id="attributesContainer">
-    @if (ViewBag.Attributes != null)
-    {
-        foreach (var attr in (List<UncAds.Models.CategoryAttribute>)ViewBag.Attributes)
-        {
-            var existingValue = Model.AttributeValues?
-                .FirstOrDefault(v => v.CategoryAttributeId == attr.Id)?.Value ?? "";
-
-            <div class="form-group">
-                <label>@attr.Name</label>
-
-                @if (attr.Type == UncAds.Models.AttributeType.Select)
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="m-0"><i class="bi bi-pencil-square"></i> Edytuj ogłoszenie</h2>
+                @if (Model.Media != null && Model.Media.Any())
                 {
-                    var opts = (attr.Options ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries);
-                    <select name="AttributeValues[@attr.Id]" class="form-control">
-                        @foreach (var o in opts)
-                        {
-                                <option value="@o" selected="@(existingValue == o)">@o</option>
-                        }
-                    </select>
-                }
-                    else if (attr.Type == UncAds.Models.AttributeType.Boolean)
-                    {
-                        <select name="AttributeValues[@attr.Id]" class="form-control">
-                            <option value="true" selected="@(existingValue == "true")">Tak</option>
-                            <option value="false" selected="@(existingValue == "false")">Nie</option>
-                        </select>
-                    }
-                else if (attr.Type == UncAds.Models.AttributeType.Number)
-                {
-                    <input type="number" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
-                }
-                else if (attr.Type == UncAds.Models.AttributeType.Date)
-                {
-                    <input type="date" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
-                }
-                else
-                {
-                    <input type="text" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
+                    <span class="badge bg-info text-dark">Zawiera @Model.Media.Count plików multimedialnych</span>
                 }
             </div>
-        }
-    }
-</div>
 
-</form>
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none"></div>
+
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-card-text"></i> Dane ogłoszenia</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label asp-for="Title" class="form-label fw-bold">Tytuł</label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Kategorie</label>
+                                <select name="SelectedCategoryIds" multiple class="form-select" style="height: 50px;" asp-items="ViewBag.Categories"></select>
+                                <div class="form-text small">Przytrzymaj Ctrl, aby zmienić zaznaczenie.</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label fw-bold">Opis</label>
+                                <textarea asp-for="Description" class="form-control" rows="6"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (ViewBag.Attributes != null && ((List<UncAds.Models.CategoryAttribute>)ViewBag.Attributes).Any())
+                {
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white border-bottom py-3">
+                            <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> Szczegóły (Atrybuty)</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-3" id="attributesContainer">
+                                @foreach (var attr in (List<UncAds.Models.CategoryAttribute>)ViewBag.Attributes)
+                                {
+                                    var existingValue = Model.AttributeValues?
+                                    .FirstOrDefault(v => v.CategoryAttributeId == attr.Id)?.Value ?? "";
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small">@attr.Name</label>
+
+                                        @if (attr.Type == UncAds.Models.AttributeType.Select)
+                                        {
+                                            var opts = (attr.Options ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries);
+                                            <select name="AttributeValues[@attr.Id]" class="form-select">
+                                                @foreach (var o in opts)
+                                                {
+                                                    <!option value="@o" @(existingValue == o ? "selected" : "")>@o</!option>
+                                                }
+                                            </select>
+                                        }
+                                        else if (attr.Type == UncAds.Models.AttributeType.Dictionary)
+                                        {
+                                            // Obsługa słowników w edycji (prosta)
+                                            <select name="AttributeValues[@attr.Id]" class="form-select">
+                                                <option value="">-- Wybierz --</option>
+                                                @if (attr.Dictionary != null)
+                                                {
+                                                    foreach (var val in attr.Dictionary.Values)
+                                                    {
+                                                        <!option value="@val.Value" @(existingValue == val.Value ? "selected" : "")>@val.Value</!option>
+                                                    }
+                                                }
+                                            </select>
+                                        }
+                                        else if (attr.Type == UncAds.Models.AttributeType.Boolean)
+                                        {
+                                            <select name="AttributeValues[@attr.Id]" class="form-select">
+                                                <!option value="true" @(existingValue == "true" ? "selected" : "")>Tak</!option>
+                                                <!option value="false" @(existingValue == "false" ? "selected" : "")>Nie</!option>
+                                            </select>
+                                        }
+                                        else if (attr.Type == UncAds.Models.AttributeType.Number)
+                                        {
+                                            <input type="number" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
+                                        }
+                                        else if (attr.Type == UncAds.Models.AttributeType.Date)
+                                        {
+                                            // Formatowanie daty dla input type="date"
+                                            string dateVal = existingValue;
+                                            if (DateTime.TryParse(existingValue, out var parsedDate))
+                                            {
+                                                dateVal = parsedDate.ToString("yyyy-MM-dd");
+                                            }
+                                            <input type="date" name="AttributeValues[@attr.Id]" value="@dateVal" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="d-flex justify-content-end gap-2 mb-5">
+                    <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
+                    <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">Zapisz zmiany</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
