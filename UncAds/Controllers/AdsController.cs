@@ -47,6 +47,9 @@ namespace UncAds.Controllers
         // GET: Ads
         public async Task<IActionResult> Index(string query, int? categoryId, Dictionary<int, string> attributeFilters, int page = 1)
         {
+            var settings = await _context.AdminSettings.FirstOrDefaultAsync();
+            ViewData["HomepageMessage"] = settings?.HomePageMessage;
+
             // 1. Pobieramy kategorie (do nawigacji i dropdowna)
             var allCats = await _context.Categories
                 .Include(c => c.ParentCategory)
