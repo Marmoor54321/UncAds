@@ -266,11 +266,26 @@ namespace UncAds.Controllers
         public async Task<IActionResult> Create(
             Ad ad,
             int[] SelectedCategoryIds,
-            Dictionary<int, string[]> AttributeValues,
+            //Dictionary<int, string[]>? AttributeValues,
             List<IFormFile> mediaFiles,
             List<IFormFile> attachmentFiles,
             List<string> attachmentDescriptions)
         {
+            var AttributeValues = new Dictionary<int, string[]>();
+            foreach (var key in Request.Form.Keys)
+            {
+                // Szukamy kluczy w stylu "AttributeValues[123]"
+                if (key.StartsWith("AttributeValues[") && key.EndsWith("]"))
+                {
+                    // Wyciągamy ID z nawiasów
+                    var idPart = key.Substring("AttributeValues[".Length).TrimEnd(']');
+                    if (int.TryParse(idPart, out int attrId))
+                    {
+                        AttributeValues[attrId] = Request.Form[key].ToArray();
+                    }
+                }
+            }
+
             // Pobranie ustawień admina
             var settings = await _context.AdminSettings.FirstOrDefaultAsync() ?? new AdminSettings();
 
@@ -345,7 +360,9 @@ namespace UncAds.Controllers
                     return View(ad);
                 }
             }
-
+            ModelState.Remove(nameof(AttributeValues));
+            ModelState.Remove("User");
+            ModelState.Remove("UserId");
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
@@ -366,39 +383,31 @@ namespace UncAds.Controllers
             await _context.SaveChangesAsync();
 
             // Atrybuty
-            if (AttributeValues != null && AttributeValues.Any())
+            if (AttributeValues != null && AttributeValues.Count > 0)
             {
                 foreach (var kv in AttributeValues)
                 {
                     var attributeId = kv.Key;
-                    var valuesArray = kv.Value; // To jest teraz tablica string[]
+                    var valuesArray = kv.Value;
 
                     if (valuesArray == null) continue;
 
-                    // Iterujemy po każdej wybranej wartości dla danego atrybutu
                     foreach (var singleValue in valuesArray)
                     {
-                        // Pomiń puste
                         if (string.IsNullOrWhiteSpace(singleValue)) continue;
 
-                        try
+                        _context.AdAttributeValues.Add(new AdAttributeValue
                         {
-                            _context.AdAttributeValues.Add(new AdAttributeValue
-                            {
-                                AdId = ad.Id,
-                                CategoryAttributeId = attributeId,
-                                Value = singleValue // Zapisujemy konkretną wartość
-                            });
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Błąd przy dodawaniu atrybutu {attributeId}: {ex.Message}");
-                        }
+                            AdId = ad.Id,
+                            CategoryAttributeId = attributeId,
+                            Value = singleValue
+                        });
                     }
                 }
+            }
                 // Zapisujemy wszystko raz po pętli
                 await _context.SaveChangesAsync();
-            }
+            
 
             // Multimedia
             if (mediaFiles != null && mediaFiles.Any())
@@ -521,10 +530,23 @@ namespace UncAds.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Ad ad, int[] SelectedCategoryIds, Dictionary<int, string> AttributeValues)
+        public async Task<IActionResult> Edit(int id, Ad ad, int[] SelectedCategoryIds
+            //, Dictionary<int, string[]>? AttributeValues)
+            )
         {
             if (id != ad.Id) return NotFound();
-
+            var AttributeValues = new Dictionary<int, string[]>();
+            foreach (var key in Request.Form.Keys)
+            {
+                if (key.StartsWith("AttributeValues[") && key.EndsWith("]"))
+                {
+                    var idPart = key.Substring("AttributeValues[".Length).TrimEnd(']');
+                    if (int.TryParse(idPart, out int attrId))
+                    {
+                        AttributeValues[attrId] = Request.Form[key].ToArray();
+                    }
+                }
+            }
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
@@ -562,7 +584,9 @@ namespace UncAds.Controllers
                 }
             }
 
-
+            ModelState.Remove(nameof(AttributeValues));
+            ModelState.Remove("User");
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 existingAd.Title = ad.Title;
@@ -579,15 +603,22 @@ namespace UncAds.Controllers
                 {
                     foreach (var kv in AttributeValues)
                     {
-                        if (string.IsNullOrWhiteSpace(kv.Value))
-                            continue;
+                        var attrId = kv.Key;
+                        var values = kv.Value; // Teraz to tablica string[]
 
-                        _context.AdAttributeValues.Add(new AdAttributeValue
+                        if (values == null) continue;
+
+                        foreach (var val in values)
                         {
-                            AdId = id,
-                            CategoryAttributeId = kv.Key,
-                            Value = kv.Value
-                        });
+                            if (string.IsNullOrWhiteSpace(val)) continue;
+
+                            _context.AdAttributeValues.Add(new AdAttributeValue
+                            {
+                                AdId = id,
+                                CategoryAttributeId = attrId,
+                                Value = val
+                            });
+                        }
                     }
                 }
 
@@ -596,8 +627,9 @@ namespace UncAds.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-
+           
             ViewBag.Categories = new MultiSelectList(_context.Categories, "Id", "Name", SelectedCategoryIds);
+          
             return View(ad);
         }
 

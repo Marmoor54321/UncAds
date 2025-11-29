@@ -1,7 +1,12 @@
 ﻿@model UncAds.Models.Ad
+@using System.Text.Json
 
 @{
     ViewData["Title"] = "Edycja ogłoszenia";
+    // Serializujemy istniejące wartości do JSON, aby JS mógł je odczytać i wypełnić pola
+    var existingValuesJson = JsonSerializer.Serialize(
+        Model.AttributeValues.Select(av => new { id = av.CategoryAttributeId, val = av.Value })
+    );
 }
 
 <div class="container py-4">
@@ -10,13 +15,9 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="m-0"><i class="bi bi-pencil-square"></i> Edytuj ogłoszenie</h2>
-                @if (Model.Media != null && Model.Media.Any())
-                {
-                    <span class="badge bg-info text-dark">Zawiera @Model.Media.Count plików multimedialnych</span>
-                }
             </div>
 
-            <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none"></div>
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
 
             <form asp-action="Edit" method="post">
                 <input type="hidden" asp-for="Id" />
@@ -35,7 +36,7 @@
 
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Kategorie</label>
-                                <select name="SelectedCategoryIds" multiple class="form-select" style="height: 50px;" asp-items="ViewBag.Categories"></select>
+                                <select id="categorySelect" name="SelectedCategoryIds" multiple class="form-select" style="height: 50px;" asp-items="ViewBag.Categories"></select>
                                 <div class="form-text small">Przytrzymaj Ctrl, aby zmienić zaznaczenie.</div>
                             </div>
 
@@ -48,84 +49,175 @@
                     </div>
                 </div>
 
-                @if (ViewBag.Attributes != null && ((List<UncAds.Models.CategoryAttribute>)ViewBag.Attributes).Any())
-                {
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-header bg-white border-bottom py-3">
-                            <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> Szczegóły (Atrybuty)</h5>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="row g-3" id="attributesContainer">
-                                @foreach (var attr in (List<UncAds.Models.CategoryAttribute>)ViewBag.Attributes)
-                                {
-                                    var existingValue = Model.AttributeValues?
-                                    .FirstOrDefault(v => v.CategoryAttributeId == attr.Id)?.Value ?? "";
-
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-bold small">@attr.Name</label>
-
-                                        @if (attr.Type == UncAds.Models.AttributeType.Select)
-                                        {
-                                            var opts = (attr.Options ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries);
-                                            <select name="AttributeValues[@attr.Id]" class="form-select">
-                                                @foreach (var o in opts)
-                                                {
-                                                    <!option value="@o" @(existingValue == o ? "selected" : "")>@o</!option>
-                                                }
-                                            </select>
-                                        }
-                                        else if (attr.Type == UncAds.Models.AttributeType.Dictionary)
-                                        {
-                                            // Obsługa słowników w edycji (prosta)
-                                            <select name="AttributeValues[@attr.Id]" class="form-select">
-                                                <option value="">-- Wybierz --</option>
-                                                @if (attr.Dictionary != null)
-                                                {
-                                                    foreach (var val in attr.Dictionary.Values)
-                                                    {
-                                                        <!option value="@val.Value" @(existingValue == val.Value ? "selected" : "")>@val.Value</!option>
-                                                    }
-                                                }
-                                            </select>
-                                        }
-                                        else if (attr.Type == UncAds.Models.AttributeType.Boolean)
-                                        {
-                                            <select name="AttributeValues[@attr.Id]" class="form-select">
-                                                <!option value="true" @(existingValue == "true" ? "selected" : "")>Tak</!option>
-                                                <!option value="false" @(existingValue == "false" ? "selected" : "")>Nie</!option>
-                                            </select>
-                                        }
-                                        else if (attr.Type == UncAds.Models.AttributeType.Number)
-                                        {
-                                            <input type="number" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
-                                        }
-                                        else if (attr.Type == UncAds.Models.AttributeType.Date)
-                                        {
-                                            // Formatowanie daty dla input type="date"
-                                            string dateVal = existingValue;
-                                            if (DateTime.TryParse(existingValue, out var parsedDate))
-                                            {
-                                                dateVal = parsedDate.ToString("yyyy-MM-dd");
-                                            }
-                                            <input type="date" name="AttributeValues[@attr.Id]" value="@dateVal" class="form-control" />
-                                        }
-                                        else
-                                        {
-                                            <input type="text" name="AttributeValues[@attr.Id]" value="@existingValue" class="form-control" />
-                                        }
-                                    </div>
-                                }
-                            </div>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> Szczegóły (Atrybuty)</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="attributesContainer">
+                            <div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>
                         </div>
                     </div>
-                }
+                </div>
 
                 <div class="d-flex justify-content-end gap-2 mb-5">
                     <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
                     <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">Zapisz zmiany</button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const categorySelect = document.getElementById('categorySelect');
+            const attributesContainer = document.getElementById('attributesContainer');
+
+            // 1. Pobieramy wartości z bazy danych przekazane przez Razor do zmiennej JS
+            // To pozwoli nam wypełnić pola wartościami przy ładowaniu i przeładowaniu
+            const savedValues = @Html.Raw(existingValuesJson);
+
+            // Funkcja pomocnicza sprawdzająca, czy dana wartość była zapisana dla danego atrybutu
+            function isValueSelected(attrId, valueToCheck) {
+                return savedValues.some(item => item.id === attrId && item.val == valueToCheck);
+            }
+
+            function getSavedValue(attrId) {
+                const found = savedValues.find(item => item.id === attrId);
+                return found ? found.val : "";
+            }
+
+            // Główna funkcja ładująca atrybuty
+            function loadAttributes() {
+                const selected = Array.from(categorySelect.selectedOptions).map(o => o.value);
+
+                if(selected.length === 0) {
+                    attributesContainer.innerHTML = '<p class="text-muted text-center fst-italic">Wybierz kategorię...</p>';
+                    return;
+                }
+
+                const params = new URLSearchParams();
+                selected.forEach(id => params.append('categoryIds', id));
+
+                fetch(`/Ads/GetCategoryAttributes?` + params.toString())
+                    .then(r => r.json())
+                    .then(data => {
+                        attributesContainer.innerHTML = '';
+
+                        if(data.length === 0){
+                            attributesContainer.innerHTML = '<p class="text-muted text-center">Brak dodatkowych atrybutów dla wybranych kategorii.</p>';
+                            return;
+                        }
+
+                        const rowDiv = document.createElement('div');
+                        rowDiv.classList.add('row', 'g-3');
+                        attributesContainer.appendChild(rowDiv);
+
+                        data.forEach(attr => {
+                            const colDiv = document.createElement('div');
+                            colDiv.classList.add('col-md-6');
+
+                            const label = document.createElement('label');
+                            label.textContent = attr.name;
+                            label.classList.add('form-label', 'fw-bold', 'small');
+
+                            let input;
+
+                            // Logika budowania inputów (taka sama jak w Create, ale z wypełnianiem wartości)
+                            switch (attr.type) {
+                                case 0: // Text
+                                    input = document.createElement('input');
+                                    input.type = 'text';
+                                    input.classList.add('form-control');
+                                    input.value = getSavedValue(attr.id);
+                                    break;
+                                case 1: // Number
+                                    input = document.createElement('input');
+                                    input.type = 'number';
+                                    input.classList.add('form-control');
+                                    input.value = getSavedValue(attr.id);
+                                    break;
+                                case 2: // Boolean
+                                    input = document.createElement('select');
+                                    input.classList.add('form-select');
+                                    input.innerHTML = `
+                                        <option value="true" ${isValueSelected(attr.id, 'true') ? 'selected' : ''}>Tak</option>
+                                        <option value="false" ${isValueSelected(attr.id, 'false') ? 'selected' : ''}>Nie</option>
+                                    `;
+                                    break;
+                                case 3: // Date
+                                    input = document.createElement('input');
+                                    input.type = 'date';
+                                    input.classList.add('form-control');
+                                    let dVal = getSavedValue(attr.id);
+                                    if(dVal) {
+                                        // Formatowanie daty dla input type=date (yyyy-MM-dd)
+                                        // Zakładamy, że z bazy przychodzi DateTime.ToString()
+                                        try {
+                                            let d = new Date(dVal);
+                                            if(!isNaN(d)) input.value = d.toISOString().split('T')[0];
+                                        } catch(e){}
+                                    }
+                                    break;
+                                case 4: // Select
+                                    input = document.createElement('select');
+                                    input.classList.add('form-select');
+                                    if (attr.options) {
+                                        attr.options.split(';').forEach(o => {
+                                            if(o.trim()){
+                                                const opt = document.createElement('option');
+                                                opt.value = o.trim();
+                                                opt.textContent = o.trim();
+                                                if(isValueSelected(attr.id, o.trim())) opt.selected = true;
+                                                input.appendChild(opt);
+                                            }
+                                        });
+                                    }
+                                    break;
+                                case 5: // Dictionary
+                                    input = document.createElement('select');
+                                    input.classList.add('form-select');
+                                    if (attr.allowMultiple) input.multiple = true;
+
+                                    if(!attr.allowMultiple) {
+                                        let emptyOpt = document.createElement('option');
+                                        emptyOpt.value = "";
+                                        emptyOpt.textContent = "-- Wybierz --";
+                                        input.appendChild(emptyOpt);
+                                    }
+
+                                    if (attr.dictionaryValues) {
+                                        attr.dictionaryValues.forEach(v => {
+                                            const opt = document.createElement('option');
+                                            opt.value = v;
+                                            opt.textContent = v;
+                                            if(isValueSelected(attr.id, v)) opt.selected = true;
+                                            input.appendChild(opt);
+                                        });
+                                    }
+                                    break;
+                            }
+
+                            input.name = `AttributeValues[${attr.id}]`;
+
+                            colDiv.appendChild(label);
+                            colDiv.appendChild(input);
+                            rowDiv.appendChild(colDiv);
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        attributesContainer.innerHTML = '<div class="alert alert-danger">Błąd ładowania atrybutów.</div>';
+                    });
+            }
+
+            // Podpięcie zdarzenia zmiany
+            categorySelect.addEventListener('change', loadAttributes);
+
+            // Wywołanie przy starcie strony (żeby załadować atrybuty dla aktualnych kategorii)
+            loadAttributes();
+        });
+    </script>
+}
