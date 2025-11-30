@@ -23,7 +23,7 @@ namespace UncAds.Controllers
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
     ApplicationDbContext context,
-    INewsletterService newsletterService) // wstrzyknięcie
+    INewsletterService newsletterService) 
         {
             _userManager = userManager;
             _roleManager = roleManager;

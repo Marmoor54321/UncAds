@@ -112,13 +112,11 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Konfiguracja (przeniesienie wartości ViewBag do zmiennych JS)
             const maxAttachments = @maxAttachments;
             const maxMediaFiles = @maxMediaFiles;
             const maxFileSizeMB = @maxFileSizeMB;
             const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024;
 
-            // Zlokalizowane komunikaty (przeniesienie wartości resx do zmiennych JS)
             const i18n = {
                 maxMediaFilesAlert: `Max plików`,
                 fileTooLargeAlert: `Pli kza duży`,
@@ -132,14 +130,12 @@
                 booleanNo: `Nie`
             };
 
-            // Elementy DOM
             const container = document.getElementById('attachmentsContainer');
             const addBtn = document.getElementById('addAttachment');
             const mediaInput = document.querySelector('input[name="mediaFiles"]');
             const categorySelect = document.getElementById('categorySelect');
             const attributesContainer = document.getElementById('attributesContainer');
 
-            // --- 1. Obsługa Multimediów ---
             if(mediaInput){
                 mediaInput.addEventListener('change', function () {
                     if (this.files.length > maxMediaFiles) {
@@ -151,13 +147,12 @@
                         if (file.size > maxFileSizeBytes) {
                             alert(i18n.fileTooLargeAlert.replace('{0}', file.name).replace('{1}', maxFileSizeMB));
                             this.value = '';
-                            return; // Przerywamy pętlę i resetujemy input
+                            return;
                         }
                     });
                 });
             }
 
-            // --- 2. Obsługa Załączników ---
             function validateFileSize(input) {
                 if (!input.files || input.files.length === 0) return true;
                 const file = input.files[0];
@@ -175,10 +170,8 @@
                 input.dataset.validationAttached = 'true';
             }
 
-            // Inicjalizacja istniejących inputów (pierwszy wiersz)
             document.querySelectorAll('.attachment-file').forEach(attachValidationToFileInput);
 
-            // Dodawanie nowego wiersza załącznika
             if(addBtn){
                 addBtn.addEventListener('click', function () {
                     const currentCount = container.querySelectorAll('.attachment-group').length;
@@ -204,14 +197,12 @@
 
                     attachValidationToFileInput(div.querySelector('.attachment-file'));
 
-                    // Dodawanie eventu usuwania
                     div.querySelector('.remove-attachment').addEventListener('click', function () {
                         div.remove();
                     });
                 });
             }
 
-            // Event usuwania dla pierwszego wiersza (jeśli jest dodany statycznie)
             document.querySelectorAll('.attachment-group .remove-attachment').forEach(btn => {
                 btn.addEventListener('click', function() {
                     this.closest('.attachment-group').remove();
@@ -219,7 +210,6 @@
             });
 
 
-            // --- 3. Dynamiczne Atrybuty (Pobieranie z serwera) ---
             if(categorySelect){
                 categorySelect.addEventListener('change', function () {
                     const selected = Array.from(this.selectedOptions).map(o => o.value);
@@ -229,7 +219,6 @@
                         return;
                     }
 
-                    // Spinner loading
                     attributesContainer.innerHTML = i18n.loadingSpinner;
 
                     const params = new URLSearchParams();
@@ -275,7 +264,7 @@
                                         input.classList.add('form-select');
                                         input.innerHTML = `<option value="true">${i18n.booleanYes}</option><option value="false">${i18n.booleanNo}</option>`;
                                         break;
-                                    case 4: // Select (List of options)
+                                    case 4: // Select
                                     case 5: // Dictionary
                                         input = document.createElement('select');
                                         input.classList.add('form-select');
@@ -297,7 +286,6 @@
                                         break;
                                 }
 
-                                // Nazewnictwo inputów
                                 input.name = `AttributeValues[${attr.id}]`;
 
                                 colDiv.appendChild(label);

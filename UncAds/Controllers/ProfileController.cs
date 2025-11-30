@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // Potrzebne do Include
-using UncAds.Data; // Twój namespace do DbContext
+using Microsoft.EntityFrameworkCore;
+using UncAds.Data; 
 using UncAds.Models;
 
 namespace UncAds.Controllers
@@ -11,7 +11,7 @@ namespace UncAds.Controllers
     public class ProfileController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _context; // Dodajemy kontekst
+        private readonly ApplicationDbContext _context; 
 
         public ProfileController(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
@@ -34,7 +34,6 @@ namespace UncAds.Controllers
 
             if (user == null) return NotFound();
 
-            // Load categories WITH attributes and dictionary values for the form
             ViewBag.AllCategories = await _context.Categories
                 .Include(c => c.CategoryAttributes)
                     .ThenInclude(a => a.Dictionary)
@@ -48,7 +47,6 @@ namespace UncAds.Controllers
         public async Task<IActionResult> Edit(
             ApplicationUser model,
             int[] selectedCategories,
-            // Binding: Key=CategoryId, Value=(Key=AttrId, Value=UserInputValue)
             Dictionary<int, Dictionary<int, string>> Filters)
         {
             var user = await _userManager.Users
@@ -62,28 +60,27 @@ namespace UncAds.Controllers
             user.AdsPerPage = model.AdsPerPage; 
             user.AvatarUrl = model.AvatarUrl;
 
-            // 1. Clear old subscriptions
+           
             var currentSubscriptions = user.CategorySubscriptions.ToList();
             _context.UserCategorySubscriptions.RemoveRange(currentSubscriptions);
 
-            // 2. Add new subscriptions with filters
+            // nowe subskrypcje
             if (selectedCategories != null)
             {
                 foreach (var catId in selectedCategories)
                 {
                     string jsonFilters = null;
 
-                    // Check if there are filters for this specific category
                     if (Filters.ContainsKey(catId))
                     {
-                        // Remove empty values to save space
+                        
                         var activeFilters = Filters[catId]
                             .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value))
                             .ToDictionary(k => k.Key, v => v.Value);
 
                         if (activeFilters.Any())
                         {
-                            // Serialize using Newtonsoft.Json or System.Text.Json
+                          
                             jsonFilters = Newtonsoft.Json.JsonConvert.SerializeObject(activeFilters);
                         }
                     }
@@ -92,7 +89,7 @@ namespace UncAds.Controllers
                     {
                         UserId = user.Id,
                         CategoryId = catId,
-                        FiltersJson = jsonFilters // Save the JSON
+                        FiltersJson = jsonFilters 
                     });
                 }
             }

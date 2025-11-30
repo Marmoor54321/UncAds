@@ -17,50 +17,48 @@ namespace UncAds.Controllers
         }
 
         [HttpGet]
-        [Route("feed")] // Adres będzie wyglądał tak: twojadomena.pl/feed
+        [Route("feed")] 
         public async Task<IActionResult> Index()
         {
-            // 1. Pobierz 20 najnowszych ogłoszeń
+    
             var ads = await _context.Ads
-                .Include(a => a.User) // Opcjonalnie, jeśli chcesz dodać autora
+                .Include(a => a.User) 
                 .OrderByDescending(a => a.Date)
                 .Take(20)
                 .ToListAsync();
 
-            // 2. Przygotuj podstawowe informacje o kanale
-            // Request.Scheme + "://" + Request.Host tworzy pełny adres URL (np. https://localhost:5000)
+          
             var feedUrl = $"{Request.Scheme}://{Request.Host}/feed";
             var siteUrl = $"{Request.Scheme}://{Request.Host}";
 
             var feed = new SyndicationFeed(
-                "UncAds - Najnowsze Ogłoszenia",     // Tytuł kanału
-                "Świeże ogłoszenia drobne z serwisu UncAds", // Opis
-                new Uri(siteUrl),                   // Link do strony głównej
-                "UncAdsFeedID",                     // ID kanału
-                DateTime.Now                        // Data ostatniej aktualizacji
+                "UncAds - Najnowsze Ogłoszenia",    
+                "Świeże ogłoszenia drobne z serwisu UncAds", 
+                new Uri(siteUrl),              
+                "UncAdsFeedID",                 
+                DateTime.Now                 
             );
 
             feed.Copyright = new TextSyndicationContent($"Copyright {DateTime.Now.Year} UncAds");
             feed.Language = "pl-PL";
 
-            // 3. Konwersja ogłoszeń na elementy RSS (SyndicationItem)
+      
             var items = new List<SyndicationItem>();
 
             foreach (var ad in ads)
             {
-                // Generowanie pełnego linku do ogłoszenia
-                // Ważne: Url.Action generuje link relatywny, musimy go zmienić na absolutny
+
                 string adUrl = Url.Action("Details", "Ad", new { id = ad.Id }, Request.Scheme);
 
                 var item = new SyndicationItem(
-                    ad.Title,                           // Tytuł wpisu
-                    ad.Description,                     // Treść (opis)
-                    new Uri(adUrl),                     // Link do wpisu
-                    ad.Id.ToString(),                   // Unikalne ID wpisu
-                    ad.Date                             // Data publikacji
+                    ad.Title,                      
+                    ad.Description,                   
+                    new Uri(adUrl),
+                    ad.Id.ToString(),               
+                    ad.Date                             
                 );
 
-                // Opcjonalnie: Dodanie autora
+               
                 if (ad.User != null)
                 {
                     item.Authors.Add(new SyndicationPerson(ad.User.Email, ad.User.DisplayName ?? ad.User.UserName, null));
@@ -71,12 +69,11 @@ namespace UncAds.Controllers
 
             feed.Items = items;
 
-            // 4. Serializacja do XML (RSS 2.0)
             var settings = new XmlWriterSettings
             {
                 Encoding = Encoding.UTF8,
                 NewLineHandling = NewLineHandling.Entitize,
-                Indent = true, // Ładne formatowanie XML
+                Indent = true, 
                 Async = true
             };
 
@@ -87,7 +84,6 @@ namespace UncAds.Controllers
             rssFormatter.WriteTo(xmlWriter);
             await xmlWriter.FlushAsync();
 
-            // Zwracamy XML jako plik/tekst o odpowiednim typie MIME
             return File(stream.ToArray(), "application/rss+xml; charset=utf-8");
         }
     }

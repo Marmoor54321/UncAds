@@ -6,11 +6,10 @@
     ViewData["Title"] = Model.Title;
     bool isOwnerOrAdmin = (User.Identity.IsAuthenticated && Model.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value) || User.IsInRole("Admin");
 
-    // Filtrujemy media raz, żeby użyć ich w widoku
     var images = Model.Media?.Where(m => m.MediaType == "image").ToList() ?? new List<UncAds.Models.AdMedia>();
     var videos = Model.Media?.Where(m => m.MediaType == "video").ToList();
     var audios = Model.Media?.Where(m => m.MediaType == "audio").ToList();
-    var otherMedia = Model.Media?.Where(m => m.MediaType == "flash").ToList(); // Flash jest przestarzały, ale zostawiamy obsługę
+    var otherMedia = Model.Media?.Where(m => m.MediaType == "flash").ToList();
 }
 
 <div class="container py-4 mb-4">
@@ -267,7 +266,6 @@
 </div>
 
 <style>
-    /* Style, aby obrazki w opisie HTML nie wychodziły poza kontener */
     .ad-description img {
         max-width: 100%;
         height: auto;
@@ -278,7 +276,6 @@
         line-height: 1.6;
         color: #333;
     }
-    /* Powiększenie ikonek karuzeli */
     .carousel-control-prev-icon,
     .carousel-control-next-icon {
         background-color: rgba(0,0,0,0.5);

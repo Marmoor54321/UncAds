@@ -6,16 +6,12 @@
 @{
     ViewData["Title"] = Localizer["EditAdTitle"];
 
-    // POPRAWKA:
-    // Dodajemy rzutowanie (object) przed new { ... }
-    // Dzięki temu lewa strona zwraca IEnumerable<object>, co pasuje do prawej strony (Array.Empty<object>)
     var sourceData = Model.AttributeValues != null
         ? Model.AttributeValues.Select(av => (object)new { id = av.CategoryAttributeId, val = av.Value })
         : Array.Empty<object>();
 
     var existingValuesJson = JsonSerializer.Serialize(sourceData);
 
-    // Przekazanie zlokalizowanych ciągów do JavaScript
     var jsLocalizations = JsonSerializer.Serialize(new
     {
         ChooseCategory = Localizer["ChooseCategoryMessage"].Value,
@@ -98,14 +94,10 @@
             const categorySelect = document.getElementById('categorySelect');
             const attributesContainer = document.getElementById('attributesContainer');
 
-            // Wczytaj zlokalizowane ciągi znaków dla JS
             const loc = @Html.Raw(jsLocalizations);
 
-            // 1. Pobieramy wartości z bazy danych przekazane przez Razor do zmiennej JS
-            // To pozwoli nam wypełnić pola wartościami przy ładowaniu i przeładowaniu
             const savedValues = @Html.Raw(existingValuesJson);
 
-            // Funkcja pomocnicza sprawdzająca, czy dana wartość była zapisana dla danego atrybutu
             function isValueSelected(attrId, valueToCheck) {
                 return savedValues.some(item => item.id === attrId && item.val == valueToCheck);
             }
@@ -115,7 +107,6 @@
                 return found ? found.val : "";
             }
 
-            // Główna funkcja ładująca atrybuty
             function loadAttributes() {
                 const selected = Array.from(categorySelect.selectedOptions).map(o => o.value);
 
@@ -124,7 +115,6 @@
                     return;
                 }
 
-                // Placeholder ładowania
                 attributesContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
 
                 const params = new URLSearchParams();
@@ -154,7 +144,6 @@
 
                             let input;
 
-                            // Logika budowania inputów (taka sama jak w Create, ale z wypełnianiem wartości)
                             switch (attr.type) {
                                 case 0: // Text
                                     input = document.createElement('input');
@@ -182,7 +171,6 @@
                                     input.classList.add('form-control');
                                     let dVal = getSavedValue(attr.id);
                                     if(dVal) {
-                                        // Formatowanie daty dla input type=date (yyyy-MM-dd)
                                         try {
                                             let d = new Date(dVal);
                                             if(!isNaN(d)) input.value = d.toISOString().split('T')[0];
@@ -241,10 +229,8 @@
                     });
             }
 
-            // Podpięcie zdarzenia zmiany
             categorySelect.addEventListener('change', loadAttributes);
 
-            // Wywołanie przy starcie strony (żeby załadować atrybuty dla aktualnych kategorii)
             loadAttributes();
         });
     </script>

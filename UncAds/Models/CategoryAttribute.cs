@@ -11,19 +11,19 @@ namespace UncAds.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public AttributeType Type { get; set; } // np. tekst, liczba, data, lista
+        public AttributeType Type { get; set; } 
 
-        // np. lista dopuszczalnych wartości, JSON lub CSV
+
         public string? Options { get; set; }
 
-        // relacja z kategorią
+
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
 
         public int? DictionaryId { get; set; }
         public AttributeDictionary? Dictionary { get; set; }
 
-        // czy można wybrać wiele wartości?
+
         public bool AllowMultiple { get; set; } = false;
     }
 

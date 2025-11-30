@@ -3,7 +3,7 @@
 @using Microsoft.Extensions.Options
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IOptions<RequestLocalizationOptions> LocOptions
-@inject IViewLocalizer Localizer // Wstrzyknięcie lokalizatora
+@inject IViewLocalizer Localizer
 @using Microsoft.AspNetCore.Http
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
@@ -37,14 +37,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@(ViewData["Title"] + " - UncAds")</title> @* Zmiana dla lepszego łączenia tytułów *@
+    <title>@(ViewData["Title"] + " - UncAds")</title>
 
     <link rel="stylesheet" href="@Url.Content(themeCssUrl)" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UncAds.styles.css" asp-append-version="true" />
-    @* Zlokalizowany tytuł dla kanału RSS *@
     <link rel="alternate" type="application/rss+xml" title="@Localizer["RssFeedTitle"]" href="/feed" />
 
     <style>
@@ -71,7 +70,6 @@
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
                         aria-controls="navbarContent" aria-expanded="false" aria-label="@Localizer["ToggleNavigation"]">
-                    @* Zlokalizowany opis dla przycisku *@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -93,7 +91,6 @@
 
                                 <select name="culture" class="form-select form-select-sm"
                                         onchange="this.form.submit();" aria-label="@Localizer["LanguageSelectionLabel"]">
-                                    @* Zlokalizowany label *@
                                     @foreach (var culture in supportedCultures)
                                     {
                                         <option value="@culture.Name" selected="@(currentCulture == culture.Name)">
@@ -173,7 +170,6 @@
             @if (TempData["Message"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    @* Wiadomość TempData jest zazwyczaj dynamiczna i nie jest lokalizowana, ale przycisk Close musi być *@
                     @TempData["Message"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="@Localizer["CloseButtonLabel"]"></button>
                 </div>

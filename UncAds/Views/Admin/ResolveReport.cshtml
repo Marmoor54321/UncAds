@@ -63,7 +63,6 @@
 
                             <div class="form-check form-switch mb-3 p-3 bg-danger bg-opacity-10 border border-danger rounded">
                                 <input type="checkbox" class="form-check-input" id="deleteAd" name="deleteAd" value="true" style="cursor: pointer;">
-                                @* Hidden input ensures a "false" value is sent if the checkbox is unchecked (standard ASP.NET Core MVC pattern) *@
                                 <input type="hidden" name="deleteAd" value="false" /> 
                                 <label for="deleteAd" class="form-check-label fw-bold text-danger" style="cursor: pointer;">
                                     @Localizer["DeleteAdOption"]

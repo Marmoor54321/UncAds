@@ -29,14 +29,13 @@ namespace UncAds.Controllers
             _userManager = userManager;
             _htmlSanitizer = htmlSanitizer;
         }
-        // pomocnicza: pobiera atrybuty dla wybranych kategorii
+
         private List<CategoryAttribute> GetAttributesForCategories(int[] categoryIds)
         {
             var attributes = _context.CategoryAttributes
                 .Where(a => categoryIds.Contains(a.CategoryId))
                 .ToList();
 
-            // jeśli w różnych kategoriach są takie same nazwy — eliminuj duplikaty
             return attributes
                 .GroupBy(a => a.Name)
                 .Select(g => g.First())
@@ -50,13 +49,13 @@ namespace UncAds.Controllers
             var settings = await _context.AdminSettings.FirstOrDefaultAsync();
             ViewData["HomepageMessage"] = settings?.HomePageMessage;
 
-            // 1. Pobieramy kategorie (do nawigacji i dropdowna)
+
             var allCats = await _context.Categories
                 .Include(c => c.ParentCategory)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
 
-            // 2. Obsługa Dropdowna (Logika z poprzedniego kroku - naprawa "znikającej" kategorii)
+
             var dropdownSource = allCats.Where(c => c.ParentCategoryId == null).ToList();
             if (categoryId.HasValue)
             {
@@ -68,7 +67,6 @@ namespace UncAds.Controllers
             }
             ViewBag.SearchCategories = new SelectList(dropdownSource, "Id", "Name", categoryId);
 
-            // 3. LOGIKA WYŚWIETLANIA: KAFELKI VS ATRYBUTY
             List<Category> categoriesToDisplay = new List<Category>();
             Category currentCategoryObj = null;
             bool showAttributes = false;
@@ -76,23 +74,22 @@ namespace UncAds.Controllers
 
             if (categoryId.HasValue)
             {
-                // Pobierz aktualną kategorię wraz z jej definicjami atrybutów i słownikami
                 currentCategoryObj = await _context.Categories
                     .Include(c => c.CategoryAttributes)
                         .ThenInclude(ca => ca.Dictionary)
                             .ThenInclude(d => d.Values)
                     .FirstOrDefaultAsync(c => c.Id == categoryId.Value);
 
-                // SPRAWDZENIE: Czy kategoria ma atrybuty?
+
                 if (currentCategoryObj != null && currentCategoryObj.CategoryAttributes != null && currentCategoryObj.CategoryAttributes.Any())
                 {
-                    // WARUNEK ZREALIZOWANY: Ma atrybuty -> wyświetlamy atrybuty zamiast kafelków
+                    
                     showAttributes = true;
                     attributesToDisplay = currentCategoryObj.CategoryAttributes.ToList();
                 }
                 else
                 {
-                    // Nie ma atrybutów -> sprawdzamy dzieci (stara logika)
+                    
                     var children = allCats.Where(c => c.ParentCategoryId == categoryId.Value).ToList();
                     if (children.Any())
                     {
@@ -100,7 +97,7 @@ namespace UncAds.Controllers
                     }
                     else
                     {
-                        // Brak dzieci i brak atrybutów -> pokaż rodzeństwo
+                      
                         if (currentCategoryObj?.ParentCategoryId != null)
                         {
                             categoriesToDisplay = allCats
@@ -116,25 +113,23 @@ namespace UncAds.Controllers
             }
             else
             {
-                // Strona główna
                 categoriesToDisplay = allCats.Where(c => c.ParentCategoryId == null).ToList();
             }
 
             ViewBag.DisplayCategories = categoriesToDisplay;
             ViewBag.CurrentCategory = currentCategoryObj;
 
-            // Nowe ViewBagi do obsługi atrybutów
+
             ViewBag.ShowAttributes = showAttributes;
             ViewBag.AttributesToDisplay = attributesToDisplay;
-            ViewBag.AttributeFilters = attributeFilters; // Żeby wypełnić formularz po przeładowaniu
+            ViewBag.AttributeFilters = attributeFilters; 
 
-            // 4. Budowanie zapytania ADS
             var adsQuery = _context.Ads
                 .Include(a => a.User)
                 .Include(a => a.Media)
                 .Include(a => a.AdCategories)
                     .ThenInclude(ac => ac.Category)
-                .Include(a => a.AttributeValues) // Ważne dla filtrowania
+                .Include(a => a.AttributeValues) 
                 .AsQueryable();
 
             // Filtrowanie po kategorii
@@ -144,7 +139,6 @@ namespace UncAds.Controllers
                 adsQuery = adsQuery.Where(a => a.AdCategories.Any(ac => categoryIdsToSearch.Contains(ac.CategoryId)));
             }
 
-            // --- NOWOŚĆ: FILTROWANIE PO ATRYBUTACH ---
             if (attributeFilters != null && attributeFilters.Any())
             {
                 foreach (var filter in attributeFilters)
@@ -154,17 +148,14 @@ namespace UncAds.Controllers
 
                     if (string.IsNullOrWhiteSpace(filterValue)) continue;
 
-                    // Dla każdego filtra dodajemy warunek "WHERE", że ogłoszenie musi mieć atrybut o danym ID i wartości
-                    // Uwaga: To jest proste porównanie stringów. Dla liczb/dat można to rozbudować o zakresy.
                     adsQuery = adsQuery.Where(ad => ad.AttributeValues.Any(av =>
                         av.CategoryAttributeId == attrId && av.Value == filterValue));
                 }
             }
-            // ------------------------------------------
 
             var ads = await adsQuery.ToListAsync();
 
-            // Filtrowanie po tekście (AdSearch)
+            // Filtrowanie po tekście
             if (!string.IsNullOrWhiteSpace(query))
             {
                 ads = ads.Where(ad => AdSearch.Matches(ad, query.Trim())).ToList();
@@ -186,7 +177,7 @@ namespace UncAds.Controllers
         }
         private async Task<List<int>> GetCategoryAndChildrenIdsAsync(int categoryId)
         {
-            var allCategories = await _context.Categories.ToListAsync(); // Pobieramy do pamięci, aby szybko przetworzyć drzewo
+            var allCategories = await _context.Categories.ToListAsync(); 
             var resultIds = new List<int> { categoryId };
 
             void AddChildren(int parentId)
@@ -224,7 +215,7 @@ namespace UncAds.Controllers
             foreach (var adCat in ad.AdCategories)
                 await LoadCategoryPath(adCat.Category);
 
-            // Zwiększ licznik wyświetleń
+            // licznik wyświetleń
             ad.ViewCount++;
             await _context.SaveChangesAsync();
 
@@ -253,7 +244,7 @@ namespace UncAds.Controllers
             var settings = _context.AdminSettings.FirstOrDefault() ?? new AdminSettings();
             ViewBag.MaxAttachments = settings.MaxAttachments;
             ViewBag.MaxFileSizeMB = settings.MaxFileSizeMB;
-            ViewBag.MaxMediaFiles = settings.MaxMediaFiles; // Nowe!
+            ViewBag.MaxMediaFiles = settings.MaxMediaFiles; 
             return View();
         }
 
@@ -274,10 +265,10 @@ namespace UncAds.Controllers
             var AttributeValues = new Dictionary<int, string[]>();
             foreach (var key in Request.Form.Keys)
             {
-                // Szukamy kluczy w stylu "AttributeValues[123]"
+               
                 if (key.StartsWith("AttributeValues[") && key.EndsWith("]"))
                 {
-                    // Wyciągamy ID z nawiasów
+                 
                     var idPart = key.Substring("AttributeValues[".Length).TrimEnd(']');
                     if (int.TryParse(idPart, out int attrId))
                     {
@@ -342,7 +333,7 @@ namespace UncAds.Controllers
                 }
             }
 
-            // sprawdzenie czy ogloszenie nie ma zakazanych slow
+         
             var forbidden = await _context.ForbiddenWords
                 .Select(f => f.Word.ToLower())
                 .ToListAsync();
@@ -405,11 +396,10 @@ namespace UncAds.Controllers
                     }
                 }
             }
-                // Zapisujemy wszystko raz po pętli
+            
                 await _context.SaveChangesAsync();
             
 
-            // Multimedia
             if (mediaFiles != null && mediaFiles.Any())
             {
                 var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "ads", ad.Id.ToString());
@@ -419,12 +409,12 @@ namespace UncAds.Controllers
                 {
                     var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-                    // PONOWNA walidacja (na wszelki wypadek)
+   
                     if (!_allowedMediaExtensions.Contains(ext) ||
                         file.Length > settings.MaxFileSizeMB * 1024 * 1024 ||
                         file.Length == 0)
                     {
-                        continue; // pomiń zapis
+                        continue; 
                     }
 
                     string mediaType = ext switch
@@ -452,7 +442,7 @@ namespace UncAds.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Załączniki
+ 
             if (attachmentFiles != null && attachmentFiles.Any())
             {
                 var attachDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "attachments", ad.Id.ToString());
@@ -463,7 +453,6 @@ namespace UncAds.Controllers
                     var file = attachmentFiles[i];
                     var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-                    // Pomijaj niepoprawne (już sprawdzone w walidacji)
                     if (!_allowedAttachmentExtensions.Contains(ext) ||
                         file.Length > settings.MaxFileSizeMB * 1024 * 1024 ||
                         file.Length == 0)
@@ -516,7 +505,6 @@ namespace UncAds.Controllers
             var selectedIds = ad.AdCategories.Select(ac => ac.CategoryId).ToList();
             ViewBag.Categories = new MultiSelectList(_context.Categories, "Id", "Name", selectedIds);
 
-            // wczytaj wszystkie możliwe atrybuty
             var attributes = GetAttributesForCategories(selectedIds.ToArray());
             ViewBag.Attributes = attributes;
 
@@ -561,7 +549,7 @@ namespace UncAds.Controllers
             if (existingAd.UserId != user.Id && !isAdmin)
                 return Forbid();
 
-            //sprawdzenie czy ogloszenie nie ma slow zakazanych
+
             var forbidden = await _context.ForbiddenWords
                 .Select(f => f.Word.ToLower())
                 .ToListAsync();
@@ -592,19 +580,18 @@ namespace UncAds.Controllers
                 existingAd.Title = ad.Title;
                 existingAd.Description = _htmlSanitizer.Sanitize(ad.Description);
 
-                // 🔄 aktualizacja kategorii
                 existingAd.AdCategories.Clear();
                 foreach (var catId in SelectedCategoryIds)
                     existingAd.AdCategories.Add(new AdCategory { AdId = id, CategoryId = catId });
 
-                // 🔄 aktualizacja wartości atrybutów
+       
                 _context.AdAttributeValues.RemoveRange(existingAd.AttributeValues);
                 if (AttributeValues != null)
                 {
                     foreach (var kv in AttributeValues)
                     {
                         var attrId = kv.Key;
-                        var values = kv.Value; // Teraz to tablica string[]
+                        var values = kv.Value; 
 
                         if (values == null) continue;
 
@@ -698,7 +685,6 @@ namespace UncAds.Controllers
                 _context.AdAttachments.RemoveRange(ad.Attachments);
             }
 
-            // usuń ogłoszenie
             _context.Ads.Remove(ad);
             await _context.SaveChangesAsync();
 

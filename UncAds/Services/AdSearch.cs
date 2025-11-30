@@ -16,7 +16,7 @@ namespace UncAds.Services
             return EvaluateRPN(rpn, ad);
         }
 
-        // === 1. PARSOWANIE Z PREFIKSAMI ===
+        //  1. PARSOWANIE Z PREFIKSAMI 
         private static List<SearchToken> ParseQuery(string query)
         {
             var tokens = new List<SearchToken>();
@@ -28,7 +28,6 @@ namespace UncAds.Services
                 var part = parts[i].Trim();
                 if (string.IsNullOrEmpty(part)) { i++; continue; }
 
-                // Fraza w cudzysłowie: "silnik diesel"
                 if (part.StartsWith("\""))
                 {
                     var phrase = new List<string>();
@@ -49,7 +48,7 @@ namespace UncAds.Services
                     continue;
                 }
 
-                // Sprawdź prefiks: Title:abc
+              
                 var colonIndex = part.IndexOf(':');
                 if (colonIndex > 0 && colonIndex < part.Length - 1)
                 {
@@ -69,7 +68,7 @@ namespace UncAds.Services
                     }
                 }
 
-                // Operator
+                
                 var lower = part.ToLower();
                 if (lower is "and" or "or" or "not")
                 {
@@ -86,7 +85,7 @@ namespace UncAds.Services
                     {
                         Type = TokenType.Word,
                         Value = lower,
-                        Field = null // bez prefiksu = wszędzie
+                        Field = null 
                     });
                 }
                 i++;
@@ -98,7 +97,7 @@ namespace UncAds.Services
         private static bool IsValidField(string field) =>
             field is "title" or "description" or "category" or "attribute" or "value";
 
-        // === 2. RPN (bez zmian) ===
+        //  2. RPN 
         private static List<SearchToken> ToRPN(List<SearchToken> tokens)
         {
             var output = new List<SearchToken>();
@@ -128,7 +127,7 @@ namespace UncAds.Services
             return Prec(top.Type) >= Prec(current.Type);
         }
 
-        // === 3. EWALUACJA RPN ===
+        // 3. EWALUACJA RPN
         private static bool EvaluateRPN(List<SearchToken> rpn, Ad ad)
         {
             var stack = new Stack<bool>();
@@ -154,12 +153,12 @@ namespace UncAds.Services
             return stack.Count > 0 && stack.Pop();
         }
 
-        // === 4. DOPASOWANIE Z POLEM ===
+        // 4. DOPASOWANIE Z POLEM 
         private static bool MatchToken(Ad ad, SearchToken token)
         {
             var search = token.Value.ToLower();
 
-            // Jeśli brak prefiksu → szukaj wszędzie
+     
             if (string.IsNullOrEmpty(token.Field))
             {
                 return MatchAnywhere(ad, search);
@@ -205,6 +204,6 @@ namespace UncAds.Services
     {
         public TokenType Type { get; set; }
         public string Value { get; set; } = "";
-        public string? Field { get; set; } // np. "title", "category"
+        public string? Field { get; set; } 
     }
 }

@@ -135,11 +135,11 @@ namespace UncAds.Controllers
 
             if (category != null)
             {
-                // usuń atrybuty kategorii
+               
                 if (category.CategoryAttributes?.Any() == true)
                     _context.CategoryAttributes.RemoveRange(category.CategoryAttributes);
 
-                // usuń dzieci (rekurencyjnie lub pojedynczo)
+                
                 if (category.Children?.Any() == true)
                     _context.Categories.RemoveRange(category.Children);
 

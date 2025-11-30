@@ -10,7 +10,7 @@ namespace UncAds.Models
 
         public int AdsPerPage { get; set; } = 10;
 
-        public DateTime? LastNewsletterSent { get; set; } // Kiedy ostatnio dostał maila
+        public DateTime? LastNewsletterSent { get; set; }
         public ICollection<UserCategorySubscription>? CategorySubscriptions { get; set; }
     }
 }

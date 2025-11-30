@@ -9,7 +9,6 @@
 <h2>@Localizer["DictionaryHeader"]</h2>
 
 <form asp-action="Edit" method="post" id="dictForm">
-    @* Użyjemy akcji Edit i odkomentujemy ukryte pole dla ID *@
     <input type="hidden" asp-for="Id" />
 
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -23,7 +22,6 @@
     <h4>@Localizer["ValuesHeader"]</h4>
 
     <div id="values-container">
-        @* Renderowanie istniejących wartości *@
         @if (Model?.Values != null)
         {
             var valuesList = Model.Values.ToList();
@@ -37,7 +35,6 @@
                            placeholder="@Localizer["ValuePlaceholder"]"
                            required />
                     <button type="button" class="btn btn-outline-danger remove-value-btn">@Localizer["RemoveButton"]</button>
-                    @* Dodaj ukryte pole dla ID wartości, jeśli jest to edycja istniejącej wartości *@
                     <input type="hidden" name="Values[@i].Id" value="@valuesList[i].Id" />
                 </div>
             }
@@ -63,9 +60,6 @@
     }
 
     <script>
-        // UWAGA: Skrypt musi być zaktualizowany, aby obsługiwał ID wartości (gdy jest to edycja)
-        // oraz by używał zlokalizowanego placeholder'a.
-
         document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('values-container');
             const addBtn = document.getElementById('add-value-btn');
@@ -76,7 +70,6 @@
                     addBtn.addEventListener('click', function () {
             const inputs = container.querySelectorAll('.js-value-input');
 
-            // Walidacja pustego pola (bez zmian)
             if (inputs.length > 0) {
                 const lastInput = inputs[inputs.length - 1];
                 if (!lastInput.value || lastInput.value.trim() === "") {
@@ -87,7 +80,6 @@
             }
             errorMsg.style.display = 'none';
 
-            // POPRAWKA: Obliczamy indeks na podstawie liczby wierszy, aby zachować ciągłość (0, 1, 2...)
             const rows = container.querySelectorAll('.value-row');
             const newIndex = rows.length;
 
@@ -108,27 +100,20 @@
             newInputs[newInputs.length - 1].focus();
         });
 
-            // Obsługa usuwania
             container.addEventListener('click', function (e) {
                 if (e.target.classList.contains('remove-value-btn')) {
                     e.target.closest('.value-row').remove();
                     errorMsg.style.display = 'none';
-
-                    // Konieczne jest przenumerowanie indeksów, aby MVC poprawnie zmapowało elementy
-                    // dla kolekcji IList<AttributeDictionaryValue>.
                     reindexInputs();
                 }
             });
 
-            // Funkcja naprawiająca indeksy [0], [1], [2] po usunięciu wiersza
             function reindexInputs() {
                 const rows = container.querySelectorAll('.value-row');
                 rows.forEach((row, index) => {
-                    // Znajduje inputy wewnątrz bieżącego wiersza
                     const inputName = row.querySelector('input[name^="Values["]');
                     const inputId = row.querySelector('input[name$=".Id"]');
 
-                    // Zmieniamy name="Values[X].Value" i name="Values[X].Id" na poprawne X
                     if (inputName) {
                         inputName.name = `Values[${index}].Value`;
                     }
@@ -137,10 +122,6 @@
                     }
                 });
             }
-
-            // W przypadku widoku Edycji, skrypt musi działać z istniejącymi elementami
-            // (dlatego pierwotny kod JavaScript nie potrzebował reindeksowania
-            // przy ładowaniu strony, ale potrzebuje po usunięciu).
         });
     </script>
 }
