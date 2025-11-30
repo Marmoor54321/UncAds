@@ -73,42 +73,40 @@
             const placeholderText = "@Localizer["ValuePlaceholder"]";
             const removeButtonText = "@Localizer["RemoveButton"]";
 
-            addBtn.addEventListener('click', function () {
-                const inputs = container.querySelectorAll('.js-value-input');
+                    addBtn.addEventListener('click', function () {
+            const inputs = container.querySelectorAll('.js-value-input');
 
-                if (inputs.length > 0) {
-                    const lastInput = inputs[inputs.length - 1];
-
-                    if (!lastInput.value || lastInput.value.trim() === "") {
-                        errorMsg.style.display = 'block';
-                        lastInput.focus();
-                        return;
-                    }
+            // Walidacja pustego pola (bez zmian)
+            if (inputs.length > 0) {
+                const lastInput = inputs[inputs.length - 1];
+                if (!lastInput.value || lastInput.value.trim() === "") {
+                    errorMsg.style.display = 'block';
+                    lastInput.focus();
+                    return;
                 }
+            }
+            errorMsg.style.display = 'none';
 
-                errorMsg.style.display = 'none';
+            // POPRAWKA: Obliczamy indeks na podstawie liczby wierszy, aby zachować ciągłość (0, 1, 2...)
+            const rows = container.querySelectorAll('.value-row');
+            const newIndex = rows.length;
 
-                // Należy użyć unikalnego indeksu, aby MVC rozpoznało nowo dodane elementy
-                // nawet jeśli inne zostały usunięte. Timestamp jest dobrym wyborem.
-                const newIndex = Date.now();
+            const html = `
+                <div class="input-group mb-2 value-row">
+                    <input type="text"
+                           name="Values[${newIndex}].Value"
+                           class="form-control js-value-input"
+                           placeholder="${placeholderText}"
+                           required />
+                    <button type="button" class="btn btn-outline-danger remove-value-btn">${removeButtonText}</button>
+                    <input type="hidden" name="Values[${newIndex}].Id" value="0" />
+                </div>`;
 
-                const html = `
-                    <div class="input-group mb-2 value-row">
-                        <input type="text"
-                               name="Values[${newIndex}].Value"
-                               class="form-control js-value-input"
-                               placeholder="${placeholderText}"
-                               required />
-                        <button type="button" class="btn btn-outline-danger remove-value-btn">${removeButtonText}</button>
-                        @* Ważne: Nowa wartość NIE MA ID. MVC zrozumie, że to nowa wartość. *@
-                        <input type="hidden" name="Values[${newIndex}].Id" value="0" />
-                    </div>`;
+            container.insertAdjacentHTML('beforeend', html);
 
-                container.insertAdjacentHTML('beforeend', html);
-
-                const newInputs = container.querySelectorAll('.js-value-input');
-                newInputs[newInputs.length - 1].focus();
-            });
+            const newInputs = container.querySelectorAll('.js-value-input');
+            newInputs[newInputs.length - 1].focus();
+        });
 
             // Obsługa usuwania
             container.addEventListener('click', function (e) {
