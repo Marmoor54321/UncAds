@@ -1,0 +1,312 @@
+@model UncAds.Models.Ad
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["PageTitle"];
+    var maxAttachments = ViewBag.MaxAttachments ?? 5;
+    var maxMediaFiles = ViewBag.MaxMediaFiles ?? 5;
+    var maxFileSizeMB = ViewBag.MaxFileSizeMB ?? 5;
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <h2 class="mb-4"><i class="bi bi-plus-circle-dotted"></i> @Localizer["HeaderTitle"]</h2>
+
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none"></div>
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-card-text"></i> @Localizer["SectionBasicInfo"]</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label asp-for="Title" class="form-label fw-bold">@Localizer["LabelTitle"]</label>
+                                <input asp-for="Title" class="form-control" placeholder="@Localizer["PlaceholderTitle"]" />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">@Localizer["LabelCategories"]</label>
+                                <select id="categorySelect" name="SelectedCategoryIds" multiple class="form-select" style="height: 50px;"
+                                        asp-items="ViewBag.Categories">
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label fw-bold">@Localizer["LabelDescription"]</label>
+                                <textarea asp-for="Description" class="form-control" rows="6" placeholder="@Localizer["PlaceholderDescription"]"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> @Localizer["SectionCategoryDetails"]</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="attributesContainer">
+                            <p class="text-muted text-center fst-italic">@Localizer["MessageSelectCategory"]</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="m-0 text-primary"><i class="bi bi-images"></i> @Localizer["SectionMediaFiles"]</h5>
+                    </div>
+                    <div class="card-body p-4">
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">@Localizer["LabelGallery"]</label>
+                            <input type="file" name="mediaFiles" multiple class="form-control media-file" accept="video/mp4,image/jpeg,image/png,image/gif,audio/mpeg,audio/wav,audio/ogg,.swf" />
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i> @(string.Format(Localizer["HintMediaFiles"].Value, ViewBag.MaxMediaFiles, ViewBag.MaxFileSizeMB))
+                            </div>
+                        </div>
+
+                        <hr class="text-muted">
+
+                        <div>
+                            <label class="form-label fw-bold mb-3">@Localizer["LabelAttachments"]</label>
+                            <div id="attachmentsContainer">
+                                <div class="attachment-group row g-2 mb-2 align-items-center bg-light p-2 rounded border">
+                                    <div class="col-md-5">
+                                        <input type="file" name="attachmentFiles" class="form-control attachment-file" />
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" name="attachmentDescriptions" placeholder="@Localizer["PlaceholderAttachmentDescription"]" class="form-control" />
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="addAttachment" class="btn btn-outline-secondary btn-sm mt-2">
+                                <i class="bi bi-plus-lg"></i> @Localizer["ButtonAddAttachment"]
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mb-5">
+                    <a asp-action="Index" class="btn btn-light border px-4">@Localizer["ButtonCancel"]</a>
+                    <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">@Localizer["ButtonPublish"]</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Konfiguracja (przeniesienie wartości ViewBag do zmiennych JS)
+            const maxAttachments = @maxAttachments;
+            const maxMediaFiles = @maxMediaFiles;
+            const maxFileSizeMB = @maxFileSizeMB;
+            const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024;
+
+            // Zlokalizowane komunikaty (przeniesienie wartości resx do zmiennych JS)
+            const i18n = {
+                maxMediaFilesAlert: `Max plików`,
+                fileTooLargeAlert: `Pli kza duży`,
+                maxAttachmentsAlert: `Osiągnięto limit załączników`,
+                placeholderAttachmentDescription: `Placerholder attachment description`,
+                loadingSpinner: `<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>`,
+                selectCategoryMessage: `<p class="text-muted text-center fst-italic">Wybierz kategorię</p>`,
+                noAttributesMessage: `<div class="alert alert-secondary text-center">Brak kategorii</div>`,
+                fetchErrorMessage: `FetchError`,
+                booleanYes: `Tak`,
+                booleanNo: `Nie`
+            };
+
+            // Elementy DOM
+            const container = document.getElementById('attachmentsContainer');
+            const addBtn = document.getElementById('addAttachment');
+            const mediaInput = document.querySelector('input[name="mediaFiles"]');
+            const categorySelect = document.getElementById('categorySelect');
+            const attributesContainer = document.getElementById('attributesContainer');
+
+            // --- 1. Obsługa Multimediów ---
+            if(mediaInput){
+                mediaInput.addEventListener('change', function () {
+                    if (this.files.length > maxMediaFiles) {
+                        alert(i18n.maxMediaFilesAlert.replace('{0}', maxMediaFiles));
+                        this.value = '';
+                        return;
+                    }
+                    Array.from(this.files).forEach(file => {
+                        if (file.size > maxFileSizeBytes) {
+                            alert(i18n.fileTooLargeAlert.replace('{0}', file.name).replace('{1}', maxFileSizeMB));
+                            this.value = '';
+                            return; // Przerywamy pętlę i resetujemy input
+                        }
+                    });
+                });
+            }
+
+            // --- 2. Obsługa Załączników ---
+            function validateFileSize(input) {
+                if (!input.files || input.files.length === 0) return true;
+                const file = input.files[0];
+                if (file.size > maxFileSizeBytes) {
+                    alert(i18n.fileTooLargeAlert.replace('{0}', file.name).replace('{1}', maxFileSizeMB));
+                    input.value = '';
+                    return false;
+                }
+                return true;
+            }
+
+            function attachValidationToFileInput(input) {
+                if (!input || input.dataset.validationAttached) return;
+                input.addEventListener('change', function () { validateFileSize(this); });
+                input.dataset.validationAttached = 'true';
+            }
+
+            // Inicjalizacja istniejących inputów (pierwszy wiersz)
+            document.querySelectorAll('.attachment-file').forEach(attachValidationToFileInput);
+
+            // Dodawanie nowego wiersza załącznika
+            if(addBtn){
+                addBtn.addEventListener('click', function () {
+                    const currentCount = container.querySelectorAll('.attachment-group').length;
+                    if (currentCount >= maxAttachments) {
+                        alert(i18n.maxAttachmentsAlert.replace('{0}', maxAttachments));
+                        return;
+                    }
+
+                    const div = document.createElement('div');
+                    div.classList.add('attachment-group', 'row', 'g-2', 'mb-2', 'align-items-center', 'bg-light', 'p-2', 'rounded', 'border');
+                    div.innerHTML = `
+                        <div class="col-md-5">
+                            <input type="file" name="attachmentFiles" class="form-control attachment-file" />
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" name="attachmentDescriptions" placeholder="${i18n.placeholderAttachmentDescription}" class="form-control" />
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-attachment"><i class="bi bi-trash"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+
+                    attachValidationToFileInput(div.querySelector('.attachment-file'));
+
+                    // Dodawanie eventu usuwania
+                    div.querySelector('.remove-attachment').addEventListener('click', function () {
+                        div.remove();
+                    });
+                });
+            }
+
+            // Event usuwania dla pierwszego wiersza (jeśli jest dodany statycznie)
+            document.querySelectorAll('.attachment-group .remove-attachment').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.attachment-group').remove();
+                });
+            });
+
+
+            // --- 3. Dynamiczne Atrybuty (Pobieranie z serwera) ---
+            if(categorySelect){
+                categorySelect.addEventListener('change', function () {
+                    const selected = Array.from(this.selectedOptions).map(o => o.value);
+
+                    if(selected.length === 0) {
+                        attributesContainer.innerHTML = i18n.selectCategoryMessage;
+                        return;
+                    }
+
+                    // Spinner loading
+                    attributesContainer.innerHTML = i18n.loadingSpinner;
+
+                    const params = new URLSearchParams();
+                    selected.forEach(id => params.append('categoryIds', id));
+
+                    fetch(`/Ads/GetCategoryAttributes?` + params.toString())
+                        .then(r => {
+                            if (!r.ok) throw new Error("Network response was not ok");
+                            return r.json();
+                        })
+                        .then(data => {
+                            attributesContainer.innerHTML = '';
+
+                            if(data.length === 0){
+                                attributesContainer.innerHTML = i18n.noAttributesMessage;
+                                return;
+                            }
+
+                            const rowDiv = document.createElement('div');
+                            rowDiv.classList.add('row', 'g-3');
+                            attributesContainer.appendChild(rowDiv);
+
+                            data.forEach(attr => {
+                                const colDiv = document.createElement('div');
+                                colDiv.classList.add('col-md-6');
+
+                                const label = document.createElement('label');
+                                label.textContent = attr.name;
+                                label.classList.add('form-label', 'fw-bold', 'small');
+
+                                let input;
+
+                                switch (attr.type) {
+                                    case 0: // Text
+                                    case 1: // Number
+                                    case 3: // Date
+                                        input = document.createElement('input');
+                                        input.type = (attr.type === 1) ? 'number' : (attr.type === 3) ? 'date' : 'text';
+                                        input.classList.add('form-control');
+                                        break;
+                                    case 2: // Boolean
+                                        input = document.createElement('select');
+                                        input.classList.add('form-select');
+                                        input.innerHTML = `<option value="true">${i18n.booleanYes}</option><option value="false">${i18n.booleanNo}</option>`;
+                                        break;
+                                    case 4: // Select (List of options)
+                                    case 5: // Dictionary
+                                        input = document.createElement('select');
+                                        input.classList.add('form-select');
+                                        if (attr.allowMultiple) input.multiple = true;
+
+                                        let optionsData = [];
+                                        if (attr.type === 4 && attr.options) {
+                                            optionsData = attr.options.split(';').map(o => o.trim()).filter(o => o);
+                                        } else if (attr.type === 5 && attr.dictionaryValues) {
+                                            optionsData = attr.dictionaryValues;
+                                        }
+
+                                        optionsData.forEach(o => {
+                                            const opt = document.createElement('option');
+                                            opt.value = o;
+                                            opt.textContent = o;
+                                            input.appendChild(opt);
+                                        });
+                                        break;
+                                }
+
+                                // Nazewnictwo inputów
+                                input.name = `AttributeValues[${attr.id}]`;
+
+                                colDiv.appendChild(label);
+                                colDiv.appendChild(input);
+                                rowDiv.appendChild(colDiv);
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            attributesContainer.innerHTML = i18n.fetchErrorMessage;
+                        });
+                });
+            }
+        });
+    </script>
+}

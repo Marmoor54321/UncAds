@@ -133,9 +133,19 @@ namespace UncAds.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    }
+                    catch (Exception ex)
+                    {
+                        // Logujemy błąd, ale NIE przerywamy działania aplikacji
+                        _logger.LogError(ex, "Użytkownik utworzony, ale nie udało się wysłać maila aktywacyjnego.");
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        // Opcjonalnie: Dodaj informację dla użytkownika na UI
+                        ModelState.AddModelError(string.Empty, "Konto utworzone, ale wystąpił problem z wysłaniem e-maila weryfikacyjnego. Skontaktuj się z administratorem.");
+                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
