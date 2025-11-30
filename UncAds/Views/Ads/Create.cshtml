@@ -15,7 +15,7 @@
 
             <h2 class="mb-4"><i class="bi bi-plus-circle-dotted"></i> @Localizer["HeaderTitle"]</h2>
 
-            <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none"></div>
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
 
             <form asp-action="Create" method="post" enctype="multipart/form-data">
 
@@ -104,7 +104,11 @@
         </div>
     </div>
 </div>
-
+<style>
+    .validation-summary-valid {
+        display: none;
+    }
+</style>
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function() {

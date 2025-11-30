@@ -4,13 +4,16 @@
 @inject IViewLocalizer Localizer
 
 @{
-    // Używamy zlokalizowanego tekstu jako tytułu strony
     ViewData["Title"] = Localizer["EditAdTitle"];
 
-    // Serializujemy istniejące wartości do JSON, aby JS mógł je odczytać i wypełnić pola
-    var existingValuesJson = JsonSerializer.Serialize(
-        Model.AttributeValues.Select(av => new { id = av.CategoryAttributeId, val = av.Value })
-    );
+    // POPRAWKA:
+    // Dodajemy rzutowanie (object) przed new { ... }
+    // Dzięki temu lewa strona zwraca IEnumerable<object>, co pasuje do prawej strony (Array.Empty<object>)
+    var sourceData = Model.AttributeValues != null
+        ? Model.AttributeValues.Select(av => (object)new { id = av.CategoryAttributeId, val = av.Value })
+        : Array.Empty<object>();
+
+    var existingValuesJson = JsonSerializer.Serialize(sourceData);
 
     // Przekazanie zlokalizowanych ciągów do JavaScript
     var jsLocalizations = JsonSerializer.Serialize(new
@@ -84,6 +87,11 @@
     </div>
 </div>
 
+<style>
+    .validation-summary-valid {
+        display: none;
+    }
+</style>
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function() {
