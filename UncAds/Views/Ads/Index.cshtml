@@ -7,7 +7,6 @@
 @{
     ViewData["Title"] = Localizer["AdsTitle"]; // Zlokalizowany tytuł strony
 
-    // Pobieramy dane z ViewBag
     var displayCategories = ViewBag.DisplayCategories as List<UncAds.Models.Category>;
     var currentCategory = ViewBag.CurrentCategory as UncAds.Models.Category;
 
@@ -15,12 +14,11 @@
     int totalPages = ViewBag.TotalPages ?? 1;
     string currentQuery = ViewBag.Query as string;
     int? currentCategoryId = ViewBag.SelectedCategoryId as int?;
+    var homepageMessage = ViewData["HomepageMessage"] as string;
 
-    // Helper do bezpiecznego przycinania tekstu
     string Truncate(string value, int maxChars)
     {
         if (string.IsNullOrEmpty(value)) return value;
-        // Usuwamy tagi HTML z podglądu, żeby nie popsuć układu
         var plainText = System.Text.RegularExpressions.Regex.Replace(value, "<.*?>", String.Empty);
         return plainText.Length <= maxChars ? plainText : plainText.Substring(0, maxChars) + "...";
     }
@@ -36,62 +34,83 @@
         color: inherit;
     }
 
-        .cat-nav-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 .5rem 1rem rgba(0,0,0,.10) !important;
-            background-color: #f8f9fa;
-            border-color: #0d6efd;
-            color: #0d6efd;
-        }
+    .cat-nav-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.10) !important;
+        background-color: #f8f9fa;
+        border-color: #0d6efd;
+        color: #0d6efd;
+    }
 
     /* Styl dla ogłoszeń (Główny Grid) */
     .ad-card {
         transition: all 0.3s ease;
         border: none;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        height: 100%; /* Żeby karty w rzędzie były równe */
+        height: 100%;
         overflow: hidden;
     }
 
-        .ad-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
+    .ad-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
 
     /* Kontener na zdjęcie */
     .ad-img-container {
-        height: 200px; /* Stała wysokość zdjęcia */
+        height: 200px;
         width: 100%;
         background-color: #f0f0f0;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        position: relative;
+        position: relative; /* Ważne dla pozycjonowania badge'y */
     }
 
-        .ad-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Zdjęcie wypełni obszar nie tracąc proporcji */
-            transition: transform 0.5s ease;
-        }
+    .ad-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
 
     .ad-card:hover .ad-img-container img {
-        transform: scale(1.05); /* Lekki zoom zdjęcia przy najechaniu */
+        transform: scale(1.05);
     }
 
-    /* Badge kategorii na zdjęciu */
+    /* --- POPRAWIONE STYLE DLA KATEGORII --- */
+    
+    /* 1. Kontener na kategorie - przyklejony do dołu zdjęcia */
+    .badges-overlay {
+        position: absolute; /* Pozycjonujemy względem ad-img-container */
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 8px; /* Odstęp od krawędzi */
+        
+        display: flex;       /* Używamy Flexboxa */
+        flex-wrap: wrap;     /* Pozwalamy elementom spadać do nowej linii */
+        gap: 5px;            /* Odstęp między kafelkami */
+        align-items: flex-end; /* Wyrównanie do dołu */
+        
+        /* Delikatny gradient, żeby napisy były czytelne na jasnym tle */
+        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 0%);
+        pointer-events: none; /* Kliknięcie przechodzi przez overlay do linku zdjęcia */
+    }
+
+    /* 2. Sam kafelek kategorii - MUSI BYĆ BEZ position: absolute */
     .category-badge {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        background: rgba(0, 0, 0, 0.6);
+        /* position: absolute; <--- TO BYŁO PRZYCZYNĄ BŁĘDU (USUNIĘTE) */
+        display: inline-block;
+        background: rgba(13, 110, 253, 0.9); /* Niebieski Bootstrapowy */
         color: white;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        backdrop-filter: blur(2px);
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        white-space: nowrap;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
 
     .ad-title {
@@ -101,14 +120,14 @@
         line-height: 1.4;
     }
 
-        .ad-title a {
-            color: #2c3e50;
-            text-decoration: none;
-        }
+    .ad-title a {
+        color: #2c3e50;
+        text-decoration: none;
+    }
 
-            .ad-title a:hover {
-                color: #0d6efd;
-            }
+    .ad-title a:hover {
+        color: #0d6efd;
+    }
 
     .ad-meta {
         font-size: 0.85rem;
@@ -126,6 +145,13 @@
 </style>
 
 <div class="container mt-4 mb-5">
+    
+    @if (!string.IsNullOrEmpty(homepageMessage))
+    {
+        <div class="alert alert-info text-center mb-4" role="alert">
+            @homepageMessage
+        </div>
+    }
 
     <div class="row mb-4">
         <div class="col-12">
@@ -284,7 +310,6 @@
                 // Używamy klucza lokalizacyjnego, aby placeholder był tłumaczony (jeśli to link do serwisu zewnętrznego)
                 string imageUrl = Localizer["NoImagePlaceholderText"].Value;
 
-                // Sprawdzamy czy ogłoszenie ma media typu image
                 var coverMedia = item.Media?.FirstOrDefault(m => m.MediaType == "image");
                 if (coverMedia != null)
                 {
@@ -293,14 +318,21 @@
                 
                 <div class="col">
                     <div class="card ad-card h-100 bg-white">
+                        
                         <div class="ad-img-container">
                             <a asp-action="Details" asp-route-id="@item.Id">
                                 <img src="@imageUrl" alt="@item.Title" loading="lazy">
                             </a>
+                            
                             @if (item.AdCategories != null && item.AdCategories.Any())
                             {
-                                <div class="category-badge">
-                                    @item.AdCategories.First().Category.Name
+                                <div class="badges-overlay">
+                                    @foreach (var adCat in item.AdCategories)
+                                    {
+                                        <span class="category-badge">
+                                            @adCat.Category.Name
+                                        </span>
+                                    }
                                 </div>
                             }
                         </div>
@@ -342,7 +374,6 @@
                     </a>
                 </li>
 
-                @* Prosta logika paginacji, żeby nie wyświetlać miliona numerków *@
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     if (i == 1 || i == totalPages || (i >= currentPage - 2 && i <= currentPage + 2))

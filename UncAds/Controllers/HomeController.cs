@@ -39,6 +39,18 @@ namespace UncAds.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpPost]
+        public IActionResult SetTheme(string theme, string returnUrl)
+        {
+            Response.Cookies.Append("Theme", theme, new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) });
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+            return RedirectToAction("Index");
+        }
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {

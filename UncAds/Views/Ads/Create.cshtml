@@ -186,97 +186,121 @@
             }
 
             // --- 3. Dynamiczne Atrybuty (Pobieranie z serwera) ---
-            if(categorySelect){
-                categorySelect.addEventListener('change', function () {
-                    const selected = Array.from(this.selectedOptions).map(o => o.value);
+                if(categorySelect){
+            categorySelect.addEventListener('change', function () {
+                // Pobieramy wybrane opcje
+                const selected = Array.from(this.selectedOptions).map(o => o.value);
 
-                    if(selected.length === 0) {
-                        attributesContainer.innerHTML = '<p class="text-muted text-center fst-italic">Wybierz kategorię...</p>';
-                        return;
-                    }
+                if(selected.length === 0) {
+                    attributesContainer.innerHTML = '<p class="text-muted text-center fst-italic">Wybierz kategorię...</p>';
+                    return;
+                }
 
-                    // Spinner loading
-                    attributesContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
+                // Spinner loading
+                attributesContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
 
-                    fetch(`/Ads/GetCategoryAttributes?` + new URLSearchParams({ categoryIds: selected }))
-                        .then(r => r.json())
-                        .then(data => {
-                            attributesContainer.innerHTML = '';
+                // --- POPRAWKA TUTAJ: Budowanie parametrów URL dla tablicy ---
+                const params = new URLSearchParams();
+                selected.forEach(id => params.append('categoryIds', id));
+                // Wynik: categoryIds=1&categoryIds=2 (to ASP.NET Core rozumie jako int[])
 
-                            if(data.length === 0){
-                                attributesContainer.innerHTML = '<p class="text-muted text-center">Brak dodatkowych atrybutów dla wybranych kategorii.</p>';
-                                return;
-                            }
+                fetch(`/Ads/GetCategoryAttributes?` + params.toString())
+                    .then(r => {
+                        if (!r.ok) throw new Error("Network response was not ok");
+                        return r.json();
+                    })
+                    .then(data => {
+                        attributesContainer.innerHTML = '';
 
-                            const rowDiv = document.createElement('div');
-                            rowDiv.classList.add('row', 'g-3');
-                            attributesContainer.appendChild(rowDiv);
+                        if(data.length === 0){
+                            // To nie jest błąd, po prostu brak atrybutów dla tej kategorii.
+                            // Można dodać input hidden, żeby formularz przeszedł, jeśli jest taka walidacja, ale zazwyczaj nie trzeba.
+                            attributesContainer.innerHTML = '<div class="alert alert-secondary text-center">Wybrane kategorie nie wymagają dodatkowych parametrów.</div>';
+                            return;
+                        }
 
-                            data.forEach(attr => {
-                                const colDiv = document.createElement('div');
-                                colDiv.classList.add('col-md-6');
+                        const rowDiv = document.createElement('div');
+                        rowDiv.classList.add('row', 'g-3');
+                        attributesContainer.appendChild(rowDiv);
 
-                                const label = document.createElement('label');
-                                label.textContent = attr.name;
-                                label.classList.add('form-label', 'fw-bold', 'small');
+                        data.forEach(attr => {
+                            const colDiv = document.createElement('div');
+                            colDiv.classList.add('col-md-6');
 
-                                let input;
-                                // Logika tworzenia inputów (zgodna z Twoją)
-                                switch (attr.type) {
-                                    case 0: // Text
-                                        input = document.createElement('input');
-                                        input.type = 'text';
-                                        break;
-                                    case 1: // Number
-                                        input = document.createElement('input');
-                                        input.type = 'number';
-                                        break;
-                                    case 2: // Boolean
-                                        input = document.createElement('select');
-                                        input.innerHTML = '<option value="true">Tak</option><option value="false">Nie</option>';
-                                        break;
-                                    case 3: // Date
-                                        input = document.createElement('input');
-                                        input.type = 'date';
-                                        break;
-                                    case 4: // Select (String options)
-                                        input = document.createElement('select');
-                                        const opts = (attr.options ?? '').split(';');
-                                        opts.forEach(o => {
-                                            if (!o.trim()) return;
-                                            const opt = document.createElement('option');
-                                            opt.value = o.trim();
-                                            opt.textContent = o.trim();
-                                            input.appendChild(opt);
+                            const label = document.createElement('label');
+                            label.textContent = attr.name;
+                            label.classList.add('form-label', 'fw-bold', 'small');
+
+                            let input;
+
+                            // ... (Twój switch case do budowania inputów - bez zmian) ...
+                            // Upewnij się, że w switchu używasz poprawnej logiki tworzenia inputów.
+                            // Poniżej skrócony przykład dla Select, żeby upewnić się, że działa:
+
+                            switch (attr.type) {
+                                case 0: // Text
+                                    input = document.createElement('input');
+                                    input.type = 'text';
+                                    input.classList.add('form-control');
+                                    break;
+                                case 1: // Number
+                                    input = document.createElement('input');
+                                    input.type = 'number';
+                                    input.classList.add('form-control');
+                                    break;
+                                case 2: // Boolean
+                                    input = document.createElement('select');
+                                    input.classList.add('form-select');
+                                    input.innerHTML = '<option value="true">Tak</option><option value="false">Nie</option>';
+                                    break;
+                                case 3: // Date
+                                    input = document.createElement('input');
+                                    input.type = 'date';
+                                    input.classList.add('form-control');
+                                    break;
+                                case 4: // Select
+                                    input = document.createElement('select');
+                                    input.classList.add('form-select');
+                                    if (attr.options) {
+                                        attr.options.split(';').forEach(o => {
+                                            if(o.trim()){
+                                                const opt = document.createElement('option');
+                                                opt.value = o.trim();
+                                                opt.textContent = o.trim();
+                                                input.appendChild(opt);
+                                            }
                                         });
-                                        break;
-                                    case 5: // Dictionary
-                                        input = document.createElement('select');
-                                        if (attr.allowMultiple) input.multiple = true;
-                                        (attr.dictionaryValues ?? []).forEach(v => {
+                                    }
+                                    break;
+                                case 5: // Dictionary
+                                    input = document.createElement('select');
+                                    input.classList.add('form-select');
+                                    if (attr.allowMultiple) input.multiple = true;
+                                    if (attr.dictionaryValues) {
+                                        attr.dictionaryValues.forEach(v => {
                                             const opt = document.createElement('option');
                                             opt.value = v;
                                             opt.textContent = v;
                                             input.appendChild(opt);
                                         });
-                                        break;
-                                }
+                                    }
+                                    break;
+                            }
 
-                                input.name = `AttributeValues[${attr.id}]`;
-                                input.classList.add('form-control');
-                                if(attr.type === 2 || attr.type === 4 || attr.type === 5) input.classList.add('form-select');
+                            // Nazewnictwo inputów
+                            input.name = `AttributeValues[${attr.id}]`;
 
-                                colDiv.appendChild(label);
-                                colDiv.appendChild(input);
-                                rowDiv.appendChild(colDiv);
-                            });
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            attributesContainer.innerHTML = '<div class="alert alert-danger">Błąd pobierania atrybutów.</div>';
+                            colDiv.appendChild(label);
+                            colDiv.appendChild(input);
+                            rowDiv.appendChild(colDiv);
                         });
-                });
-            }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        attributesContainer.innerHTML = '<div class="alert alert-danger">Wystąpił błąd podczas pobierania atrybutów.</div>';
+                    });
+            });
+        }
         });
     </script>
 }
