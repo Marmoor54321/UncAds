@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteUserTitle" xml:space="preserve">
+    <value>Usuń użytkownika</value>
+  </data>
+  <data name="ConfirmDeletionHeader" xml:space="preserve">
+    <value>Potwierdź usunięcie</value>
+  </data>
+  <data name="ConfirmationQuestion" xml:space="preserve">
+    <value>Czy na pewno chcesz trwale usunąć tego użytkownika?</value>
+  </data>
+  <data name="IdLabel" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="WarningLabel" xml:space="preserve">
+    <value>Uwaga</value>
+  </data>
+  <data name="IrreversibleWarning" xml:space="preserve">
+    <value>Usunięcie użytkownika jest nieodwracalne. Wszystkie jego ogłoszenia i dane zostaną utracone.</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="ConfirmDeleteButton" xml:space="preserve">
+    <value>Tak, usuń</value>
+  </data>
+</root>

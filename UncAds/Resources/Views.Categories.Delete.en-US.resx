@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteCategoryTitle" xml:space="preserve">
+    <value>Delete Category</value>
+  </data>
+  <data name="ConfirmHeader" xml:space="preserve">
+    <value>Confirm Deletion</value>
+  </data>
+
+  <data name="ConfirmQuestion" xml:space="preserve">
+    <value>Are you sure you want to delete this category?</value>
+  </data>
+  <data name="ParentLabel" xml:space="preserve">
+    <value>Parent:</value>
+  </data>
+  <data name="ParentNone" xml:space="preserve">
+    <value>(None)</value>
+  </data>
+  <data name="WarningMessage" xml:space="preserve">
+    <value>Warning: Deleting a category may affect the ads assigned to it.</value>
+  </data>
+
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Yes, delete</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+</root>

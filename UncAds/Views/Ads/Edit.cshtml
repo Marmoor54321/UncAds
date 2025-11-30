@@ -1,12 +1,27 @@
 ﻿@model UncAds.Models.Ad
 @using System.Text.Json
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edycja ogłoszenia";
+    // Używamy zlokalizowanego tekstu jako tytułu strony
+    ViewData["Title"] = Localizer["EditAdTitle"];
+
     // Serializujemy istniejące wartości do JSON, aby JS mógł je odczytać i wypełnić pola
     var existingValuesJson = JsonSerializer.Serialize(
         Model.AttributeValues.Select(av => new { id = av.CategoryAttributeId, val = av.Value })
     );
+
+    // Przekazanie zlokalizowanych ciągów do JavaScript
+    var jsLocalizations = JsonSerializer.Serialize(new
+    {
+        ChooseCategory = Localizer["ChooseCategoryMessage"].Value,
+        NoAttributes = Localizer["NoAttributesMessage"].Value,
+        LoadingError = Localizer["AttributeLoadingError"].Value,
+        SelectOption = Localizer["SelectOptionDefault"].Value,
+        BooleanYes = Localizer["BooleanOptionYes"].Value,
+        BooleanNo = Localizer["BooleanOptionNo"].Value
+    });
 }
 
 <div class="container py-4">
@@ -14,7 +29,7 @@
         <div class="col-lg-10">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="m-0"><i class="bi bi-pencil-square"></i> Edytuj ogłoszenie</h2>
+                <h2 class="m-0"><i class="bi bi-pencil-square"></i> @Localizer["EditAdHeader"]</h2>
             </div>
 
             <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
@@ -24,24 +39,24 @@
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-card-text"></i> Dane ogłoszenia</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-card-text"></i> @Localizer["AdDataHeader"]</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label asp-for="Title" class="form-label fw-bold">Tytuł</label>
+                                <label asp-for="Title" class="form-label fw-bold">@Localizer["TitleLabel"]</label>
                                 <input asp-for="Title" class="form-control" />
                                 <span asp-validation-for="Title" class="text-danger small"></span>
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label fw-bold">Kategorie</label>
+                                <label class="form-label fw-bold">@Localizer["CategoriesLabel"]</label>
                                 <select id="categorySelect" name="SelectedCategoryIds" multiple class="form-select" style="height: 50px;" asp-items="ViewBag.Categories"></select>
-                                <div class="form-text small">Przytrzymaj Ctrl, aby zmienić zaznaczenie.</div>
+                                <div class="form-text small">@Localizer["CategorySelectHelp"]</div>
                             </div>
 
                             <div class="col-12">
-                                <label asp-for="Description" class="form-label fw-bold">Opis</label>
+                                <label asp-for="Description" class="form-label fw-bold">@Localizer["DescriptionLabel"]</label>
                                 <textarea asp-for="Description" class="form-control" rows="6"></textarea>
                                 <span asp-validation-for="Description" class="text-danger small"></span>
                             </div>
@@ -51,7 +66,7 @@
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> Szczegóły (Atrybuty)</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> @Localizer["AttributesHeader"]</h5>
                     </div>
                     <div class="card-body p-4">
                         <div id="attributesContainer">
@@ -61,8 +76,8 @@
                 </div>
 
                 <div class="d-flex justify-content-end gap-2 mb-5">
-                    <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
-                    <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">Zapisz zmiany</button>
+                    <a asp-action="Index" class="btn btn-light border px-4">@Localizer["CancelButton"]</a>
+                    <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">@Localizer["SaveChangesButton"]</button>
                 </div>
             </form>
         </div>
@@ -74,6 +89,9 @@
         document.addEventListener("DOMContentLoaded", function() {
             const categorySelect = document.getElementById('categorySelect');
             const attributesContainer = document.getElementById('attributesContainer');
+
+            // Wczytaj zlokalizowane ciągi znaków dla JS
+            const loc = @Html.Raw(jsLocalizations);
 
             // 1. Pobieramy wartości z bazy danych przekazane przez Razor do zmiennej JS
             // To pozwoli nam wypełnić pola wartościami przy ładowaniu i przeładowaniu
@@ -94,9 +112,12 @@
                 const selected = Array.from(categorySelect.selectedOptions).map(o => o.value);
 
                 if(selected.length === 0) {
-                    attributesContainer.innerHTML = '<p class="text-muted text-center fst-italic">Wybierz kategorię...</p>';
+                    attributesContainer.innerHTML = '<p class="text-muted text-center fst-italic">' + loc.ChooseCategory + '</p>';
                     return;
                 }
+
+                // Placeholder ładowania
+                attributesContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
 
                 const params = new URLSearchParams();
                 selected.forEach(id => params.append('categoryIds', id));
@@ -107,7 +128,7 @@
                         attributesContainer.innerHTML = '';
 
                         if(data.length === 0){
-                            attributesContainer.innerHTML = '<p class="text-muted text-center">Brak dodatkowych atrybutów dla wybranych kategorii.</p>';
+                            attributesContainer.innerHTML = '<p class="text-muted text-center">' + loc.NoAttributes + '</p>';
                             return;
                         }
 
@@ -143,8 +164,8 @@
                                     input = document.createElement('select');
                                     input.classList.add('form-select');
                                     input.innerHTML = `
-                                        <option value="true" ${isValueSelected(attr.id, 'true') ? 'selected' : ''}>Tak</option>
-                                        <option value="false" ${isValueSelected(attr.id, 'false') ? 'selected' : ''}>Nie</option>
+                                        <option value="true" ${isValueSelected(attr.id, 'true') ? 'selected' : ''}>${loc.BooleanYes}</option>
+                                        <option value="false" ${isValueSelected(attr.id, 'false') ? 'selected' : ''}>${loc.BooleanNo}</option>
                                     `;
                                     break;
                                 case 3: // Date
@@ -154,7 +175,6 @@
                                     let dVal = getSavedValue(attr.id);
                                     if(dVal) {
                                         // Formatowanie daty dla input type=date (yyyy-MM-dd)
-                                        // Zakładamy, że z bazy przychodzi DateTime.ToString()
                                         try {
                                             let d = new Date(dVal);
                                             if(!isNaN(d)) input.value = d.toISOString().split('T')[0];
@@ -184,7 +204,7 @@
                                     if(!attr.allowMultiple) {
                                         let emptyOpt = document.createElement('option');
                                         emptyOpt.value = "";
-                                        emptyOpt.textContent = "-- Wybierz --";
+                                        emptyOpt.textContent = loc.SelectOption;
                                         input.appendChild(emptyOpt);
                                     }
 
@@ -209,7 +229,7 @@
                     })
                     .catch(err => {
                         console.error(err);
-                        attributesContainer.innerHTML = '<div class="alert alert-danger">Błąd ładowania atrybutów.</div>';
+                        attributesContainer.innerHTML = '<div class="alert alert-danger">' + loc.LoadingError + '</div>';
                     });
             }
 

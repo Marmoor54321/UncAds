@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteAdTitle" xml:space="preserve">
+    <value>Anzeige löschen</value>
+  </data>
+  <data name="ConfirmDeletionHeader" xml:space="preserve">
+    <value>Löschung bestätigen</value>
+  </data>
+  <data name="ConfirmationQuestion" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie diese Anzeige löschen möchten?</value>
+  </data>
+  <data name="IrreversibleWarning" xml:space="preserve">
+    <value>Dieser Vorgang kann nicht rückgängig gemacht werden. Alle zugehörigen Fotos und Anhänge werden ebenfalls dauerhaft gelöscht.</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Titel:</value>
+  </data>
+  <data name="DateAddedLabel" xml:space="preserve">
+    <value>Datum hinzugefügt:</value>
+  </data>
+  <data name="CategoriesLabel" xml:space="preserve">
+    <value>Kategorien:</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="ConfirmDeleteButton" xml:space="preserve">
+    <value>Ja, dauerhaft löschen</value>
+  </data>
+</root>

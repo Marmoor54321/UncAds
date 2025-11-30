@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteAttributeTitle" xml:space="preserve">
+    <value>Attribut löschen</value>
+  </data>
+  <data name="ConfirmDeleteHeader" xml:space="preserve">
+    <value>Löschung bestätigen</value>
+  </data>
+  <data name="ConfirmationMessage" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie dieses Attribut löschen möchten? Der Vorgang kann nicht rückgängig gemacht werden.</value>
+  </data>
+  <data name="WarningMessage" xml:space="preserve">
+    <value>Achtung: Das Löschen des Attributs führt zum Verlust der Werte dieses Feldes in allen bestehenden Anzeigen dieser Kategorie.</value>
+  </data>
+
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="ConfirmDeleteButton" xml:space="preserve">
+    <value>Ja, löschen</value>
+  </data>
+</root>

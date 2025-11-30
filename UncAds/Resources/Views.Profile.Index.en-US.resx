@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>Your Profile</value>
+  </data>
+  <data name="UserInfoHeader" xml:space="preserve">
+    <value>User Information</value>
+  </data>
+  <data name="UserPlaceholderText" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="AvatarAlt" xml:space="preserve">
+    <value>User Avatar</value>
+  </data>
+  <data name="UnnamedUser" xml:space="preserve">
+    <value>Unnamed User</value>
+  </data>
+  <data name="EditProfileButton" xml:space="preserve">
+    <value>Edit Profile</value>
+  </data>
+  <data name="DisplayNameLabel" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="EmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="BioLabel" xml:space="preserve">
+    <value>About Me (Bio)</value>
+  </data>
+  <data name="NoBioMessage" xml:space="preserve">
+    <value>No description added yet.</value>
+  </data>
+  <data name="SettingsLabel" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="AdsPerPageSetting" xml:space="preserve">
+    <value>Ads per page: &lt;span class="badge bg-secondary"&gt;{0}&lt;/span&gt;</value>
+  </data>
+</root>

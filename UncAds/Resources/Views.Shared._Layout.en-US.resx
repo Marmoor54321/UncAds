@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="RssFeedTitle" xml:space="preserve">
+    <value>UncAds - RSS Feed</value>
+  </data>
+  
+  <data name="ToggleNavigation" xml:space="preserve">
+    <value>Toggle navigation</value>
+  </data>
+  <data name="BrowseAds" xml:space="preserve">
+    <value>Browse Ads</value>
+  </data>
+  <data name="LanguageSelectionLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="ThemeDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="ThemeBlue" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  
+  <data name="AdminPanel" xml:space="preserve">
+    <value>Admin Panel</value>
+  </data>
+  <data name="HeaderContentManagement" xml:space="preserve">
+    <value>Content Management</value>
+  </data>
+  <data name="LinkCategories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="LinkAttributes" xml:space="preserve">
+    <value>Attributes</value>
+  </data>
+  <data name="LinkDictionaries" xml:space="preserve">
+    <value>Dictionaries</value>
+  </data>
+  <data name="HeaderSystem" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="LinkForbiddenWords" xml:space="preserve">
+    <value>Forbidden Words</value>
+  </data>
+  <data name="LinkUsers" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="LinkGlobalSettings" xml:space="preserve">
+    <value>Global Settings</value>
+  </data>
+  
+  <data name="MyProfile" xml:space="preserve">
+    <value>My Profile</value>
+  </data>
+  
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="RssText" xml:space="preserve">
+    <value>RSS</value>
+  </data>
+  <data name="CloseButtonLabel" xml:space="preserve">
+    <value>Close</value>
+  </data>
+</root>

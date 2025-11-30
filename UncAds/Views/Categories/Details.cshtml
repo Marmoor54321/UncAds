@@ -1,7 +1,9 @@
 ﻿@model UncAds.Models.Category
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Szczegóły kategorii";
+    ViewData["Title"] = Localizer["DetailsCategoryTitle"];
 }
 
 <div class="container py-5">
@@ -9,27 +11,27 @@
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom py-3">
-                    <h5 class="m-0"><i class="bi bi-info-circle"></i> Szczegóły kategorii</h5>
+                    <h5 class="m-0"><i class="bi bi-info-circle"></i> @Localizer["DetailsCategoryHeader"]</h5>
                 </div>
                 <div class="card-body p-4 text-center">
 
                     <h2 class="mb-3 text-primary">@Model.Name</h2>
 
                     <div class="bg-light p-3 rounded border mb-4">
-                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Rodzic</span>
+                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">@Localizer["ParentLabel"]</span>
                         @if (Model.ParentCategory != null)
                         {
                             <span class="fs-5"><i class="bi bi-arrow-return-right"></i> @Model.ParentCategory.Name</span>
                         }
                         else
                         {
-                            <span class="badge bg-secondary">Kategoria Główna</span>
+                            <span class="badge bg-secondary">@Localizer["MainCategoryBadge"]</span>
                         }
                     </div>
 
                     <div class="d-flex justify-content-center gap-2">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4">Edytuj</a>
-                        <a asp-action="Index" class="btn btn-secondary px-4">Wróć</a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4">@Localizer["EditButton"]</a>
+                        <a asp-action="Index" class="btn btn-secondary px-4">@Localizer["BackButton"]</a>
                     </div>
                 </div>
             </div>

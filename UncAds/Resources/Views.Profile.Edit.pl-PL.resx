@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ProfileEditTitle" xml:space="preserve">
+    <value>Edycja profilu</value>
+  </data>
+  <data name="ProfileEditHeader" xml:space="preserve">
+    <value>Edytuj profil</value>
+  </data>
+  
+  <data name="BasicDataHeader" xml:space="preserve">
+    <value>Dane podstawowe</value>
+  </data>
+  <data name="DisplayNameLabel" xml:space="preserve">
+    <value>Nazwa wyświetlana</value>
+  </data>
+  <data name="EmailLabel" xml:space="preserve">
+    <value>Email (login)</value>
+  </data>
+  <data name="EmailHelpText" xml:space="preserve">
+    <value>Adresu email nie można zmienić w tym panelu.</value>
+  </data>
+  <data name="AvatarUrlLabel" xml:space="preserve">
+    <value>Link do awatara (URL)</value>
+  </data>
+  <data name="BioLabel" xml:space="preserve">
+    <value>Bio (O mnie)</value>
+  </data>
+  <data name="BioPlaceholder" xml:space="preserve">
+    <value>Napisz coś o sobie...</value>
+  </data>
+  <data name="AdsPerPageLabel" xml:space="preserve">
+    <value>Liczba ogłoszeń na stronę</value>
+  </data>
+  <data name="AdsPerPageHelpText" xml:space="preserve">
+    <value>Domyślnie 10. Max 100.</value>
+  </data>
+
+  <data name="NewsletterHeader" xml:space="preserve">
+    <value>Sprofilowany Newsletter</value>
+  </data>
+  <data name="NewsletterDescription" xml:space="preserve">
+    <value>Zaznacz kategorie i określ dokładne kryteria, aby otrzymywać powiadomienia mailowe tylko o interesujących Cię ogłoszeniach.</value>
+  </data>
+  <data name="FilterHelpText" xml:space="preserve">
+    <value>Pozostaw puste, aby otrzymywać &lt;strong&gt;wszystkie&lt;/strong&gt; ogłoszenia z działu {0}.</value>
+    </data>
+  <data name="NoFiltersMessage" xml:space="preserve">
+    <value>Ta kategoria nie posiada dodatkowych filtrów. Otrzymasz powiadomienia o wszystkich nowych ogłoszeniach w dziale {0}.</value>
+    </data>
+
+  <data name="FilterAny" xml:space="preserve">
+    <value>- Dowolne -</value>
+  </data>
+  <data name="BooleanYes" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="BooleanNo" xml:space="preserve">
+    <value>Nie</value>
+  </data>
+  <data name="NumberPlaceholder" xml:space="preserve">
+    <value>Wartość</value>
+  </data>
+
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Zapisz zmiany</value>
+  </data>
+</root>

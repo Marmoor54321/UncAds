@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteWordTitle" xml:space="preserve">
+    <value>Wort löschen</value>
+  </data>
+  <data name="ConfirmHeader" xml:space="preserve">
+    <value>Löschung bestätigen</value>
+  </data>
+
+  <data name="ConfirmQuestion" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie dieses Wort von der Verbotsliste entfernen möchten?</value>
+  </data>
+
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Ja, löschen</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+</root>

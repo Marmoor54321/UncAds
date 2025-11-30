@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="EditDictionaryTitle" xml:space="preserve">
+    <value>Edit Dictionary</value>
+  </data>
+  <data name="DictionaryHeader" xml:space="preserve">
+    <value>Dictionary</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Dictionary Name</value>
+  </data>
+  <data name="ValuesHeader" xml:space="preserve">
+    <value>Dictionary Values</value>
+  </data>
+  <data name="ValuePlaceholder" xml:space="preserve">
+    <value>Enter value</value>
+  </data>
+
+  <data name="AddValueButton" xml:space="preserve">
+    <value>Add another value</value>
+  </data>
+  <data name="RemoveButton" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ErrorEmptyValue" xml:space="preserve">
+    <value>Please enter text in the last field first!</value>
+  </data>
+</root>

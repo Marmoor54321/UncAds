@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Attribute Dictionaries</value>
+  </data>
+  <data name="IndexHeader" xml:space="preserve">
+    <value>Attribute Dictionaries</value>
+  </data>
+  <data name="AddDictionaryButton" xml:space="preserve">
+    <value>Add New Dictionary</value>
+  </data>
+
+  <data name="Table_Name" xml:space="preserve">
+    <value>Dictionary Name</value>
+  </data>
+  <data name="Table_ValueCount" xml:space="preserve">
+    <value>Number of Values</value>
+  </data>
+  <data name="Table_Values" xml:space="preserve">
+    <value>Values</value>
+  </data>
+  <data name="Table_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+
+  <data name="NoValues" xml:space="preserve">
+    <value>none</value>
+  </data>
+  <data name="ConfirmDeleteMessage" xml:space="preserve">
+    <value>Are you sure you want to delete this dictionary?</value>
+  </data>
+
+  <data name="Action_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+</root>

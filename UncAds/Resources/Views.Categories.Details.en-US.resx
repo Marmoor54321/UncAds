@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DetailsCategoryTitle" xml:space="preserve">
+    <value>Category Details</value>
+  </data>
+  <data name="DetailsCategoryHeader" xml:space="preserve">
+    <value>Category Details</value>
+  </data>
+
+  <data name="ParentLabel" xml:space="preserve">
+    <value>Parent</value>
+  </data>
+  <data name="MainCategoryBadge" xml:space="preserve">
+    <value>Main Category</value>
+  </data>
+
+  <data name="EditButton" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Back</value>
+  </data>
+</root>

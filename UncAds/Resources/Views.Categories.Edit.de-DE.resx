@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="EditCategoryTitle" xml:space="preserve">
+    <value>Kategorie bearbeiten</value>
+  </data>
+  <data name="EditCategoryHeader" xml:space="preserve">
+    <value>Kategorie bearbeiten</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ParentCategoryLabel" xml:space="preserve">
+    <value>Übergeordnete Kategorie</value>
+  </data>
+  <data name="MainCategoryOption" xml:space="preserve">
+    <value>-- Dies ist eine Hauptkategorie --</value>
+  </data>
+
+  <data name="SaveButton" xml:space="preserve">
+    <value>Änderungen speichern</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+</root>

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ReportsTitle" xml:space="preserve">
+    <value>Meldungen</value>
+  </data>
+  <data name="ReportsHeader" xml:space="preserve">
+    <value>Meldungen von Missbrauch</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Zurück zu den Benutzern</value>
+  </data>
+
+  <data name="Table_Ad" xml:space="preserve">
+    <value>Betreffende Anzeige</value>
+  </data>
+  <data name="Table_Reporter" xml:space="preserve">
+    <value>Melder</value>
+  </data>
+  <data name="Table_Reason" xml:space="preserve">
+    <value>Grund</value>
+  </data>
+  <data name="Table_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="Table_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Table_Action" xml:space="preserve">
+    <value>Aktion</value>
+  </data>
+
+  <data name="NoReportsMessage" xml:space="preserve">
+    <value>Keine neuen Meldungen.</value>
+  </data>
+  <data name="AdDeleted" xml:space="preserve">
+    <value>Anzeige gelöscht</value>
+  </data>
+  <data name="StatusResolved" xml:space="preserve">
+    <value>Gelöst</value>
+  </data>
+  <data name="StatusPending" xml:space="preserve">
+    <value>Ausstehend</value>
+  </data>
+  <data name="HandleButton" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+</root>

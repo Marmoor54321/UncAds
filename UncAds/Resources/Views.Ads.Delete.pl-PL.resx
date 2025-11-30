@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteAdTitle" xml:space="preserve">
+    <value>Usuń ogłoszenie</value>
+  </data>
+  <data name="ConfirmDeletionHeader" xml:space="preserve">
+    <value>Potwierdź usunięcie</value>
+  </data>
+  <data name="ConfirmationQuestion" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć to ogłoszenie?</value>
+  </data>
+  <data name="IrreversibleWarning" xml:space="preserve">
+    <value>Tej operacji nie można cofnąć. Wszystkie zdjęcia i załączniki również zostaną usunięte.</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Tytuł:</value>
+  </data>
+  <data name="DateAddedLabel" xml:space="preserve">
+    <value>Data dodania:</value>
+  </data>
+  <data name="CategoriesLabel" xml:space="preserve">
+    <value>Kategorie:</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="ConfirmDeleteButton" xml:space="preserve">
+    <value>Tak, usuń trwale</value>
+  </data>
+</root>

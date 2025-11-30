@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="CreateWordTitle" xml:space="preserve">
+    <value>Dodaj słowo</value>
+  </data>
+  <data name="CreateWordHeader" xml:space="preserve">
+    <value>Nowe słowo zakazane</value>
+  </data>
+  
+  <data name="WordLabel" xml:space="preserve">
+    <value>Słowo lub fraza</value>
+  </data>
+  <data name="WordPlaceholder" xml:space="preserve">
+    <value>np. spam</value>
+  </data>
+  <data name="WordHelpText" xml:space="preserve">
+    <value>System będzie blokował ogłoszenia zawierające to słowo.</value>
+  </data>
+
+  <data name="SaveButton" xml:space="preserve">
+    <value>Zapisz</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+</root>

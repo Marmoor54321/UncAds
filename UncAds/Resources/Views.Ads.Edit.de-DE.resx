@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="EditAdTitle" xml:space="preserve">
+    <value>Anzeige bearbeiten</value>
+  </data>
+  <data name="EditAdHeader" xml:space="preserve">
+    <value>Anzeige bearbeiten</value>
+  </data>
+  <data name="AdDataHeader" xml:space="preserve">
+    <value>Anzeigendaten</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="CategoriesLabel" xml:space="preserve">
+    <value>Kategorien</value>
+  </data>
+  <data name="CategorySelectHelp" xml:space="preserve">
+    <value>Halten Sie Strg gedrückt, um die Auswahl zu ändern.</value>
+  </data>
+  <data name="DescriptionLabel" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="AttributesHeader" xml:space="preserve">
+    <value>Details (Attribute)</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="SaveChangesButton" xml:space="preserve">
+    <value>Änderungen speichern</value>
+  </data>
+
+  <data name="ChooseCategoryMessage" xml:space="preserve">
+    <value>Wählen Sie eine Kategorie...</value>
+  </data>
+  <data name="NoAttributesMessage" xml:space="preserve">
+    <value>Keine zusätzlichen Attribute für ausgewählte Kategorien.</value>
+  </data>
+  <data name="AttributeLoadingError" xml:space="preserve">
+    <value>Fehler beim Laden der Attribute.</value>
+  </data>
+  <data name="SelectOptionDefault" xml:space="preserve">
+    <value>-- Auswählen --</value>
+  </data>
+  <data name="BooleanOptionYes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="BooleanOptionNo" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+</root>

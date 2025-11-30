@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Greeting" xml:space="preserve">
+    <value>Hello</value>
+  </data>
+  <data name="ManageAccountTitle" xml:space="preserve">
+    <value>Manage account</value>
+  </data>
+  <data name="LogoutButton" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="RegisterLink" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="LoginLink" xml:space="preserve">
+    <value>Login</value>
+  </data>
+</root>

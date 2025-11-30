@@ -1,8 +1,11 @@
-﻿@{
-    ViewData["Title"] = "Wyślij Newsletter";
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["NewsletterTitle"];
 }
 
-<h2>Newsletter</h2>
+<h2>@Localizer["NewsletterTitle"]</h2>
 
 @if (ViewBag.Message != null)
 {
@@ -11,14 +14,13 @@
 
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Ręczna wysyłka powiadomień</h5>
+        <h5 class="card-title">@Localizer["ManualSendHeader"]</h5>
         <p class="card-text">
-            Ta operacja sprawdzi preferencje wszystkich użytkowników i wyśle im e-maile
-            z ogłoszeniami dodanymi od czasu ostatniej wysyłki.
+            @Localizer["OperationDescription"]
         </p>
         <form asp-action="SendNewsletterConfirmed" method="post">
-            <button type="submit" class="btn btn-primary">Wyślij Newsletter teraz</button>
-            <a asp-action="Users" class="btn btn-secondary">Powrót</a>
+            <button type="submit" class="btn btn-primary">@Localizer["SendButton"]</button>
+            <a asp-action="Users" class="btn btn-secondary">@Localizer["BackButton"]</a>
         </form>
     </div>
 </div>

@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Http.Features
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject IOptions<RequestLocalizationOptions> LocOptions
+@inject IViewLocalizer Localizer // Wstrzyknięcie lokalizatora
 @using Microsoft.AspNetCore.Http
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
@@ -35,14 +37,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - UncAds</title>
+    <title>@(ViewData["Title"] + " - UncAds")</title> @* Zmiana dla lepszego łączenia tytułów *@
 
     <link rel="stylesheet" href="@Url.Content(themeCssUrl)" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UncAds.styles.css" asp-append-version="true" />
-    <link rel="alternate" type="application/rss+xml" title="UncAds - RSS" href="/feed" />
+    @* Zlokalizowany tytuł dla kanału RSS *@
+    <link rel="alternate" type="application/rss+xml" title="@Localizer["RssFeedTitle"]" href="/feed" />
 
     <style>
         .nav-link {
@@ -67,7 +70,8 @@
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="@Localizer["ToggleNavigation"]">
+                    @* Zlokalizowany opis dla przycisku *@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -75,7 +79,7 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Ads" asp-action="Index">
-                                <i class="bi bi-grid"></i> Przeglądaj ogłoszenia
+                                <i class="bi bi-grid"></i> @Localizer["BrowseAds"]
                             </a>
                         </li>
                     </ul>
@@ -88,36 +92,8 @@
                                 <input type="hidden" name="returnUrl" value="@returnUrl" />
 
                                 <select name="culture" class="form-select form-select-sm"
-                                        onchange="this.form.submit();" aria-label="Język">
-
-                        <li class="nav-item dropdown me-3">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-palette-fill"></i> Motyw
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li>
-                                    <form asp-controller="Home" asp-action="SetTheme" method="post">
-                                        <input type="hidden" name="theme" value="default" />
-                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-                                        <button type="submit" class="dropdown-item @(currentTheme == "default" ? "active" : "")">Domyślny</button>
-                                    </form>
-                                </li>
-                                <li>
-                                    <form asp-controller="Home" asp-action="SetTheme" method="post">
-                                        <input type="hidden" name="theme" value="cyborg" />
-                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-                                        <button type="submit" class="dropdown-item @(currentTheme == "cyborg" ? "active" : "")">Ciemny</button>
-                                    </form>
-                                </li>
-                                <li>
-                                    <form asp-controller="Home" asp-action="SetTheme" method="post">
-                                        <input type="hidden" name="theme" value="morph" />
-                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-                                        <button type="submit" class="dropdown-item @(currentTheme == "morph" ? "active" : "")">Niebieski</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
+                                        onchange="this.form.submit();" aria-label="@Localizer["LanguageSelectionLabel"]">
+                                    @* Zlokalizowany label *@
                                     @foreach (var culture in supportedCultures)
                                     {
                                         <option value="@culture.Name" selected="@(currentCulture == culture.Name)">
@@ -127,22 +103,51 @@
                                 </select>
                             </form>
                         </li>
+
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-palette-fill"></i> @Localizer["ThemeLabel"]
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                <li>
+                                    <form asp-controller="Home" asp-action="SetTheme" method="post">
+                                        <input type="hidden" name="theme" value="default" />
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                        <button type="submit" class="dropdown-item @(currentTheme == "default" ? "active" : "")">@Localizer["ThemeDefault"]</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form asp-controller="Home" asp-action="SetTheme" method="post">
+                                        <input type="hidden" name="theme" value="cyborg" />
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                        <button type="submit" class="dropdown-item @(currentTheme == "cyborg" ? "active" : "")">@Localizer["ThemeDark"]</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form asp-controller="Home" asp-action="SetTheme" method="post">
+                                        <input type="hidden" name="theme" value="morph" />
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                        <button type="submit" class="dropdown-item @(currentTheme == "morph" ? "active" : "")">@Localizer["ThemeBlue"]</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown me-2">
                                 <a class="nav-link dropdown-toggle fw-bold" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-shield-lock"></i> Panel Admina
+                                    <i class="bi bi-shield-lock"></i> @Localizer["AdminPanel"]
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="adminDropdown">
-                                    <li><h6 class="dropdown-header">Zarządzanie treścią</h6></li>
-                                    <li><a class="dropdown-item" asp-controller="Categories" asp-action="Index">Kategorie</a></li>
-                                    <li><a class="dropdown-item" asp-controller="CategoryAttributes" asp-action="Index">Atrybuty</a></li>
-                                    <li><a class="dropdown-item" asp-controller="AttributeDictionaries" asp-action="Index">Słowniki</a></li>
+                                    <li><h6 class="dropdown-header">@Localizer["HeaderContentManagement"]</h6></li>
+                                    <li><a class="dropdown-item" asp-controller="Categories" asp-action="Index">@Localizer["LinkCategories"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="CategoryAttributes" asp-action="Index">@Localizer["LinkAttributes"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="AttributeDictionaries" asp-action="Index">@Localizer["LinkDictionaries"]</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><h6 class="dropdown-header">System</h6></li>
-                                    <li><a class="dropdown-item" asp-controller="ForbiddenWords" asp-action="Index">Zakazane słowa</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">Użytkownicy</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Settings">Ustawienia globalne</a></li>
+                                    <li><h6 class="dropdown-header">@Localizer["HeaderSystem"]</h6></li>
+                                    <li><a class="dropdown-item" asp-controller="ForbiddenWords" asp-action="Index">@Localizer["LinkForbiddenWords"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">@Localizer["LinkUsers"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Settings">@Localizer["LinkGlobalSettings"]</a></li>
                                 </ul>
                             </li>
                         }
@@ -151,7 +156,7 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Profile" asp-action="Index">
-                                    <i class="bi bi-person-circle"></i> Mój profil
+                                    <i class="bi bi-person-circle"></i> @Localizer["MyProfile"]
                                 </a>
                             </li>
                         }
@@ -168,8 +173,9 @@
             @if (TempData["Message"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @* Wiadomość TempData jest zazwyczaj dynamiczna i nie jest lokalizowana, ale przycisk Close musi być *@
                     @TempData["Message"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="@Localizer["CloseButtonLabel"]"></button>
                 </div>
             }
 
@@ -179,9 +185,10 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - UncAds - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - UncAds - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["PrivacyPolicy"]</a>
             | <a href="/feed" target="_blank" style="color: #ee802f; font-weight: bold;">
-                <i class="bi bi-rss-fill"></i> RSS
+                <i class="bi bi-rss-fill"></i> @Localizer["RssText"]
+            </a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

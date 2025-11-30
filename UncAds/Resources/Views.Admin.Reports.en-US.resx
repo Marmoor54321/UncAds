@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ReportsTitle" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="ReportsHeader" xml:space="preserve">
+    <value>Abuse Reports</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Back to Users</value>
+  </data>
+
+  <data name="Table_Ad" xml:space="preserve">
+    <value>Ad Concerned</value>
+  </data>
+  <data name="Table_Reporter" xml:space="preserve">
+    <value>Reporter</value>
+  </data>
+  <data name="Table_Reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="Table_Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Table_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Table_Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+
+  <data name="NoReportsMessage" xml:space="preserve">
+    <value>No new reports.</value>
+  </data>
+  <data name="AdDeleted" xml:space="preserve">
+    <value>Ad Deleted</value>
+  </data>
+  <data name="StatusResolved" xml:space="preserve">
+    <value>Resolved</value>
+  </data>
+  <data name="StatusPending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="HandleButton" xml:space="preserve">
+    <value>Process</value>
+  </data>
+</root>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ManageRolesTitle" xml:space="preserve">
+    <value>Manage Roles</value>
+  </data>
+  <data name="PermissionsHeader" xml:space="preserve">
+    <value>Manage Permissions</value>
+  </data>
+  <data name="UserLabel" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="RoleDescription" xml:space="preserve">
+    <value>Grants permissions of the {0} group.</value>
+    <comment>{0} is the role name, e.g., "Admin" or "User".</comment>
+  </data>
+  <data name="SavePermissionsButton" xml:space="preserve">
+    <value>Save Permissions</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Back</value>
+  </data>
+</root>

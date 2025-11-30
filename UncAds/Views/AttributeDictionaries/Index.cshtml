@@ -1,24 +1,26 @@
 ﻿@model IEnumerable<UncAds.Models.AttributeDictionary>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Słowniki atrybutów";
+    ViewData["Title"] = Localizer["IndexTitle"];
 }
 
-<h2 class="mb-4">Słowniki atrybutów</h2>
+<h2 class="mb-4">@Localizer["IndexHeader"]</h2>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> Dodaj nowy słownik
+        <i class="bi bi-plus-circle"></i> @Localizer["AddDictionaryButton"]
     </a>
 </p>
 
 <table class="table table-striped table-bordered align-middle">
     <thead class="table-light">
         <tr>
-            <th>Nazwa słownika</th>
-            <th>Liczba wartości</th>
-            <th>Wartości</th>
-            <th style="width:180px;">Akcje</th>
+            <th>@Localizer["Table_Name"]</th>
+            <th>@Localizer["Table_ValueCount"]</th>
+            <th>@Localizer["Table_Values"]</th>
+            <th style="width:180px;">@Localizer["Table_Actions"]</th>
         </tr>
     </thead>
     <tbody>
@@ -39,16 +41,16 @@
                     }
                     else
                     {
-                        <span class="text-muted fst-italic">brak</span>
+                        <span class="text-muted fst-italic">@Localizer["NoValues"]</span>
                     }
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@dict.Id" class="btn btn-sm btn-warning">
-                        <i class="bi bi-pencil"></i> Edytuj
+                    <a asp-action="Edit" asp-route-id="@dict.Id" class="btn btn-sm btn-warning" title="@Localizer["Action_Edit"]">
+                        <i class="bi bi-pencil"></i> @Localizer["Action_Edit"]
                     </a>
-                    <a asp-action="Delete" asp-route-id="@dict.Id" class="btn btn-sm btn-danger"
-                       onclick="return confirm('Czy na pewno chcesz usunąć ten słownik?');">
-                        <i class="bi bi-trash"></i> Usuń
+                    <a asp-action="Delete" asp-route-id="@dict.Id" class="btn btn-sm btn-danger" title="@Localizer["Action_Delete"]"
+                       onclick="return confirm('@Localizer["ConfirmDeleteMessage"]');">
+                        <i class="bi bi-trash"></i> @Localizer["Action_Delete"]
                     </a>
                 </td>
             </tr>

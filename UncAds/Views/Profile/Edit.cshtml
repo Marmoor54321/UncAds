@@ -1,52 +1,54 @@
 ﻿@model UncAds.Models.ApplicationUser
 @using UncAds.Models
 @using Newtonsoft.Json
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edycja profilu";
+    ViewData["Title"] = Localizer["ProfileEditTitle"];
 }
 
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-10">
 
-            <h2 class="mb-4">Edytuj profil</h2>
+            <h2 class="mb-4">@Localizer["ProfileEditHeader"]</h2>
 
             <form asp-action="Edit" method="post">
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-person-gear"></i> Dane podstawowe</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-person-gear"></i> @Localizer["BasicDataHeader"]</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label asp-for="DisplayName" class="form-label fw-bold">Nazwa wyświetlana</label>
+                                <label asp-for="DisplayName" class="form-label fw-bold">@Localizer["DisplayNameLabel"]</label>
                                 <input asp-for="DisplayName" class="form-control" />
                                 <span asp-validation-for="DisplayName" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-6">
-                                <label asp-for="Email" class="form-label fw-bold">Email (login)</label>
+                                <label asp-for="Email" class="form-label fw-bold">@Localizer["EmailLabel"]</label>
                                 <input asp-for="Email" class="form-control bg-light" readonly />
-                                <div class="form-text">Adresu email nie można zmienić w tym panelu.</div>
+                                <div class="form-text">@Localizer["EmailHelpText"]</div>
                             </div>
 
                             <div class="col-12">
-                                <label asp-for="AvatarUrl" class="form-label fw-bold">Link do awatara (URL)</label>
+                                <label asp-for="AvatarUrl" class="form-label fw-bold">@Localizer["AvatarUrlLabel"]</label>
                                 <input asp-for="AvatarUrl" class="form-control" placeholder="https://..." />
                             </div>
 
                             <div class="col-12">
-                                <label asp-for="Bio" class="form-label fw-bold">Bio (O mnie)</label>
-                                <textarea asp-for="Bio" class="form-control" rows="4" placeholder="Napisz coś o sobie..."></textarea>
+                                <label asp-for="Bio" class="form-label fw-bold">@Localizer["BioLabel"]</label>
+                                <textarea asp-for="Bio" class="form-control" rows="4" placeholder="@Localizer["BioPlaceholder"]"></textarea>
                                 <span asp-validation-for="Bio" class="text-danger"></span>
                             </div>
 
                             <div class="col-md-4">
-                                <label asp-for="AdsPerPage" class="form-label fw-bold">Liczba ogłoszeń na stronę</label>
+                                <label asp-for="AdsPerPage" class="form-label fw-bold">@Localizer["AdsPerPageLabel"]</label>
                                 <input asp-for="AdsPerPage" class="form-control" type="number" min="5" max="100" />
-                                <div class="form-text">Domyślnie 10. Max 100.</div>
+                                <div class="form-text">@Localizer["AdsPerPageHelpText"]</div>
                                 <span asp-validation-for="AdsPerPage" class="text-danger"></span>
                             </div>
                         </div>
@@ -55,11 +57,11 @@
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-envelope-paper"></i> Sprofilowany Newsletter</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-envelope-paper"></i> @Localizer["NewsletterHeader"]</h5>
                     </div>
                     <div class="card-body p-4">
                         <p class="text-muted mb-4">
-                            Zaznacz kategorie i określ dokładne kryteria, aby otrzymywać powiadomienia mailowe tylko o interesujących Cię ogłoszeniach.
+                            @Localizer["NewsletterDescription"]
                         </p>
 
                         <div class="accordion" id="categoriesAccordion">
@@ -86,13 +88,13 @@
                                         <div class="card-header d-flex align-items-center bg-light">
                                             <div class="form-check m-0 w-100">
                                                 <input class="form-check-input category-toggle"
-                                                       type="checkbox"
-                                                       name="selectedCategories"
-                                                       value="@category.Id"
-                                                       id="cat_@category.Id"
-                                                       data-target="#settings_@category.Id"
-                                                       @(isChecked ? "checked" : "")
-                                                       style="cursor: pointer;">
+                                                             type="checkbox"
+                                                             name="selectedCategories"
+                                                             value="@category.Id"
+                                                             id="cat_@category.Id"
+                                                             data-target="#settings_@category.Id"
+                                                             @(isChecked ? "checked" : "")
+                                                             style="cursor: pointer;">
                                                 <label class="form-check-label fw-bold w-100" for="cat_@category.Id" style="cursor: pointer;">
                                                     @category.Name
                                                 </label>
@@ -106,7 +108,7 @@
                                                     {
                                                         <div class="col-12">
                                                             <div class="alert alert-info py-2 px-3 small mb-2">
-                                                                <i class="bi bi-info-circle"></i> Pozostaw puste, aby otrzymywać <strong>wszystkie</strong> ogłoszenia z działu @category.Name.
+                                                                <i class="bi bi-info-circle"></i> @(string.Format(Localizer["FilterHelpText"].Value, category.Name))
                                                             </div>
                                                         </div>
 
@@ -120,7 +122,7 @@
                                                                 @if (attr.Type == AttributeType.Dictionary && attr.Dictionary != null)
                                                                 {
                                                                     <select name="Filters[@category.Id][@attr.Id]" class="form-select form-select-sm">
-                                                                        <option value="">- Dowolne -</option>
+                                                                        <option value="">@Localizer["FilterAny"]</option>
                                                                         @foreach (var dVal in attr.Dictionary.Values)
                                                                         {
                                                                             <!option value="@dVal.Value" @(val == dVal.Value ? "selected" : "")>@dVal.Value</!option>
@@ -130,14 +132,14 @@
                                                                 else if (attr.Type == AttributeType.Boolean)
                                                                 {
                                                                     <select name="Filters[@category.Id][@attr.Id]" class="form-select form-select-sm">
-                                                                        <option value="">- Dowolne -</option>
-                                                                        <!option value="true" @(val == "true" ? "selected" : "")>Tak</!option>
-                                                                        <!option value="false" @(val == "false" ? "selected" : "")>Nie</!option>
+                                                                        <option value="">@Localizer["FilterAny"]</option>
+                                                                        <!option value="true" @(val == "true" ? "selected" : "")>@Localizer["BooleanYes"]</!option>
+                                                                        <!option value="false" @(val == "false" ? "selected" : "")>@Localizer["BooleanNo"]</!option>
                                                                     </select>
                                                                 }
                                                                 else if (attr.Type == AttributeType.Number)
                                                                 {
-                                                                    <input type="number" name="Filters[@category.Id][@attr.Id]" class="form-control form-control-sm" value="@val" placeholder="Wartość" />
+                                                                    <input type="number" name="Filters[@category.Id][@attr.Id]" class="form-control form-control-sm" value="@val" placeholder="@Localizer["NumberPlaceholder"]" />
                                                                 }
                                                                 else
                                                                 {
@@ -149,7 +151,7 @@
                                                     else
                                                     {
                                                         <div class="col-12 text-muted small fst-italic">
-                                                            Ta kategoria nie posiada dodatkowych filtrów. Otrzymasz powiadomienia o wszystkich nowych ogłoszeniach w dziale @category.Name.
+                                                            @(string.Format(Localizer["NoFiltersMessage"].Value, category.Name))
                                                         </div>
                                                     }
                                                 </div>
@@ -163,8 +165,8 @@
                 </div>
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
-                    <a asp-action="Index" class="btn btn-outline-secondary me-md-2 px-4">Anuluj</a>
-                    <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">Zapisz zmiany</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary me-md-2 px-4">@Localizer["CancelButton"]</a>
+                    <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">@Localizer["SaveButton"]</button>
                 </div>
 
             </form>

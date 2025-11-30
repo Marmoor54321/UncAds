@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="CreateAttributeTitle" xml:space="preserve">
+    <value>Nowy atrybut</value>
+  </data>
+  <data name="CreateAttributeHeader" xml:space="preserve">
+    <value>Nowy atrybut kategorii</value>
+  </data>
+  
+  <data name="NameLabel" xml:space="preserve">
+    <value>Nazwa atrybutu</value>
+  </data>
+  <data name="NamePlaceholder" xml:space="preserve">
+    <value>np. Rok produkcji, Kolor, Przebieg</value>
+  </data>
+  <data name="TypeLabel" xml:space="preserve">
+    <value>Typ pola</value>
+  </data>
+  <data name="AssignCategoryLabel" xml:space="preserve">
+    <value>Przypisz do kategorii</value>
+  </data>
+  <data name="OptionsLabel" xml:space="preserve">
+    <value>Opcje wyboru</value>
+  </data>
+  <data name="OptionsPlaceholder" xml:space="preserve">
+    <value>np. Benzyna;Diesel;LPG</value>
+  </data>
+  <data name="OptionsHelp" xml:space="preserve">
+    <value>Wypełnij TYLKO jeśli wybrałeś typ Select. Rozdzielaj średnikiem (;).</value>
+  </data>
+
+  <data name="AdvancedOptionsHeader" xml:space="preserve">
+    <value>Opcje zaawansowane</value>
+  </data>
+  <data name="DictionaryLabel" xml:space="preserve">
+    <value>Słownik zewnętrzny</value>
+  </data>
+  <data name="DictionaryNoneOption" xml:space="preserve">
+    <value>— brak (użyj pola Opcje lub pola tekstowego) —</value>
+  </data>
+  <data name="DictionaryHelp" xml:space="preserve">
+    <value>Wybierz, jeśli typ to Dictionary.</value>
+  </data>
+  <data name="AllowMultipleLabel" xml:space="preserve">
+    <value>Pozwól na wybór wielu wartości</value>
+  </data>
+  
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Zapisz atrybut</value>
+  </data>
+</root>

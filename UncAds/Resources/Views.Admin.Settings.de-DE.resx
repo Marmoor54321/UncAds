@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Systemeinstellungen</value>
+  </data>
+  <data name="ConfigHeader" xml:space="preserve">
+    <value>Systemkonfiguration</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+
+  <data name="LimitsHeader" xml:space="preserve">
+    <value>Dateibeschränkungen</value>
+  </data>
+  <data name="MaxAttachmentsLabel" xml:space="preserve">
+    <value>Max. Anhänge</value>
+  </data>
+  <data name="MaxAttachmentsHelp" xml:space="preserve">
+    <value>Anzahl der Dateien pro Anzeige.</value>
+  </data>
+  <data name="MaxMediaLabel" xml:space="preserve">
+    <value>Max. Mediendateien</value>
+  </data>
+  <data name="MaxMediaHelp" xml:space="preserve">
+    <value>Anzahl der Fotos/Videos pro Anzeige.</value>
+  </data>
+  <data name="MaxFileSizeLabel" xml:space="preserve">
+    <value>Größenlimit</value>
+  </data>
+  <data name="MaxFileSizeHelp" xml:space="preserve">
+    <value>Maximale Größe einer einzelnen Datei.</value>
+  </data>
+  <data name="Unit_Pcs" xml:space="preserve">
+    <value>Stück</value>
+  </data>
+
+  <data name="ContentHeader" xml:space="preserve">
+    <value>Globale Inhalte</value>
+  </data>
+  <data name="HomePageMessageLabel" xml:space="preserve">
+    <value>Nachricht auf der Startseite</value>
+  </data>
+  <data name="HomePageMessagePlaceholder" xml:space="preserve">
+    <value>Geben Sie eine Willkommensnachricht oder Systemankündigung ein...</value>
+  </data>
+  <data name="HomePageMessageHelp" xml:space="preserve">
+    <value>Dieser Text wird ganz oben auf der Startseite angezeigt (sofern implementiert).</value>
+  </data>
+
+  <data name="SaveButton" xml:space="preserve">
+    <value>Einstellungen speichern</value>
+  </data>
+</root>

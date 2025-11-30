@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="IndexHeader" xml:space="preserve">
+    <value>Kategorie ogłoszeń</value>
+  </data>
+  <data name="NewCategoryButton" xml:space="preserve">
+    <value>Nowa kategoria</value>
+  </data>
+  
+  <data name="Table_Name" xml:space="preserve">
+    <value>Nazwa kategorii</value>
+  </data>
+  <data name="Table_ParentCategory" xml:space="preserve">
+    <value>Kategoria nadrzędna</value>
+  </data>
+  <data name="Table_Actions" xml:space="preserve">
+    <value>Akcje</value>
+  </data>
+
+  <data name="MainCategory" xml:space="preserve">
+    <value>Główna</value>
+  </data>
+
+  <data name="Action_Edit" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="Action_Details" xml:space="preserve">
+    <value>Szczegóły</value>
+  </data>
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+</root>

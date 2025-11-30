@@ -1,9 +1,12 @@
-﻿@model UncAds.Models.ApplicationUser
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model UncAds.Models.ApplicationUser
 
 @{
-    ViewData["Title"] = "Twój profil";
-    // Placeholder awatara, jeśli użytkownik nie ma własnego
-    var avatarSrc = !string.IsNullOrEmpty(Model.AvatarUrl) ? Model.AvatarUrl : "https://via.placeholder.com/150?text=User";
+    ViewData["Title"] = Localizer["ProfileTitle"];
+
+    var placeholderText = Localizer["UserPlaceholderText"];
+    var avatarSrc = !string.IsNullOrEmpty(Model.AvatarUrl) ? Model.AvatarUrl : $"https://via.placeholder.com/150?text={placeholderText}";
 }
 
 <div class="container py-5">
@@ -11,13 +14,15 @@
         <div class="col-lg-4">
             <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-body text-center">
-                    <img src="@avatarSrc" alt="Avatar"
+                    <img src="@avatarSrc" alt="@Localizer["AvatarAlt"].Value"
                          class="rounded-circle img-fluid border p-1 mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                    <h5 class="my-3">@(Model.DisplayName ?? "Użytkownik bez nazwy")</h5>
+
+                    <h5 class="my-3">@(Model.DisplayName ?? Localizer["UnnamedUser"].Value)</h5>
                     <p class="text-muted mb-1">@Model.Email</p>
+
                     <div class="d-flex justify-content-center mb-2 mt-3">
                         <a asp-action="Edit" class="btn btn-primary rounded-pill px-4">
-                            <i class="bi bi-pencil-square"></i> Edytuj profil
+                            <i class="bi bi-pencil-square"></i> @Localizer["EditProfileButton"]
                         </a>
                     </div>
                 </div>
@@ -27,11 +32,11 @@
         <div class="col-lg-8">
             <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-body p-4">
-                    <h5 class="mb-4 text-primary"><i class="bi bi-person-lines-fill"></i> Informacje o użytkowniku</h5>
+                    <h5 class="mb-4 text-primary"><i class="bi bi-person-lines-fill"></i> @Localizer["UserInfoHeader"]</h5>
 
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <p class="mb-0 fw-bold">Nazwa wyświetlana</p>
+                            <p class="mb-0 fw-bold">@Localizer["DisplayNameLabel"]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0">@Model.DisplayName</p>
@@ -40,7 +45,7 @@
                     <hr>
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <p class="mb-0 fw-bold">Email</p>
+                            <p class="mb-0 fw-bold">@Localizer["EmailLabel"]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0">@Model.Email</p>
@@ -49,13 +54,13 @@
                     <hr>
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <p class="mb-0 fw-bold">O mnie (Bio)</p>
+                            <p class="mb-0 fw-bold">@Localizer["BioLabel"]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0">
                                 @if (string.IsNullOrWhiteSpace(Model.Bio))
                                 {
-                                    <em class="text-muted small">Nie dodano jeszcze opisu.</em>
+                                    <em class="text-muted small">@Localizer["NoBioMessage"]</em>
                                 }
                                 else
                                 {
@@ -67,11 +72,11 @@
                     <hr>
                     <div class="row mb-3">
                         <div class="col-sm-3">
-                            <p class="mb-0 fw-bold">Ustawienia</p>
+                            <p class="mb-0 fw-bold">@Localizer["SettingsLabel"]</p>
                         </div>
                         <div class="col-sm-9">
                             <p class="text-muted mb-0">
-                                Liczba ogłoszeń na stronę: <span class="badge bg-secondary">@Model.AdsPerPage</span>
+                                @Localizer["AdsPerPageSetting", Model.AdsPerPage]
                             </p>
                         </div>
                     </div>

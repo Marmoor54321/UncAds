@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="CreateCategoryTitle" xml:space="preserve">
+    <value>New Category</value>
+  </data>
+  <data name="CreateCategoryHeader" xml:space="preserve">
+    <value>Add New Category</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NamePlaceholder" xml:space="preserve">
+    <value>e.g., Automotive</value>
+  </data>
+  <data name="ParentCategoryLabel" xml:space="preserve">
+    <value>Parent Category</value>
+  </data>
+  <data name="MainCategoryOption" xml:space="preserve">
+    <value>-- This is a main category --</value>
+  </data>
+  <data name="ParentCategoryHelp" xml:space="preserve">
+    <value>Select "Main" if the category has no parent.</value>
+  </data>
+
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+</root>

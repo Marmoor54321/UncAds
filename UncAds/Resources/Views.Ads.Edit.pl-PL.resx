@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="EditAdTitle" xml:space="preserve">
+    <value>Edycja ogłoszenia</value>
+  </data>
+  <data name="EditAdHeader" xml:space="preserve">
+    <value>Edytuj ogłoszenie</value>
+  </data>
+  <data name="AdDataHeader" xml:space="preserve">
+    <value>Dane ogłoszenia</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Tytuł</value>
+  </data>
+  <data name="CategoriesLabel" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="CategorySelectHelp" xml:space="preserve">
+    <value>Przytrzymaj Ctrl, aby zmienić zaznaczenie.</value>
+  </data>
+  <data name="DescriptionLabel" xml:space="preserve">
+    <value>Opis</value>
+  </data>
+  <data name="AttributesHeader" xml:space="preserve">
+    <value>Szczegóły (Atrybuty)</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="SaveChangesButton" xml:space="preserve">
+    <value>Zapisz zmiany</value>
+  </data>
+  
+  <data name="ChooseCategoryMessage" xml:space="preserve">
+    <value>Wybierz kategorię...</value>
+  </data>
+  <data name="NoAttributesMessage" xml:space="preserve">
+    <value>Brak dodatkowych atrybutów dla wybranych kategorii.</value>
+  </data>
+  <data name="AttributeLoadingError" xml:space="preserve">
+    <value>Błąd ładowania atrybutów.</value>
+  </data>
+  <data name="SelectOptionDefault" xml:space="preserve">
+    <value>-- Wybierz --</value>
+  </data>
+  <data name="BooleanOptionYes" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="BooleanOptionNo" xml:space="preserve">
+    <value>Nie</value>
+  </data>
+</root>

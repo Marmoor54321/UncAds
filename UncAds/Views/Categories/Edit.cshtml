@@ -1,7 +1,9 @@
 ﻿@model UncAds.Models.Category
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edycja kategorii";
+    ViewData["Title"] = Localizer["EditCategoryTitle"];
 }
 
 <div class="container py-5">
@@ -9,7 +11,7 @@
         <div class="col-md-6 col-lg-5">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom py-3">
-                    <h5 class="m-0 text-primary"><i class="bi bi-pencil-square"></i> Edytuj kategorię</h5>
+                    <h5 class="m-0 text-primary"><i class="bi bi-pencil-square"></i> @Localizer["EditCategoryHeader"]</h5>
                 </div>
                 <div class="card-body p-4">
                     <form asp-action="Edit" method="post">
@@ -17,21 +19,21 @@
                         <input type="hidden" asp-for="Id" />
 
                         <div class="mb-3">
-                            <label asp-for="Name" class="form-label fw-bold">Nazwa</label>
+                            <label asp-for="Name" class="form-label fw-bold">@Localizer["NameLabel"]</label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-4">
-                            <label asp-for="ParentCategoryId" class="form-label fw-bold">Kategoria nadrzędna</label>
+                            <label asp-for="ParentCategoryId" class="form-label fw-bold">@Localizer["ParentCategoryLabel"]</label>
                             <select asp-for="ParentCategoryId" class="form-select" asp-items="ViewBag.ParentCategoryId">
-                                <option value="">-- To jest kategoria główna --</option>
+                                <option value="">@Localizer["MainCategoryOption"]</option>
                             </select>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary fw-bold">Zapisz zmiany</button>
-                            <a asp-action="Index" class="btn btn-light border">Anuluj</a>
+                            <button type="submit" class="btn btn-primary fw-bold">@Localizer["SaveButton"]</button>
+                            <a asp-action="Index" class="btn btn-light border">@Localizer["CancelButton"]</a>
                         </div>
                     </form>
                 </div>

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ReportsTitle" xml:space="preserve">
+    <value>Zgłoszenia</value>
+  </data>
+  <data name="ReportsHeader" xml:space="preserve">
+    <value>Zgłoszenia nadużyć</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Wróć do użytkowników</value>
+  </data>
+  
+  <data name="Table_Ad" xml:space="preserve">
+    <value>Dotyczy ogłoszenia</value>
+  </data>
+  <data name="Table_Reporter" xml:space="preserve">
+    <value>Zgłaszający</value>
+  </data>
+  <data name="Table_Reason" xml:space="preserve">
+    <value>Powód</value>
+  </data>
+  <data name="Table_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Table_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Table_Action" xml:space="preserve">
+    <value>Akcja</value>
+  </data>
+  
+  <data name="NoReportsMessage" xml:space="preserve">
+    <value>Brak nowych zgłoszeń.</value>
+  </data>
+  <data name="AdDeleted" xml:space="preserve">
+    <value>Ogłoszenie usunięte</value>
+  </data>
+  <data name="StatusResolved" xml:space="preserve">
+    <value>Rozwiązane</value>
+  </data>
+  <data name="StatusPending" xml:space="preserve">
+    <value>Oczekuje</value>
+  </data>
+  <data name="HandleButton" xml:space="preserve">
+    <value>Obsłuż</value>
+  </data>
+</root>

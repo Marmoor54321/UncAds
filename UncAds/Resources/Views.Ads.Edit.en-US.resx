@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="EditAdTitle" xml:space="preserve">
+    <value>Edit Ad</value>
+  </data>
+  <data name="EditAdHeader" xml:space="preserve">
+    <value>Edit Ad</value>
+  </data>
+  <data name="AdDataHeader" xml:space="preserve">
+    <value>Ad Details</value>
+  </data>
+  <data name="TitleLabel" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="CategoriesLabel" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="CategorySelectHelp" xml:space="preserve">
+    <value>Hold Ctrl to change selection.</value>
+  </data>
+  <data name="DescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="AttributesHeader" xml:space="preserve">
+    <value>Details (Attributes)</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SaveChangesButton" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+
+  <data name="ChooseCategoryMessage" xml:space="preserve">
+    <value>Select a category...</value>
+  </data>
+  <data name="NoAttributesMessage" xml:space="preserve">
+    <value>No additional attributes for selected categories.</value>
+  </data>
+  <data name="AttributeLoadingError" xml:space="preserve">
+    <value>Error loading attributes.</value>
+  </data>
+  <data name="SelectOptionDefault" xml:space="preserve">
+    <value>-- Select --</value>
+  </data>
+  <data name="BooleanOptionYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="BooleanOptionNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+</root>

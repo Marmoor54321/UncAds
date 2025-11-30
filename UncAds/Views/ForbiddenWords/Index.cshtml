@@ -1,14 +1,16 @@
 ﻿@model IEnumerable<UncAds.Models.ForbiddenWord>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Zakazane słowa";
+    ViewData["Title"] = Localizer["IndexTitle"];
 }
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="m-0"><i class="bi bi-shield-x"></i> Słownik słów zakazanych</h2>
+        <h2 class="m-0"><i class="bi bi-shield-x"></i> @Localizer["IndexHeader"]</h2>
         <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm">
-            <i class="bi bi-plus-lg"></i> Dodaj słowo
+            <i class="bi bi-plus-lg"></i> @Localizer["AddWordButton"]
         </a>
     </div>
 
@@ -18,7 +20,7 @@
             {
                 <div class="text-center py-5 text-muted">
                     <i class="bi bi-check-circle fs-1 d-block mb-2"></i>
-                    <span>Brak zdefiniowanych słów zakazanych.</span>
+                    <span>@Localizer["NoWordsMessage"]</span>
                 </div>
             }
             else
@@ -27,8 +29,8 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4">Fraza / Słowo</th>
-                                <th class="text-end pe-4">Akcje</th>
+                                <th class="ps-4">@Localizer["Table_WordHeader"]</th>
+                                <th class="text-end pe-4">@Localizer["Table_ActionsHeader"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,8 +41,8 @@
                                         @w.Word
                                     </td>
                                     <td class="text-end pe-4">
-                                        <a asp-action="Delete" asp-route-id="@w.Id" class="btn btn-outline-danger btn-sm" title="Usuń">
-                                            <i class="bi bi-trash"></i> Usuń
+                                        <a asp-action="Delete" asp-route-id="@w.Id" class="btn btn-outline-danger btn-sm" title="@Localizer["Action_DeleteTitle"]">
+                                            <i class="bi bi-trash"></i> @Localizer["Action_Delete"]
                                         </a>
                                     </td>
                                 </tr>

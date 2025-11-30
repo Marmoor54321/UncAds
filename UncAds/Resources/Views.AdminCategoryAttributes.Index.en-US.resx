@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Category Attributes</value>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>Ad Attributes</value>
+  </data>
+  <data name="AddAttributeButton" xml:space="preserve">
+    <value>Add Attribute</value>
+  </data>
+
+  <data name="Table_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Table_FieldType" xml:space="preserve">
+    <value>Field Type</value>
+  </data>
+  <data name="Table_Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="Table_Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Table_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+
+  <data name="Config_OptionsDefined" xml:space="preserve">
+    <value>Options Defined</value>
+  </data>
+  <data name="Config_Dictionary" xml:space="preserve">
+    <value>Dictionary</value>
+  </data>
+
+  <data name="Action_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Action_Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+</root>

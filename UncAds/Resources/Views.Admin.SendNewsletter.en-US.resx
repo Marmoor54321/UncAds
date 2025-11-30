@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="NewsletterTitle" xml:space="preserve">
+    <value>Send Newsletter</value>
+  </data>
+  <data name="ManualSendHeader" xml:space="preserve">
+    <value>Manual Notification Dispatch</value>
+  </data>
+  <data name="OperationDescription" xml:space="preserve">
+    <value>This operation will check all users' preferences and send them emails with ads added since the last dispatch.</value>
+  </data>
+  <data name="SendButton" xml:space="preserve">
+    <value>Send Newsletter Now</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Back</value>
+  </data>
+</root>

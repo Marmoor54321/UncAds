@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="CreateDictionaryTitle" xml:space="preserve">
+    <value>Neues Wörterbuch</value>
+  </data>
+  <data name="CreateDictionaryHeader" xml:space="preserve">
+    <value>Neues Wörterbuch</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Name des Wörterbuchs</value>
+  </data>
+
+  <data name="SaveButton" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+</root>

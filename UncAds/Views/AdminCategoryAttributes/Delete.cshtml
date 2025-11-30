@@ -1,7 +1,9 @@
 ﻿@model UncAds.Models.CategoryAttribute
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Usuń atrybut";
+    ViewData["Title"] = Localizer["DeleteAttributeTitle"];
 }
 
 <div class="container py-5">
@@ -9,10 +11,10 @@
         <div class="col-md-6">
             <div class="card border-danger shadow">
                 <div class="card-header bg-danger text-white text-center py-3">
-                    <h4 class="m-0"><i class="bi bi-exclamation-triangle"></i> Potwierdź usunięcie</h4>
+                    <h4 class="m-0"><i class="bi bi-exclamation-triangle"></i> @Localizer["ConfirmDeleteHeader"]</h4>
                 </div>
                 <div class="card-body p-4 text-center">
-                    <p class="text-muted mb-4">Czy na pewno chcesz usunąć ten atrybut? Operacja jest nieodwracalna.</p>
+                    <p class="text-muted mb-4">@Localizer["ConfirmationMessage"]</p>
 
                     <h3 class="fw-bold text-dark mb-1">@Model.Name</h3>
                     <div class="mb-4">
@@ -20,13 +22,13 @@
                     </div>
 
                     <div class="alert alert-warning small text-start">
-                        <i class="bi bi-exclamation-circle-fill"></i> Uwaga: Usunięcie atrybutu spowoduje utratę wartości tego pola we wszystkich istniejących ogłoszeniach w tej kategorii.
+                        <i class="bi bi-exclamation-circle-fill"></i> @Localizer["WarningMessage"]
                     </div>
 
                     <form asp-action="Delete" class="d-flex justify-content-center gap-3 mt-4">
                         <input type="hidden" asp-for="Id" />
-                        <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
-                        <button type="submit" class="btn btn-danger px-4 fw-bold">Tak, usuń</button>
+                        <a asp-action="Index" class="btn btn-light border px-4">@Localizer["CancelButton"]</a>
+                        <button type="submit" class="btn btn-danger px-4 fw-bold">@Localizer["ConfirmDeleteButton"]</button>
                     </form>
                 </div>
             </div>

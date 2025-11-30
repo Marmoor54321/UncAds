@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Słowniki atrybutów</value>
+  </data>
+  <data name="IndexHeader" xml:space="preserve">
+    <value>Słowniki atrybutów</value>
+  </data>
+  <data name="AddDictionaryButton" xml:space="preserve">
+    <value>Dodaj nowy słownik</value>
+  </data>
+  
+  <data name="Table_Name" xml:space="preserve">
+    <value>Nazwa słownika</value>
+  </data>
+  <data name="Table_ValueCount" xml:space="preserve">
+    <value>Liczba wartości</value>
+  </data>
+  <data name="Table_Values" xml:space="preserve">
+    <value>Wartości</value>
+  </data>
+  <data name="Table_Actions" xml:space="preserve">
+    <value>Akcje</value>
+  </data>
+  
+  <data name="NoValues" xml:space="preserve">
+    <value>brak</value>
+  </data>
+  <data name="ConfirmDeleteMessage" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć ten słownik?</value>
+  </data>
+
+  <data name="Action_Edit" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+</root>

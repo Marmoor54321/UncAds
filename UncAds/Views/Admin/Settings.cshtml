@@ -1,6 +1,9 @@
 ﻿@model UncAds.Models.AdminSettings
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Ustawienia systemu";
+    ViewData["Title"] = Localizer["SettingsTitle"];
 }
 
 <div class="container py-4">
@@ -8,14 +11,14 @@
         <div class="col-lg-8">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="m-0"><i class="bi bi-sliders"></i> Konfiguracja systemu</h2>
+                <h2 class="m-0"><i class="bi bi-sliders"></i> @Localizer["ConfigHeader"]</h2>
             </div>
 
             @if (ViewBag.Message != null)
             {
                 <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
                     <i class="bi bi-check-circle-fill"></i> @ViewBag.Message
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="@Localizer["CloseButton"]"></button>
                 </div>
             }
 
@@ -23,35 +26,35 @@
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-hdd-stack"></i> Limity plików</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-hdd-stack"></i> @Localizer["LimitsHeader"]</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <label asp-for="MaxAttachments" class="form-label fw-bold">Max. załączników</label>
+                                <label asp-for="MaxAttachments" class="form-label fw-bold">@Localizer["MaxAttachmentsLabel"]</label>
                                 <div class="input-group">
                                     <input asp-for="MaxAttachments" class="form-control" type="number" />
-                                    <span class="input-group-text">szt.</span>
+                                    <span class="input-group-text">@Localizer["Unit_Pcs"]</span>
                                 </div>
-                                <div class="form-text">Ilość plików na ogłoszenie.</div>
+                                <div class="form-text">@Localizer["MaxAttachmentsHelp"]</div>
                             </div>
 
                             <div class="col-md-4">
-                                <label asp-for="MaxMediaFiles" class="form-label fw-bold">Max. multimediów</label>
+                                <label asp-for="MaxMediaFiles" class="form-label fw-bold">@Localizer["MaxMediaLabel"]</label>
                                 <div class="input-group">
                                     <input asp-for="MaxMediaFiles" class="form-control" type="number" />
-                                    <span class="input-group-text">szt.</span>
+                                    <span class="input-group-text">@Localizer["Unit_Pcs"]</span>
                                 </div>
-                                <div class="form-text">Ilość zdjęć/wideo na ogłoszenie.</div>
+                                <div class="form-text">@Localizer["MaxMediaHelp"]</div>
                             </div>
 
                             <div class="col-md-4">
-                                <label asp-for="MaxFileSizeMB" class="form-label fw-bold">Limit rozmiaru</label>
+                                <label asp-for="MaxFileSizeMB" class="form-label fw-bold">@Localizer["MaxFileSizeLabel"]</label>
                                 <div class="input-group">
                                     <input asp-for="MaxFileSizeMB" class="form-control" type="number" />
                                     <span class="input-group-text">MB</span>
                                 </div>
-                                <div class="form-text">Maksymalny rozmiar jednego pliku.</div>
+                                <div class="form-text">@Localizer["MaxFileSizeHelp"]</div>
                             </div>
                         </div>
                     </div>
@@ -59,20 +62,20 @@
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-chat-quote"></i> Treści globalne</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-chat-quote"></i> @Localizer["ContentHeader"]</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="mb-3">
-                            <label asp-for="HomePageMessage" class="form-label fw-bold">Komunikat na stronie głównej</label>
-                            <textarea asp-for="HomePageMessage" class="form-control" rows="4" placeholder="Wpisz wiadomość powitalną lub ogłoszenie systemowe..."></textarea>
-                            <div class="form-text">Ten tekst pojawi się na samej górze strony głównej (jeśli zaimplementowano).</div>
+                            <label asp-for="HomePageMessage" class="form-label fw-bold">@Localizer["HomePageMessageLabel"]</label>
+                            <textarea asp-for="HomePageMessage" class="form-control" rows="4" placeholder="@Localizer["HomePageMessagePlaceholder"]"></textarea>
+                            <div class="form-text">@Localizer["HomePageMessageHelp"]</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="d-grid d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
-                        <i class="bi bi-save"></i> Zapisz ustawienia
+                        <i class="bi bi-save"></i> @Localizer["SaveButton"]
                     </button>
                 </div>
             </form>

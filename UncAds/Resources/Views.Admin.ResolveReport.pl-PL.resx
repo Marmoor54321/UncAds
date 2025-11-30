@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ResolveReportTitle" xml:space="preserve">
+    <value>Rozpatrz zgłoszenie</value>
+  </data>
+  <data name="ModeratorPanelHeader" xml:space="preserve">
+    <value>Panel Moderatora</value>
+  </data>
+  <data name="ReportIdLabel" xml:space="preserve">
+    <value>Zgłoszenie</value>
+  </data>
+  <data name="AdLabel" xml:space="preserve">
+    <value>Ogłoszenie</value>
+  </data>
+  <data name="AdDeletedMessage" xml:space="preserve">
+    <value>Ogłoszenie nie istnieje (usunięte)</value>
+  </data>
+  <data name="ReportDateLabel" xml:space="preserve">
+    <value>Data zgłoszenia</value>
+  </data>
+  <data name="ReportReasonLabel" xml:space="preserve">
+    <value>Powód zgłoszenia (Reporter)</value>
+  </data>
+  
+  <data name="ReportClosedHeader" xml:space="preserve">
+    <value>Zgłoszenie zamknięte</value>
+  </data>
+  <data name="ModeratorNoteLabel" xml:space="preserve">
+    <value>Notatka moderatora</value>
+  </data>
+  <data name="NoNoteMessage" xml:space="preserve">
+    <value>Brak notatki.</value>
+  </data>
+  <data name="BackToListButton" xml:space="preserve">
+    <value>Wróć do listy</value>
+  </data>
+  
+  <data name="DecisionHeader" xml:space="preserve">
+    <value>Decyzja</value>
+  </data>
+  <data name="DeleteAdOption" xml:space="preserve">
+    <value>Usuń ogłoszenie definitywnie</value>
+  </data>
+  <data name="DeleteAdHelp" xml:space="preserve">
+    <value>Zaznacz, jeśli ogłoszenie narusza regulamin i ma zostać usunięte.</value>
+  </data>
+  <data name="ResolutionNoteLabel" xml:space="preserve">
+    <value>Notatka / Uzasadnienie</value>
+  </data>
+  <data name="ResolutionNotePlaceholder" xml:space="preserve">
+    <value>Wpisz uzasadnienie decyzji (widoczne dla adminów)...</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="ConfirmDecisionButton" xml:space="preserve">
+    <value>Zatwierdź decyzję</value>
+  </data>
+</root>

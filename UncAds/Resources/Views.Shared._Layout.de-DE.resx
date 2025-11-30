@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="RssFeedTitle" xml:space="preserve">
+    <value>UncAds - RSS-Feed</value>
+  </data>
+  
+  <data name="ToggleNavigation" xml:space="preserve">
+    <value>Navigation umschalten</value>
+  </data>
+  <data name="BrowseAds" xml:space="preserve">
+    <value>Anzeigen durchsuchen</value>
+  </data>
+  <data name="LanguageSelectionLabel" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Design</value>
+  </data>
+  <data name="ThemeDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dunkel</value>
+  </data>
+  <data name="ThemeBlue" xml:space="preserve">
+    <value>Blau</value>
+  </data>
+  
+  <data name="AdminPanel" xml:space="preserve">
+    <value>Admin-Panel</value>
+  </data>
+  <data name="HeaderContentManagement" xml:space="preserve">
+    <value>Inhaltsverwaltung</value>
+  </data>
+  <data name="LinkCategories" xml:space="preserve">
+    <value>Kategorien</value>
+  </data>
+  <data name="LinkAttributes" xml:space="preserve">
+    <value>Attribute</value>
+  </data>
+  <data name="LinkDictionaries" xml:space="preserve">
+    <value>Wörterbücher</value>
+  </data>
+  <data name="HeaderSystem" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="LinkForbiddenWords" xml:space="preserve">
+    <value>Verbotene Wörter</value>
+  </data>
+  <data name="LinkUsers" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="LinkGlobalSettings" xml:space="preserve">
+    <value>Globale Einstellungen</value>
+  </data>
+  
+  <data name="MyProfile" xml:space="preserve">
+    <value>Mein Profil</value>
+  </data>
+  
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>Datenschutzrichtlinie</value>
+  </data>
+  <data name="RssText" xml:space="preserve">
+    <value>RSS</value>
+  </data>
+  <data name="CloseButtonLabel" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+</root>

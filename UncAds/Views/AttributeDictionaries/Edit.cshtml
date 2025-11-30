@@ -1,25 +1,29 @@
 ﻿@model UncAds.Models.AttributeDictionary
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edycja słownika";
+    ViewData["Title"] = Localizer["EditDictionaryTitle"];
 }
 
-<h2>Słownik</h2>
+<h2>@Localizer["DictionaryHeader"]</h2>
 
-<form asp-action="Create" method="post" id="dictForm">
-    @* Jeśli to edycja, odkomentuj poniższe: *@
-    @* <input type="hidden" asp-for="Id" /> *@
+<form asp-action="Edit" method="post" id="dictForm">
+    @* Użyjemy akcji Edit i odkomentujemy ukryte pole dla ID *@
+    <input type="hidden" asp-for="Id" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="mb-3">
-        <label asp-for="Name" class="form-label">Nazwa słownika</label>
+        <label asp-for="Name" class="form-label">@Localizer["NameLabel"]</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
-    <h4>Wartości słownika</h4>
+    <h4>@Localizer["ValuesHeader"]</h4>
 
     <div id="values-container">
-        @* Renderowanie istniejących wartości (dla Edycji lub błędu walidacji) *@
+        @* Renderowanie istniejących wartości *@
         @if (Model?.Values != null)
         {
             var valuesList = Model.Values.ToList();
@@ -30,8 +34,11 @@
                            name="Values[@i].Value"
                            value="@valuesList[i].Value"
                            class="form-control js-value-input"
-                           placeholder="Wpisz wartość"
-                           required />  <button type="button" class="btn btn-outline-danger remove-value-btn">Usuń</button>
+                           placeholder="@Localizer["ValuePlaceholder"]"
+                           required />
+                    <button type="button" class="btn btn-outline-danger remove-value-btn">@Localizer["RemoveButton"]</button>
+                    @* Dodaj ukryte pole dla ID wartości, jeśli jest to edycja istniejącej wartości *@
+                    <input type="hidden" name="Values[@i].Id" value="@valuesList[i].Id" />
                 </div>
             }
         }
@@ -39,15 +46,15 @@
 
     <div class="mb-3">
         <button type="button" id="add-value-btn" class="btn btn-success btn-sm">
-            <i class="bi bi-plus"></i> Dodaj kolejną wartość
+            <i class="bi bi-plus"></i> @Localizer["AddValueButton"]
         </button>
         <div id="error-message" class="text-danger mt-2 fw-bold" style="display:none;">
-            Najpierw wpisz tekst w ostatnim polu!
+            @Localizer["ErrorEmptyValue"]
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Zapisz</button>
-    <a asp-action="Index" class="btn btn-outline-secondary">Anuluj</a>
+    <button type="submit" class="btn btn-primary">@Localizer["SaveButton"]</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">@Localizer["CancelButton"]</a>
 </form>
 
 @section Scripts {
@@ -56,51 +63,49 @@
     }
 
     <script>
+        // UWAGA: Skrypt musi być zaktualizowany, aby obsługiwał ID wartości (gdy jest to edycja)
+        // oraz by używał zlokalizowanego placeholder'a.
+
         document.addEventListener('DOMContentLoaded', function () {
             const container = document.getElementById('values-container');
             const addBtn = document.getElementById('add-value-btn');
             const errorMsg = document.getElementById('error-message');
+            const placeholderText = "@Localizer["ValuePlaceholder"]";
+            const removeButtonText = "@Localizer["RemoveButton"]";
 
             addBtn.addEventListener('click', function () {
-                // 1. Znajdź wszystkie inputy z naszą specjalną klasą 'js-value-input'
                 const inputs = container.querySelectorAll('.js-value-input');
 
-                // 2. Sprawdź OSTATNI input (jeśli istnieje)
                 if (inputs.length > 0) {
                     const lastInput = inputs[inputs.length - 1];
 
-                    // Jeśli wartość jest pusta (po usunięciu spacji)
                     if (!lastInput.value || lastInput.value.trim() === "") {
-                        // Pokaż błąd
                         errorMsg.style.display = 'block';
-                        // Zafocusuj puste pole, żeby użytkownik wiedział gdzie pisać
                         lastInput.focus();
-                        // Zablokuj dodawanie - wychodzimy z funkcji
                         return;
                     }
                 }
 
-                // 3. Jeśli wszystko OK, ukryj błąd i dodaj nowe pole
                 errorMsg.style.display = 'none';
 
-                // Obliczamy nowy indeks na podstawie obecnej liczby wierszy
-                // (Uwaga: w MVC przy usuwaniu wierszy indeksy mogą się pomieszać,
-                // ale przy prostym dodawaniu na koniec to wystarczy).
-                const newIndex = container.querySelectorAll('.value-row').length;
+                // Należy użyć unikalnego indeksu, aby MVC rozpoznało nowo dodane elementy
+                // nawet jeśli inne zostały usunięte. Timestamp jest dobrym wyborem.
+                const newIndex = Date.now();
 
                 const html = `
                     <div class="input-group mb-2 value-row">
                         <input type="text"
                                name="Values[${newIndex}].Value"
                                class="form-control js-value-input"
-                               placeholder="Wpisz wartość"
+                               placeholder="${placeholderText}"
                                required />
-                        <button type="button" class="btn btn-outline-danger remove-value-btn">Usuń</button>
+                        <button type="button" class="btn btn-outline-danger remove-value-btn">${removeButtonText}</button>
+                        @* Ważne: Nowa wartość NIE MA ID. MVC zrozumie, że to nowa wartość. *@
+                        <input type="hidden" name="Values[${newIndex}].Id" value="0" />
                     </div>`;
 
                 container.insertAdjacentHTML('beforeend', html);
 
-                // Ustaw kursor w nowym polu
                 const newInputs = container.querySelectorAll('.js-value-input');
                 newInputs[newInputs.length - 1].focus();
             });
@@ -109,11 +114,10 @@
             container.addEventListener('click', function (e) {
                 if (e.target.classList.contains('remove-value-btn')) {
                     e.target.closest('.value-row').remove();
-                    // Ukryj błąd, jeśli usunęliśmy akurat ten pusty wiersz, który blokował dodawanie
                     errorMsg.style.display = 'none';
 
-                    // Opcjonalnie: Tutaj przydałby się skrypt do przenumerowania indeksów Values[0], Values[1]...
-                    // aby formularz wysłał się poprawnie, jeśli usuniesz element ze środka.
+                    // Konieczne jest przenumerowanie indeksów, aby MVC poprawnie zmapowało elementy
+                    // dla kolekcji IList<AttributeDictionaryValue>.
                     reindexInputs();
                 }
             });
@@ -122,11 +126,23 @@
             function reindexInputs() {
                 const rows = container.querySelectorAll('.value-row');
                 rows.forEach((row, index) => {
-                    const input = row.querySelector('input');
-                    // Zmieniamy name="Values[X].Value" na poprawne X
-                    input.name = `Values[${index}].Value`;
+                    // Znajduje inputy wewnątrz bieżącego wiersza
+                    const inputName = row.querySelector('input[name^="Values["]');
+                    const inputId = row.querySelector('input[name$=".Id"]');
+
+                    // Zmieniamy name="Values[X].Value" i name="Values[X].Id" na poprawne X
+                    if (inputName) {
+                        inputName.name = `Values[${index}].Value`;
+                    }
+                    if (inputId) {
+                        inputId.name = `Values[${index}].Id`;
+                    }
                 });
             }
+
+            // W przypadku widoku Edycji, skrypt musi działać z istniejącymi elementami
+            // (dlatego pierwotny kod JavaScript nie potrzebował reindeksowania
+            // przy ładowaniu strony, ale potrzebuje po usunięciu).
         });
     </script>
 }

@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>System Settings</value>
+  </data>
+  <data name="ConfigHeader" xml:space="preserve">
+    <value>System Configuration</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+
+  <data name="LimitsHeader" xml:space="preserve">
+    <value>File Limits</value>
+  </data>
+  <data name="MaxAttachmentsLabel" xml:space="preserve">
+    <value>Max. Attachments</value>
+  </data>
+  <data name="MaxAttachmentsHelp" xml:space="preserve">
+    <value>Number of files per ad.</value>
+  </data>
+  <data name="MaxMediaLabel" xml:space="preserve">
+    <value>Max. Media Files</value>
+  </data>
+  <data name="MaxMediaHelp" xml:space="preserve">
+    <value>Number of photos/videos per ad.</value>
+  </data>
+  <data name="MaxFileSizeLabel" xml:space="preserve">
+    <value>Size Limit</value>
+  </data>
+  <data name="MaxFileSizeHelp" xml:space="preserve">
+    <value>Maximum size of a single file.</value>
+  </data>
+  <data name="Unit_Pcs" xml:space="preserve">
+    <value>pcs.</value>
+  </data>
+
+  <data name="ContentHeader" xml:space="preserve">
+    <value>Global Content</value>
+  </data>
+  <data name="HomePageMessageLabel" xml:space="preserve">
+    <value>Homepage Message</value>
+  </data>
+  <data name="HomePageMessagePlaceholder" xml:space="preserve">
+    <value>Enter a welcome message or system announcement...</value>
+  </data>
+  <data name="HomePageMessageHelp" xml:space="preserve">
+    <value>This text will appear at the very top of the homepage (if implemented).</value>
+  </data>
+
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save Settings</value>
+  </data>
+</root>

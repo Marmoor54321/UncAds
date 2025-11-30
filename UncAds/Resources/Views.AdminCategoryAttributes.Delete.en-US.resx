@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteAttributeTitle" xml:space="preserve">
+    <value>Delete Attribute</value>
+  </data>
+  <data name="ConfirmDeleteHeader" xml:space="preserve">
+    <value>Confirm Deletion</value>
+  </data>
+  <data name="ConfirmationMessage" xml:space="preserve">
+    <value>Are you sure you want to delete this attribute? The operation is irreversible.</value>
+  </data>
+  <data name="WarningMessage" xml:space="preserve">
+    <value>Warning: Deleting the attribute will result in the loss of this field's values in all existing ads within this category.</value>
+  </data>
+
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfirmDeleteButton" xml:space="preserve">
+    <value>Yes, delete</value>
+  </data>
+</root>

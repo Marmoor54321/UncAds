@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="EditDictionaryTitle" xml:space="preserve">
+    <value>Wörterbuch bearbeiten</value>
+  </data>
+  <data name="DictionaryHeader" xml:space="preserve">
+    <value>Wörterbuch</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Name des Wörterbuchs</value>
+  </data>
+  <data name="ValuesHeader" xml:space="preserve">
+    <value>Werte des Wörterbuchs</value>
+  </data>
+  <data name="ValuePlaceholder" xml:space="preserve">
+    <value>Wert eingeben</value>
+  </data>
+
+  <data name="AddValueButton" xml:space="preserve">
+    <value>Weiteren Wert hinzufügen</value>
+  </data>
+  <data name="RemoveButton" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="ErrorEmptyValue" xml:space="preserve">
+    <value>Bitte geben Sie zuerst Text in das letzte Feld ein!</value>
+  </data>
+</root>

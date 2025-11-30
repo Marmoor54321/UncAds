@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="EditAttributeTitle" xml:space="preserve">
+    <value>Edytuj atrybut</value>
+  </data>
+  <data name="EditAttributeHeader" xml:space="preserve">
+    <value>Edytuj atrybut</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Nazwa atrybutu</value>
+  </data>
+  <data name="TypeLabel" xml:space="preserve">
+    <value>Typ pola</value>
+  </data>
+  <data name="CategoryLabel" xml:space="preserve">
+    <value>Kategoria</value>
+  </data>
+  <data name="OptionsLabel" xml:space="preserve">
+    <value>Opcje wyboru (Select)</value>
+  </data>
+  <data name="OptionsHelp" xml:space="preserve">
+    <value>Wartości rozdzielone średnikiem (;).</value>
+  </data>
+  <data name="DictionaryLabel" xml:space="preserve">
+    <value>Słownik zewnętrzny</value>
+  </data>
+  <data name="DictionaryNoneOption" xml:space="preserve">
+    <value>— brak —</value>
+  </data>
+  <data name="AllowMultipleLabel" xml:space="preserve">
+    <value>Pozwól na wiele wartości</value>
+  </data>
+
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Zapisz zmiany</value>
+  </data>
+</root>

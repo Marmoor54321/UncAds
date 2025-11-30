@@ -1,7 +1,9 @@
 ﻿@model UncAds.Models.ApplicationUser
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Zarządzanie rolami";
+    ViewData["Title"] = Localizer["ManageRolesTitle"];
     var allRoles = ViewBag.AllRoles as List<string>;
     var userRoles = ViewBag.UserRoles as IList<string>;
 }
@@ -11,12 +13,12 @@
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom py-3">
-                    <h5 class="m-0 text-primary"><i class="bi bi-shield-check"></i> Zarządzanie uprawnieniami</h5>
+                    <h5 class="m-0 text-primary"><i class="bi bi-shield-check"></i> @Localizer["PermissionsHeader"]</h5>
                 </div>
                 <div class="card-body p-4">
 
                     <div class="mb-4 text-center">
-                        <span class="text-muted small text-uppercase">Użytkownik</span>
+                        <span class="text-muted small text-uppercase">@Localizer["UserLabel"]</span>
                         <h4 class="fw-bold text-dark">@Model.Email</h4>
                     </div>
 
@@ -28,18 +30,18 @@
                             {
                                 <label class="list-group-item d-flex gap-3 align-items-center cursor-pointer">
                                     <input class="form-check-input flex-shrink-0" type="checkbox" name="selectedRoles" value="@role"
-                                           @(userRoles.Contains(role) ? "checked" : "") style="font-size: 1.3em;">
+                                               @(userRoles.Contains(role) ? "checked" : "") style="font-size: 1.3em;">
                                     <span class="pt-1 form-checked-content">
                                         <strong>@role</strong>
-                                        <small class="d-block text-muted">Przyznaje uprawnienia grupy @role.</small>
+                                        <small class="d-block text-muted">@Localizer["RoleDescription", role]</small>
                                     </span>
                                 </label>
                             }
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary fw-bold">Zapisz uprawnienia</button>
-                            <a asp-action="Users" class="btn btn-light border">Powrót</a>
+                            <button type="submit" class="btn btn-primary fw-bold">@Localizer["SavePermissionsButton"]</button>
+                            <a asp-action="Users" class="btn btn-light border">@Localizer["BackButton"]</a>
                         </div>
                     </form>
                 </div>

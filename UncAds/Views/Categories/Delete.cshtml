@@ -1,7 +1,9 @@
 ﻿@model UncAds.Models.Category
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Usuń kategorię";
+    ViewData["Title"] = Localizer["DeleteCategoryTitle"];
 }
 
 <div class="container py-5">
@@ -9,26 +11,26 @@
         <div class="col-md-6">
             <div class="card border-danger shadow">
                 <div class="card-header bg-danger text-white text-center py-3">
-                    <h4 class="m-0"><i class="bi bi-exclamation-triangle"></i> Potwierdź usunięcie</h4>
+                    <h4 class="m-0"><i class="bi bi-exclamation-triangle"></i> @Localizer["ConfirmHeader"]</h4>
                 </div>
                 <div class="card-body p-4 text-center">
-                    <p class="text-muted">Czy na pewno chcesz usunąć tę kategorię?</p>
+                    <p class="text-muted">@Localizer["ConfirmQuestion"]</p>
 
                     <h3 class="fw-bold text-dark mb-2">@Model.Name</h3>
 
                     <div class="mb-4">
-                        <span class="text-muted small">Rodzic:</span>
-                        <span>@(Model.ParentCategory?.Name ?? "(Brak)")</span>
+                        <span class="text-muted small">@Localizer["ParentLabel"]:</span>
+                        <span>@(Model.ParentCategory?.Name ?? Localizer["ParentNone"].ToString())</span>
                     </div>
 
                     <div class="alert alert-warning small">
-                        <i class="bi bi-exclamation-circle-fill"></i> Uwaga: Usunięcie kategorii może wpłynąć na przypisane do niej ogłoszenia.
+                        <i class="bi bi-exclamation-circle-fill"></i> @Localizer["WarningMessage"]
                     </div>
 
                     <form asp-action="Delete" method="post" class="d-flex justify-content-center gap-3 mt-4">
                         <input type="hidden" asp-for="Id" />
-                        <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
-                        <button type="submit" class="btn btn-danger px-4 fw-bold">Tak, usuń</button>
+                        <a asp-action="Index" class="btn btn-light border px-4">@Localizer["CancelButton"]</a>
+                        <button type="submit" class="btn btn-danger px-4 fw-bold">@Localizer["DeleteButton"]</button>
                     </form>
                 </div>
             </div>

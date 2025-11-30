@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteUserTitle" xml:space="preserve">
+    <value>Delete User</value>
+  </data>
+  <data name="ConfirmDeletionHeader" xml:space="preserve">
+    <value>Confirm Deletion</value>
+  </data>
+  <data name="ConfirmationQuestion" xml:space="preserve">
+    <value>Are you sure you want to permanently delete this user?</value>
+  </data>
+  <data name="IdLabel" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="WarningLabel" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="IrreversibleWarning" xml:space="preserve">
+    <value>Deleting the user is irreversible. All their ads and data will be lost.</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfirmDeleteButton" xml:space="preserve">
+    <value>Yes, delete</value>
+  </data>
+</root>

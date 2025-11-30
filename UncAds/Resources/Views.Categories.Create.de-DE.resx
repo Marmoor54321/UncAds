@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="CreateCategoryTitle" xml:space="preserve">
+    <value>Neue Kategorie</value>
+  </data>
+  <data name="CreateCategoryHeader" xml:space="preserve">
+    <value>Neue Kategorie hinzufügen</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NamePlaceholder" xml:space="preserve">
+    <value>z.B. Automobil</value>
+  </data>
+  <data name="ParentCategoryLabel" xml:space="preserve">
+    <value>Übergeordnete Kategorie</value>
+  </data>
+  <data name="MainCategoryOption" xml:space="preserve">
+    <value>-- Dies ist eine Hauptkategorie --</value>
+  </data>
+  <data name="ParentCategoryHelp" xml:space="preserve">
+    <value>Wählen Sie "Hauptkategorie", wenn die Kategorie keinen Elternteil hat.</value>
+  </data>
+
+  <data name="SaveButton" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+</root>

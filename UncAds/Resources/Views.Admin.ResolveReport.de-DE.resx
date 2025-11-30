@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ResolveReportTitle" xml:space="preserve">
+    <value>Meldung bearbeiten</value>
+  </data>
+  <data name="ModeratorPanelHeader" xml:space="preserve">
+    <value>Moderator-Panel</value>
+  </data>
+  <data name="ReportIdLabel" xml:space="preserve">
+    <value>Meldung</value>
+  </data>
+  <data name="AdLabel" xml:space="preserve">
+    <value>Anzeige</value>
+  </data>
+  <data name="AdDeletedMessage" xml:space="preserve">
+    <value>Anzeige existiert nicht (gelöscht)</value>
+  </data>
+  <data name="ReportDateLabel" xml:space="preserve">
+    <value>Datum der Meldung</value>
+  </data>
+  <data name="ReportReasonLabel" xml:space="preserve">
+    <value>Grund der Meldung (Melder)</value>
+  </data>
+
+  <data name="ReportClosedHeader" xml:space="preserve">
+    <value>Meldung geschlossen</value>
+  </data>
+  <data name="ModeratorNoteLabel" xml:space="preserve">
+    <value>Moderator-Notiz</value>
+  </data>
+  <data name="NoNoteMessage" xml:space="preserve">
+    <value>Keine Notiz.</value>
+  </data>
+  <data name="BackToListButton" xml:space="preserve">
+    <value>Zurück zur Liste</value>
+  </data>
+
+  <data name="DecisionHeader" xml:space="preserve">
+    <value>Entscheidung</value>
+  </data>
+  <data name="DeleteAdOption" xml:space="preserve">
+    <value>Anzeige endgültig löschen</value>
+  </data>
+  <data name="DeleteAdHelp" xml:space="preserve">
+    <value>Markieren Sie dies, wenn die Anzeige gegen die Regeln verstößt und gelöscht werden soll.</value>
+  </data>
+  <data name="ResolutionNoteLabel" xml:space="preserve">
+    <value>Notiz / Begründung</value>
+  </data>
+  <data name="ResolutionNotePlaceholder" xml:space="preserve">
+    <value>Geben Sie eine Begründung für die Entscheidung ein (für Administratoren sichtbar)...</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="ConfirmDecisionButton" xml:space="preserve">
+    <value>Entscheidung bestätigen</value>
+  </data>
+</root>

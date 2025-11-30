@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteAttributeTitle" xml:space="preserve">
+    <value>Usuń atrybut</value>
+  </data>
+  <data name="ConfirmDeleteHeader" xml:space="preserve">
+    <value>Potwierdź usunięcie</value>
+  </data>
+  <data name="ConfirmationMessage" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć ten atrybut? Operacja jest nieodwracalna.</value>
+  </data>
+  <data name="WarningMessage" xml:space="preserve">
+    <value>Uwaga: Usunięcie atrybutu spowoduje utratę wartości tego pola we wszystkich istniejących ogłoszeniach w tej kategorii.</value>
+  </data>
+  
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="ConfirmDeleteButton" xml:space="preserve">
+    <value>Tak, usuń</value>
+  </data>
+</root>

@@ -1,7 +1,9 @@
 ﻿@model UncAds.Models.CategoryAttribute
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Szczegóły atrybutu";
+    ViewData["Title"] = Localizer["DetailsAttributeTitle"];
 }
 
 <div class="container py-5">
@@ -9,35 +11,35 @@
         <div class="col-md-8 col-lg-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="m-0"><i class="bi bi-info-circle"></i> Szczegóły atrybutu</h5>
-                    <span class="badge bg-primary">ID: @Model.Id</span>
+                    <h5 class="m-0"><i class="bi bi-info-circle"></i> @Localizer["DetailsAttributeHeader"]</h5>
+                    <span class="badge bg-primary">@Localizer["IdLabel"]: @Model.Id</span>
                 </div>
                 <div class="card-body p-4">
 
                     <table class="table table-borderless">
                         <tbody>
                             <tr>
-                                <th class="text-muted w-25">Nazwa:</th>
+                                <th class="text-muted w-25">@Localizer["NameLabel"]:</th>
                                 <td class="fw-bold fs-5">@Model.Name</td>
                             </tr>
                             <tr>
-                                <th class="text-muted">Kategoria:</th>
+                                <th class="text-muted">@Localizer["CategoryLabel"]:</th>
                                 <td><span class="badge bg-light text-dark border"><i class="bi bi-folder"></i> @Model.Category.Name</span></td>
                             </tr>
                             <tr>
-                                <th class="text-muted">Typ pola:</th>
+                                <th class="text-muted">@Localizer["TypeLabel"]:</th>
                                 <td><code>@Model.Type</code></td>
                             </tr>
                             <tr>
-                                <th class="text-muted">Multi-wybór:</th>
+                                <th class="text-muted">@Localizer["AllowMultipleLabel"]:</th>
                                 <td>
                                     @if (Model.AllowMultiple)
                                     {
-                                        <span class="text-success fw-bold"><i class="bi bi-check-circle"></i> Tak</span>
+                                        <span class="text-success fw-bold"><i class="bi bi-check-circle"></i> @Localizer["Yes"]</span>
                                     }
                                     else
                                     {
-                                        <span class="text-secondary"><i class="bi bi-x-circle"></i> Nie</span>
+                                        <span class="text-secondary"><i class="bi bi-x-circle"></i> @Localizer["No"]</span>
                                     }
                                 </td>
                             </tr>
@@ -45,7 +47,7 @@
                             @if (!string.IsNullOrEmpty(Model.Options))
                             {
                                 <tr>
-                                    <th class="text-muted align-top">Opcje:</th>
+                                    <th class="text-muted align-top">@Localizer["OptionsLabel"]:</th>
                                     <td>
                                         @foreach (var opt in Model.Options.Split(';', StringSplitOptions.RemoveEmptyEntries))
                                         {
@@ -56,7 +58,7 @@
                             }
 
                             <tr>
-                                <th class="text-muted align-top">Słownik:</th>
+                                <th class="text-muted align-top">@Localizer["DictionaryLabel"]:</th>
                                 <td>
                                     @if (Model.Dictionary != null)
                                     {
@@ -76,7 +78,7 @@
                                         }
                                         else
                                         {
-                                            <em class="small text-muted">Słownik jest pusty</em>
+                                            <em class="small text-muted">@Localizer["DictionaryEmpty"]</em>
                                         }
                                     }
                                     else
@@ -89,8 +91,8 @@
                     </table>
 
                     <div class="d-flex justify-content-center gap-2 mt-4">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4">Edytuj</a>
-                        <a asp-action="Index" class="btn btn-secondary px-4">Wróć</a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4">@Localizer["EditButton"]</a>
+                        <a asp-action="Index" class="btn btn-secondary px-4">@Localizer["BackButton"]</a>
                     </div>
                 </div>
             </div>

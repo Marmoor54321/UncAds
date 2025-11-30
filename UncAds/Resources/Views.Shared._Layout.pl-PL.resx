@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="RssFeedTitle" xml:space="preserve">
+    <value>UncAds - RSS</value>
+  </data>
+  
+  <data name="ToggleNavigation" xml:space="preserve">
+    <value>Przełącz nawigację</value>
+  </data>
+  <data name="BrowseAds" xml:space="preserve">
+    <value>Przeglądaj ogłoszenia</value>
+  </data>
+  <data name="LanguageSelectionLabel" xml:space="preserve">
+    <value>Język</value>
+  </data>
+  
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Motyw</value>
+  </data>
+  <data name="ThemeDefault" xml:space="preserve">
+    <value>Domyślny</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Ciemny</value>
+  </data>
+  <data name="ThemeBlue" xml:space="preserve">
+    <value>Niebieski</value>
+  </data>
+  
+  <data name="AdminPanel" xml:space="preserve">
+    <value>Panel Admina</value>
+  </data>
+  <data name="HeaderContentManagement" xml:space="preserve">
+    <value>Zarządzanie treścią</value>
+  </data>
+  <data name="LinkCategories" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="LinkAttributes" xml:space="preserve">
+    <value>Atrybuty</value>
+  </data>
+  <data name="LinkDictionaries" xml:space="preserve">
+    <value>Słowniki</value>
+  </data>
+  <data name="HeaderSystem" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="LinkForbiddenWords" xml:space="preserve">
+    <value>Zakazane słowa</value>
+  </data>
+  <data name="LinkUsers" xml:space="preserve">
+    <value>Użytkownicy</value>
+  </data>
+  <data name="LinkGlobalSettings" xml:space="preserve">
+    <value>Ustawienia globalne</value>
+  </data>
+  
+  <data name="MyProfile" xml:space="preserve">
+    <value>Mój profil</value>
+  </data>
+  
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>Polityka prywatności</value>
+  </data>
+  <data name="RssText" xml:space="preserve">
+    <value>RSS</value>
+  </data>
+  <data name="CloseButtonLabel" xml:space="preserve">
+    <value>Zamknij</value>
+  </data>
+</root>

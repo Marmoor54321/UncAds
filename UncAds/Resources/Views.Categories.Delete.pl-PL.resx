@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DeleteCategoryTitle" xml:space="preserve">
+    <value>Usuń kategorię</value>
+  </data>
+  <data name="ConfirmHeader" xml:space="preserve">
+    <value>Potwierdź usunięcie</value>
+  </data>
+  
+  <data name="ConfirmQuestion" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć tę kategorię?</value>
+  </data>
+  <data name="ParentLabel" xml:space="preserve">
+    <value>Rodzic:</value>
+  </data>
+  <data name="ParentNone" xml:space="preserve">
+    <value>(Brak)</value>
+  </data>
+  <data name="WarningMessage" xml:space="preserve">
+    <value>Uwaga: Usunięcie kategorii może wpłynąć na przypisane do niej ogłoszenia.</value>
+  </data>
+
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Tak, usuń</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+</root>

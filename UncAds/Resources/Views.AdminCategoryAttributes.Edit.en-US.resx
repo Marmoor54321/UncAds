@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="EditAttributeTitle" xml:space="preserve">
+    <value>Edit Attribute</value>
+  </data>
+  <data name="EditAttributeHeader" xml:space="preserve">
+    <value>Edit Attribute</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Attribute Name</value>
+  </data>
+  <data name="TypeLabel" xml:space="preserve">
+    <value>Field Type</value>
+  </data>
+  <data name="CategoryLabel" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="OptionsLabel" xml:space="preserve">
+    <value>Selection Options (Select)</value>
+  </data>
+  <data name="OptionsHelp" xml:space="preserve">
+    <value>Values separated by a semicolon (;).</value>
+  </data>
+  <data name="DictionaryLabel" xml:space="preserve">
+    <value>External Dictionary</value>
+  </data>
+  <data name="DictionaryNoneOption" xml:space="preserve">
+    <value>— none —</value>
+  </data>
+  <data name="AllowMultipleLabel" xml:space="preserve">
+    <value>Allow multiple values</value>
+  </data>
+
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+</root>

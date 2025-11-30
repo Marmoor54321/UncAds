@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="NewsletterTitle" xml:space="preserve">
+    <value>Wyślij Newsletter</value>
+  </data>
+  <data name="ManualSendHeader" xml:space="preserve">
+    <value>Ręczna wysyłka powiadomień</value>
+  </data>
+  <data name="OperationDescription" xml:space="preserve">
+    <value>Ta operacja sprawdzi preferencje wszystkich użytkowników i wyśle im e-maile z ogłoszeniami dodanymi od czasu ostatniej wysyłki.</value>
+  </data>
+  <data name="SendButton" xml:space="preserve">
+    <value>Wyślij Newsletter teraz</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Powrót</value>
+  </data>
+</root>

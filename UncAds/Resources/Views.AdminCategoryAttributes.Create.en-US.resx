@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="CreateAttributeTitle" xml:space="preserve">
+    <value>New Attribute</value>
+  </data>
+  <data name="CreateAttributeHeader" xml:space="preserve">
+    <value>New Category Attribute</value>
+  </data>
+
+  <data name="NameLabel" xml:space="preserve">
+    <value>Attribute Name</value>
+  </data>
+  <data name="NamePlaceholder" xml:space="preserve">
+    <value>e.g., Year of manufacture, Color, Mileage</value>
+  </data>
+  <data name="TypeLabel" xml:space="preserve">
+    <value>Field Type</value>
+  </data>
+  <data name="AssignCategoryLabel" xml:space="preserve">
+    <value>Assign to Category</value>
+  </data>
+  <data name="OptionsLabel" xml:space="preserve">
+    <value>Selection Options</value>
+  </data>
+  <data name="OptionsPlaceholder" xml:space="preserve">
+    <value>e.g., Gasoline;Diesel;LPG</value>
+  </data>
+  <data name="OptionsHelp" xml:space="preserve">
+    <value>Fill ONLY if you selected the Select type. Separate with a semicolon (;).</value>
+  </data>
+
+  <data name="AdvancedOptionsHeader" xml:space="preserve">
+    <value>Advanced Options</value>
+  </data>
+  <data name="DictionaryLabel" xml:space="preserve">
+    <value>External Dictionary</value>
+  </data>
+  <data name="DictionaryNoneOption" xml:space="preserve">
+    <value>— none (use Options field or text field) —</value>
+  </data>
+  <data name="DictionaryHelp" xml:space="preserve">
+    <value>Select if the type is Dictionary.</value>
+  </data>
+  <data name="AllowMultipleLabel" xml:space="preserve">
+    <value>Allow multiple values selection</value>
+  </data>
+
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save Attribute</value>
+  </data>
+</root>

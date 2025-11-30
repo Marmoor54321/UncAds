@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ProfileEditTitle" xml:space="preserve">
+    <value>Profile Edit</value>
+  </data>
+  <data name="ProfileEditHeader" xml:space="preserve">
+    <value>Edit Profile</value>
+  </data>
+  
+  <data name="BasicDataHeader" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="DisplayNameLabel" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="EmailLabel" xml:space="preserve">
+    <value>Email (login)</value>
+  </data>
+  <data name="EmailHelpText" xml:space="preserve">
+    <value>Email address cannot be changed in this panel.</value>
+  </data>
+  <data name="AvatarUrlLabel" xml:space="preserve">
+    <value>Avatar Link (URL)</value>
+  </data>
+  <data name="BioLabel" xml:space="preserve">
+    <value>Bio (About me)</value>
+  </data>
+  <data name="BioPlaceholder" xml:space="preserve">
+    <value>Write something about yourself...</value>
+  </data>
+  <data name="AdsPerPageLabel" xml:space="preserve">
+    <value>Ads per Page</value>
+  </data>
+  <data name="AdsPerPageHelpText" xml:space="preserve">
+    <value>Default 10. Max 100.</value>
+  </data>
+
+  <data name="NewsletterHeader" xml:space="preserve">
+    <value>Profiled Newsletter</value>
+  </data>
+  <data name="NewsletterDescription" xml:space="preserve">
+    <value>Select categories and specify exact criteria to receive email notifications only about ads that interest you.</value>
+  </data>
+  <data name="FilterHelpText" xml:space="preserve">
+    <value>Leave empty to receive &lt;strong&gt;all&lt;/strong&gt; ads from {0}.</value>
+    </data>
+  <data name="NoFiltersMessage" xml:space="preserve">
+    <value>This category has no additional filters. You will receive notifications for all new ads in {0}.</value>
+    </data>
+
+  <data name="FilterAny" xml:space="preserve">
+    <value>- Any -</value>
+  </data>
+  <data name="BooleanYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="BooleanNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="NumberPlaceholder" xml:space="preserve">
+    <value>Value</value>
+  </data>
+
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+</root>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Atrybuty kategorii</value>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>Atrybuty ogłoszeń</value>
+  </data>
+  <data name="AddAttributeButton" xml:space="preserve">
+    <value>Dodaj atrybut</value>
+  </data>
+
+  <data name="Table_Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="Table_FieldType" xml:space="preserve">
+    <value>Typ pola</value>
+  </data>
+  <data name="Table_Configuration" xml:space="preserve">
+    <value>Konfiguracja</value>
+  </data>
+  <data name="Table_Category" xml:space="preserve">
+    <value>Kategoria</value>
+  </data>
+  <data name="Table_Actions" xml:space="preserve">
+    <value>Akcje</value>
+  </data>
+
+  <data name="Config_OptionsDefined" xml:space="preserve">
+    <value>Opcje zdefiniowane</value>
+  </data>
+  <data name="Config_Dictionary" xml:space="preserve">
+    <value>Słownik</value>
+  </data>
+
+  <data name="Action_Edit" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="Action_Details" xml:space="preserve">
+    <value>Szczegóły</value>
+  </data>
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+</root>

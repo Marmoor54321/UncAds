@@ -1,6 +1,9 @@
 ﻿@model UncAds.Models.CategoryAttribute
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Nowy atrybut";
+    ViewData["Title"] = Localizer["CreateAttributeTitle"];
 }
 
 <div class="container py-5">
@@ -8,55 +11,55 @@
         <div class="col-md-8 col-lg-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom py-3">
-                    <h5 class="m-0 text-success"><i class="bi bi-plus-square"></i> Nowy atrybut kategorii</h5>
+                    <h5 class="m-0 text-success"><i class="bi bi-plus-square"></i> @Localizer["CreateAttributeHeader"]</h5>
                 </div>
                 <div class="card-body p-4">
                     <form asp-action="Create" method="post">
                         <div asp-validation-summary="All" class="alert alert-danger mb-3" style="display:none"></div>
 
                         <div class="mb-3">
-                            <label asp-for="Name" class="form-label fw-bold">Nazwa atrybutu</label>
-                            <input asp-for="Name" class="form-control" placeholder="np. Rok produkcji, Kolor, Przebieg" />
+                            <label asp-for="Name" class="form-label fw-bold">@Localizer["NameLabel"]</label>
+                            <input asp-for="Name" class="form-control" placeholder="@Localizer["NamePlaceholder"]" />
                             <span asp-validation-for="Name" class="text-danger small"></span>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label asp-for="Type" class="form-label fw-bold">Typ pola</label>
+                                <label asp-for="Type" class="form-label fw-bold">@Localizer["TypeLabel"]</label>
                                 <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<UncAds.Models.AttributeType>()"></select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">Przypisz do kategorii</label>
+                                <label class="form-label fw-bold">@Localizer["AssignCategoryLabel"]</label>
                                 <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories"></select>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Options" class="form-label fw-bold">Opcje wyboru</label>
-                            <input asp-for="Options" class="form-control" placeholder="np. Benzyna;Diesel;LPG" />
-                            <div class="form-text">Wypełnij TYLKO jeśli wybrałeś typ <strong>Select</strong>. Rozdzielaj średnikiem (;).</div>
+                            <label asp-for="Options" class="form-label fw-bold">@Localizer["OptionsLabel"]</label>
+                            <input asp-for="Options" class="form-control" placeholder="@Localizer["OptionsPlaceholder"]" />
+                            <div class="form-text">@Localizer["OptionsHelp"]</div>
                         </div>
 
                         <div class="mb-3 bg-light p-3 rounded border">
-                            <label class="form-label fw-bold small text-muted text-uppercase">Opcje zaawansowane</label>
+                            <label class="form-label fw-bold small text-muted text-uppercase">@Localizer["AdvancedOptionsHeader"]</label>
 
                             <div class="mb-3">
-                                <label class="form-label">Słownik zewnętrzny</label>
+                                <label class="form-label">@Localizer["DictionaryLabel"]</label>
                                 <select asp-for="DictionaryId" class="form-select" asp-items="ViewBag.Dictionaries">
-                                    <option value="">— brak (użyj pola Opcje lub pola tekstowego) —</option>
+                                    <option value="">@Localizer["DictionaryNoneOption"]</option>
                                 </select>
-                                <div class="form-text">Wybierz, jeśli typ to <strong>Dictionary</strong>.</div>
+                                <div class="form-text">@Localizer["DictionaryHelp"]</div>
                             </div>
 
                             <div class="form-check form-switch">
                                 <input asp-for="AllowMultiple" class="form-check-input" type="checkbox" />
-                                <label asp-for="AllowMultiple" class="form-check-label">Pozwól na wybór wielu wartości</label>
+                                <label asp-for="AllowMultiple" class="form-check-label">@Localizer["AllowMultipleLabel"]</label>
                             </div>
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
-                            <button type="submit" class="btn btn-success px-4 fw-bold">Zapisz atrybut</button>
+                            <a asp-action="Index" class="btn btn-light border px-4">@Localizer["CancelButton"]</a>
+                            <button type="submit" class="btn btn-success px-4 fw-bold">@Localizer["SaveButton"]</button>
                         </div>
                     </form>
                 </div>

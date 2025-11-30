@@ -1,7 +1,9 @@
 ﻿@model UncAds.Models.AdReport
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Rozpatrz zgłoszenie";
+    ViewData["Title"] = Localizer["ResolveReportTitle"];
 }
 
 <div class="container py-5">
@@ -10,14 +12,14 @@
 
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="m-0 text-primary"><i class="bi bi-hammer"></i> Panel Moderatora</h5>
-                    <span class="badge bg-secondary">Zgłoszenie #@Model.Id</span>
+                    <h5 class="m-0 text-primary"><i class="bi bi-hammer"></i> @Localizer["ModeratorPanelHeader"]</h5>
+                    <span class="badge bg-secondary">@Localizer["ReportIdLabel"] #@Model.Id</span>
                 </div>
                 <div class="card-body p-4">
 
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="small text-muted text-uppercase fw-bold">Ogłoszenie</label>
+                            <label class="small text-muted text-uppercase fw-bold">@Localizer["AdLabel"]</label>
                             <div class="fs-5 fw-bold">
                                 @if (Model.Ad != null)
                                 {
@@ -27,16 +29,16 @@
                                 }
                                 else
                                 {
-                                    <span class="text-danger">Ogłoszenie nie istnieje (usunięte)</span>
+                                    <span class="text-danger">@Localizer["AdDeletedMessage"]</span>
                                 }
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="small text-muted text-uppercase fw-bold">Data zgłoszenia</label>
+                            <label class="small text-muted text-uppercase fw-bold">@Localizer["ReportDateLabel"]</label>
                             <div>@Model.ReportDate</div>
                         </div>
                         <div class="col-12 bg-light p-3 rounded border">
-                            <label class="small text-muted text-uppercase fw-bold mb-1">Powód zgłoszenia (Reporter)</label>
+                            <label class="small text-muted text-uppercase fw-bold mb-1">@Localizer["ReportReasonLabel"]</label>
                             <p class="m-0 fst-italic">"@Model.Reason"</p>
                         </div>
                     </div>
@@ -46,36 +48,37 @@
                     @if (Model.Resolved)
                     {
                         <div class="alert alert-success border-success">
-                            <h5 class="alert-heading"><i class="bi bi-check-circle-fill"></i> Zgłoszenie zamknięte</h5>
-                            <p class="mb-0"><strong>Notatka moderatora:</strong> @(Model.ResolutionNote ?? "Brak notatki.")</p>
+                            <h5 class="alert-heading"><i class="bi bi-check-circle-fill"></i> @Localizer["ReportClosedHeader"]</h5>
+                            <p class="mb-0"><strong>@Localizer["ModeratorNoteLabel"]:</strong> @(Model.ResolutionNote ?? Localizer["NoNoteMessage"].ToString())</p>
                         </div>
                         <div class="d-grid">
-                            <a asp-action="Reports" class="btn btn-secondary">Wróć do listy</a>
+                            <a asp-action="Reports" class="btn btn-secondary">@Localizer["BackToListButton"]</a>
                         </div>
                     }
                     else
                     {
-                        <h5 class="mb-3"><i class="bi bi-pencil-square"></i> Decyzja</h5>
+                        <h5 class="mb-3"><i class="bi bi-pencil-square"></i> @Localizer["DecisionHeader"]</h5>
                         <form method="post" asp-action="ResolveReport" asp-route-id="@Model.Id">
                             @Html.AntiForgeryToken()
 
                             <div class="form-check form-switch mb-3 p-3 bg-danger bg-opacity-10 border border-danger rounded">
                                 <input type="checkbox" class="form-check-input" id="deleteAd" name="deleteAd" value="true" style="cursor: pointer;">
-                                <input type="hidden" name="deleteAd" value="false" />
+                                @* Hidden input ensures a "false" value is sent if the checkbox is unchecked (standard ASP.NET Core MVC pattern) *@
+                                <input type="hidden" name="deleteAd" value="false" /> 
                                 <label for="deleteAd" class="form-check-label fw-bold text-danger" style="cursor: pointer;">
-                                    Usuń ogłoszenie definitywnie
+                                    @Localizer["DeleteAdOption"]
                                 </label>
-                                <div class="form-text text-danger">Zaznacz, jeśli ogłoszenie narusza regulamin i ma zostać usunięte.</div>
+                                <div class="form-text text-danger">@Localizer["DeleteAdHelp"]</div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Notatka / Uzasadnienie</label>
-                                <textarea name="resolutionNote" class="form-control" rows="3" placeholder="Wpisz uzasadnienie decyzji (widoczne dla adminów)..."></textarea>
+                                <label class="form-label fw-bold">@Localizer["ResolutionNoteLabel"]</label>
+                                <textarea name="resolutionNote" class="form-control" rows="3" placeholder="@Localizer["ResolutionNotePlaceholder"]"></textarea>
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <a asp-action="Reports" class="btn btn-light border px-4">Anuluj</a>
-                                <button type="submit" class="btn btn-success px-4 fw-bold">Zatwierdź decyzję</button>
+                                <a asp-action="Reports" class="btn btn-light border px-4">@Localizer["CancelButton"]</a>
+                                <button type="submit" class="btn btn-success px-4 fw-bold">@Localizer["ConfirmDecisionButton"]</button>
                             </div>
                         </form>
                     }

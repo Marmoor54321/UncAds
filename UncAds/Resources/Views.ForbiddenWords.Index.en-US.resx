@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Forbidden Words</value>
+  </data>
+  <data name="IndexHeader" xml:space="preserve">
+    <value>Forbidden Word Dictionary</value>
+  </data>
+  <data name="AddWordButton" xml:space="preserve">
+    <value>Add Word</value>
+  </data>
+
+  <data name="Table_WordHeader" xml:space="preserve">
+    <value>Phrase / Word</value>
+  </data>
+  <data name="Table_ActionsHeader" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+
+  <data name="NoWordsMessage" xml:space="preserve">
+    <value>No forbidden words defined.</value>
+  </data>
+
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Action_DeleteTitle" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+</root>

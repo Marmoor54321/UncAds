@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="DetailsAttributeTitle" xml:space="preserve">
+    <value>Attributdetails</value>
+  </data>
+  <data name="DetailsAttributeHeader" xml:space="preserve">
+    <value>Attributdetails</value>
+  </data>
+
+  <data name="IdLabel" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="NameLabel" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="CategoryLabel" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="TypeLabel" xml:space="preserve">
+    <value>Feldtyp</value>
+  </data>
+  <data name="AllowMultipleLabel" xml:space="preserve">
+    <value>Mehrfachauswahl</value>
+  </data>
+  <data name="OptionsLabel" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="DictionaryLabel" xml:space="preserve">
+    <value>Wörterbuch</value>
+  </data>
+  <data name="DictionaryEmpty" xml:space="preserve">
+    <value>Wörterbuch ist leer</value>
+  </data>
+
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+
+  <data name="EditButton" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="BackButton" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+</root>

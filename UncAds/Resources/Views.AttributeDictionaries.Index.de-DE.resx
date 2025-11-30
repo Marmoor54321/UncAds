@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Attribut-Wörterbücher</value>
+  </data>
+  <data name="IndexHeader" xml:space="preserve">
+    <value>Attribut-Wörterbücher</value>
+  </data>
+  <data name="AddDictionaryButton" xml:space="preserve">
+    <value>Neues Wörterbuch hinzufügen</value>
+  </data>
+
+  <data name="Table_Name" xml:space="preserve">
+    <value>Name des Wörterbuchs</value>
+  </data>
+  <data name="Table_ValueCount" xml:space="preserve">
+    <value>Anzahl der Werte</value>
+  </data>
+  <data name="Table_Values" xml:space="preserve">
+    <value>Werte</value>
+  </data>
+  <data name="Table_Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+
+  <data name="NoValues" xml:space="preserve">
+    <value>keine</value>
+  </data>
+  <data name="ConfirmDeleteMessage" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie dieses Wörterbuch löschen möchten?</value>
+  </data>
+
+  <data name="Action_Edit" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="Action_Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+</root>

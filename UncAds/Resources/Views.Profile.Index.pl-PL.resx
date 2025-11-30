@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>Twój profil</value>
+  </data>
+  <data name="UserInfoHeader" xml:space="preserve">
+    <value>Informacje o użytkowniku</value>
+  </data>
+  <data name="UserPlaceholderText" xml:space="preserve">
+    <value>Użytkownik</value>
+  </data>
+  <data name="AvatarAlt" xml:space="preserve">
+    <value>Awatar użytkownika</value>
+  </data>
+  <data name="UnnamedUser" xml:space="preserve">
+    <value>Użytkownik bez nazwy</value>
+  </data>
+  <data name="EditProfileButton" xml:space="preserve">
+    <value>Edytuj profil</value>
+  </data>
+  <data name="DisplayNameLabel" xml:space="preserve">
+    <value>Nazwa wyświetlana</value>
+  </data>
+  <data name="EmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="BioLabel" xml:space="preserve">
+    <value>O mnie (Bio)</value>
+  </data>
+  <data name="NoBioMessage" xml:space="preserve">
+    <value>Nie dodano jeszcze opisu.</value>
+  </data>
+  <data name="SettingsLabel" xml:space="preserve">
+    <value>Ustawienia</value>
+  </data>
+  <data name="AdsPerPageSetting" xml:space="preserve">
+    <value>Liczba ogłoszeń na stronę: &lt;span class="badge bg-secondary"&gt;{0}&lt;/span&gt;</value>
+  </data>
+</root>

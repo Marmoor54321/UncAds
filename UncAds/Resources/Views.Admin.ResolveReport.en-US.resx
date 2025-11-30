@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ResolveReportTitle" xml:space="preserve">
+    <value>Resolve Report</value>
+  </data>
+  <data name="ModeratorPanelHeader" xml:space="preserve">
+    <value>Moderator Panel</value>
+  </data>
+  <data name="ReportIdLabel" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="AdLabel" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="AdDeletedMessage" xml:space="preserve">
+    <value>Ad does not exist (deleted)</value>
+  </data>
+  <data name="ReportDateLabel" xml:space="preserve">
+    <value>Report Date</value>
+  </data>
+  <data name="ReportReasonLabel" xml:space="preserve">
+    <value>Report Reason (Reporter)</value>
+  </data>
+
+  <data name="ReportClosedHeader" xml:space="preserve">
+    <value>Report Closed</value>
+  </data>
+  <data name="ModeratorNoteLabel" xml:space="preserve">
+    <value>Moderator Note</value>
+  </data>
+  <data name="NoNoteMessage" xml:space="preserve">
+    <value>No note.</value>
+  </data>
+  <data name="BackToListButton" xml:space="preserve">
+    <value>Back to List</value>
+  </data>
+
+  <data name="DecisionHeader" xml:space="preserve">
+    <value>Decision</value>
+  </data>
+  <data name="DeleteAdOption" xml:space="preserve">
+    <value>Permanently delete ad</value>
+  </data>
+  <data name="DeleteAdHelp" xml:space="preserve">
+    <value>Check if the ad violates the rules and should be deleted.</value>
+  </data>
+  <data name="ResolutionNoteLabel" xml:space="preserve">
+    <value>Note / Justification</value>
+  </data>
+  <data name="ResolutionNotePlaceholder" xml:space="preserve">
+    <value>Enter justification for the decision (visible to admins)...</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ConfirmDecisionButton" xml:space="preserve">
+    <value>Confirm Decision</value>
+  </data>
+</root>

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ManageUsersTitle" xml:space="preserve">
+    <value>Zarządzanie użytkownikami</value>
+  </data>
+  <data name="UsersHeader" xml:space="preserve">
+    <value>Użytkownicy</value>
+  </data>
+
+  <data name="ReportsButton" xml:space="preserve">
+    <value>Zgłoszenia</value>
+  </data>
+  <data name="NewsletterButton" xml:space="preserve">
+    <value>Newsletter</value>
+  </data>
+  
+  <data name="Table_UserEmail" xml:space="preserve">
+    <value>Użytkownik (Email)</value>
+  </data>
+  <data name="Table_Id" xml:space="preserve">
+    <value>Identyfikator (ID)</value>
+  </data>
+  <data name="Table_Actions" xml:space="preserve">
+    <value>Akcje</value>
+  </data>
+
+  <data name="ManageRolesTitle" xml:space="preserve">
+    <value>Zarządzaj rolami</value>
+  </data>
+  <data name="RolesButton" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="DeleteUserTitle" xml:space="preserve">
+    <value>Usuń użytkownika</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+</root>
