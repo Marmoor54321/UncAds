@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="PageTitle" xml:space="preserve">
+    <value>New Ad</value>
+  </data>
+  <data name="HeadingAddAd" xml:space="preserve">
+    <value>Add New Ad</value>
+  </data>
+  
+  <data name="HeaderBasicInfo" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="LabelAdTitle" xml:space="preserve">
+    <value>Ad Title</value>
+  </data>
+  <data name="PlaceholderAdTitle" xml:space="preserve">
+    <value>e.g., Selling Opel Corsa...</value>
+  </data>
+  <data name="LabelCategories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="LabelDescription" xml:space="preserve">
+    <value>Detailed Description</value>
+  </data>
+  <data name="PlaceholderDescription" xml:space="preserve">
+    <value>Describe the item in detail...</value>
+  </data>
+  
+  <data name="HeaderCategoryDetails" xml:space="preserve">
+    <value>Category Details</value>
+  </data>
+  <data name="MessageSelectCategory" xml:space="preserve">
+    <value>Select a category above to see additional fields.</value>
+  </data>
+  <data name="JsMessageNoAttributes" xml:space="preserve">
+    <value>The selected categories do not require additional parameters.</value>
+  </data>
+
+  <data name="HeaderMediaFiles" xml:space="preserve">
+    <value>Photos and Files</value>
+  </data>
+  <data name="LabelGallery" xml:space="preserve">
+    <value>Gallery (Photos/Videos)</value>
+  </data>
+  <data name="MediaInfo" xml:space="preserve">
+    <value>Maximum of {0} files. Each up to {1} MB.</value>
+  </data>
+  <data name="LabelAttachments" xml:space="preserve">
+    <value>Attachments (Documents)</value>
+  </data>
+  <data name="PlaceholderAttachmentDescription" xml:space="preserve">
+    <value>File description (optional)</value>
+  </data>
+  <data name="ButtonAddAttachment" xml:space="preserve">
+    <value>Add another file</value>
+  </data>
+
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ButtonPublish" xml:space="preserve">
+    <value>Publish Ad</value>
+  </data>
+
+  <data name="JsAlertMaxMediaFiles" xml:space="preserve">
+    <value>You can add a maximum of {0} media files.</value>
+  </data>
+  <data name="JsAlertFileTooBig" xml:space="preserve">
+    <value>File "{1}" is too large! Max: {0} MB.</value>
+  </data>
+  <data name="JsAlertMaxAttachments" xml:space="preserve">
+    <value>Attachment limit reached ({0}).</value>
+  </data>
+  <data name="JsAlertFetchError" xml:space="preserve">
+    <value>An error occurred while fetching attributes.</value>
+  </data>
+  <data name="JsSelectOptionYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="JsSelectOptionNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+</root>

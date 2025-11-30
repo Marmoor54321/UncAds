@@ -102,20 +102,17 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Konfiguracja
             const maxAttachments = @(ViewBag.MaxAttachments ?? 5);
             const maxMediaFiles = @(ViewBag.MaxMediaFiles ?? 5);
             const maxFileSizeMB = @(ViewBag.MaxFileSizeMB ?? 5);
             const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024;
 
-            // Elementy DOM
             const container = document.getElementById('attachmentsContainer');
             const addBtn = document.getElementById('addAttachment');
             const mediaInput = document.querySelector('input[name="mediaFiles"]');
             const categorySelect = document.getElementById('categorySelect');
             const attributesContainer = document.getElementById('attributesContainer');
 
-            // --- 1. Obsługa Multimediów ---
             if(mediaInput){
                 mediaInput.addEventListener('change', function () {
                     if (this.files.length > maxMediaFiles) {
@@ -132,7 +129,6 @@
                 });
             }
 
-            // --- 2. Obsługa Załączników ---
             function validateFileSize(input) {
                 if (!input.files || input.files.length === 0) return true;
                 const file = input.files[0];
@@ -150,10 +146,8 @@
                 input.dataset.validationAttached = 'true';
             }
 
-            // Inicjalizacja istniejących inputów
             document.querySelectorAll('.attachment-file').forEach(attachValidationToFileInput);
 
-            // Dodawanie nowego wiersza załącznika
             if(addBtn){
                 addBtn.addEventListener('click', function () {
                     const currentCount = container.querySelectorAll('.attachment-group').length;
@@ -185,10 +179,8 @@
                 });
             }
 
-            // --- 3. Dynamiczne Atrybuty (Pobieranie z serwera) ---
                 if(categorySelect){
             categorySelect.addEventListener('change', function () {
-                // Pobieramy wybrane opcje
                 const selected = Array.from(this.selectedOptions).map(o => o.value);
 
                 if(selected.length === 0) {
@@ -196,13 +188,10 @@
                     return;
                 }
 
-                // Spinner loading
                 attributesContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
 
-                // --- POPRAWKA TUTAJ: Budowanie parametrów URL dla tablicy ---
                 const params = new URLSearchParams();
                 selected.forEach(id => params.append('categoryIds', id));
-                // Wynik: categoryIds=1&categoryIds=2 (to ASP.NET Core rozumie jako int[])
 
                 fetch(`/Ads/GetCategoryAttributes?` + params.toString())
                     .then(r => {
@@ -213,8 +202,6 @@
                         attributesContainer.innerHTML = '';
 
                         if(data.length === 0){
-                            // To nie jest błąd, po prostu brak atrybutów dla tej kategorii.
-                            // Można dodać input hidden, żeby formularz przeszedł, jeśli jest taka walidacja, ale zazwyczaj nie trzeba.
                             attributesContainer.innerHTML = '<div class="alert alert-secondary text-center">Wybrane kategorie nie wymagają dodatkowych parametrów.</div>';
                             return;
                         }
@@ -232,10 +219,6 @@
                             label.classList.add('form-label', 'fw-bold', 'small');
 
                             let input;
-
-                            // ... (Twój switch case do budowania inputów - bez zmian) ...
-                            // Upewnij się, że w switchu używasz poprawnej logiki tworzenia inputów.
-                            // Poniżej skrócony przykład dla Select, żeby upewnić się, że działa:
 
                             switch (attr.type) {
                                 case 0: // Text
@@ -287,7 +270,6 @@
                                     break;
                             }
 
-                            // Nazewnictwo inputów
                             input.name = `AttributeValues[${attr.id}]`;
 
                             colDiv.appendChild(label);
