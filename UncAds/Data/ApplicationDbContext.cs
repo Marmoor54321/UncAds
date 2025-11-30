@@ -28,7 +28,11 @@ namespace UncAds.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
+            builder.Entity<Ad>()
+                    .HasOne(a => a.User)       // Ogłoszenie ma jednego Usera
+                    .WithMany()                // User ma wiele ogłoszeń (jeśli masz listę Ads w ApplicationUser wpisz .WithMany(u => u.Ads))
+                    .HasForeignKey(a => a.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
             // konfiguracja klucza złożonego dla tabeli łącznikowej
             builder.Entity<AdCategory>()
                 .HasKey(ac => new { ac.AdId, ac.CategoryId });
