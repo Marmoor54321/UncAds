@@ -1,5 +1,21 @@
-﻿<!DOCTYPE html>
-<html lang="pl">
+﻿@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@inject IOptions<RequestLocalizationOptions> LocOptions
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var currentCulture = requestCulture.RequestCulture.UICulture.Name;
+
+    var supportedCultures = LocOptions.Value.SupportedUICultures.Select(c => new
+    {
+        Name = c.Name,
+        DisplayName = c.DisplayName
+    }).ToList();
+
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
+}
+<!DOCTYPE html>
+<html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -54,7 +70,24 @@
                     </ul>
 
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                        <li class="nav-item me-3">
+                            <form id="selectLanguageForm" asp-controller="Home" asp-action="SetLanguage"
+                                  asp-route-returnUrl="@returnUrl" method="post" class="d-inline-block">
 
+                                <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+                                <select name="culture" class="form-select form-select-sm"
+                                        onchange="this.form.submit();" aria-label="Język">
+
+                                    @foreach (var culture in supportedCultures)
+                                    {
+                                        <option value="@culture.Name" selected="@(currentCulture == culture.Name)">
+                                            @culture.Name
+                                        </option>
+                                    }
+                                </select>
+                            </form>
+                        </li>
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown me-2">

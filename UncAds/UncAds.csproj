@@ -24,4 +24,11 @@
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\converted.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>converted.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

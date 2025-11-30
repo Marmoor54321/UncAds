@@ -1,7 +1,11 @@
 ﻿@model IEnumerable<UncAds.Models.Ad>
 
+@* Krok 1: Wstrzyknięcie IViewLocalizer *@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Ogłoszenia";
+    ViewData["Title"] = Localizer["AdsTitle"]; // Zlokalizowany tytuł strony
 
     // Pobieramy dane z ViewBag
     var displayCategories = ViewBag.DisplayCategories as List<UncAds.Models.Category>;
@@ -23,7 +27,7 @@
 }
 
 <style>
-    /* Styl dla kategorii (górne kafelki nawigacyjne) */
+    /* Twoje style CSS */
     .cat-nav-card {
         transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
         cursor: pointer;
@@ -137,19 +141,19 @@
                     <div class="row g-2">
                         <div class="col-md-3">
                             <select name="categoryId" class="form-select border-secondary" asp-items="ViewBag.SearchCategories" onchange="this.form.submit()">
-                                <option value="">-- Wszystkie działy --</option>
+                                <option value="">@Localizer["AllCategories"]</option>
                             </select>
                         </div>
                         <div class="col-md-7">
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
                                 <input type="text" name="query" class="form-control border-start-0 border-secondary"
-                                       placeholder="Czego szukasz? np. samochód, praca..."
+                                       placeholder="@Localizer["SearchPlaceholder"]"
                                        value="@currentQuery" />
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100 fw-bold">Szukaj</button>
+                            <button type="submit" class="btn btn-primary w-100 fw-bold">@Localizer["SearchButton"]</button>
                         </div>
                     </div>
                 </form>
@@ -164,16 +168,16 @@
                 @if (currentCategory.ParentCategoryId != null)
                 {
                     <a href="@Url.Action("Index", new { categoryId = currentCategory.ParentCategoryId, query = currentQuery })" class="btn btn-outline-secondary btn-sm me-2 rounded-pill">
-                        <i class="bi bi-arrow-left"></i> Wróć do @currentCategory.ParentCategory?.Name
+                        <i class="bi bi-arrow-left"></i> @Localizer["GoBackTo"] @currentCategory.ParentCategory?.Name
                     </a>
                 }
                 else
                 {
                     <a href="@Url.Action("Index", new { categoryId = "", query = currentQuery })" class="btn btn-outline-secondary btn-sm me-2 rounded-pill">
-                        <i class="bi bi-arrow-left"></i> Wszystkie działy
+                        <i class="bi bi-arrow-left"></i> @Localizer["AllCategories"]
                     </a>
                 }
-                <span class="ms-2 fs-5">Kategoria: <strong class="text-dark">@currentCategory.Name</strong></span>
+                <span class="ms-2 fs-5">@Localizer["CategoryLabel"]: <strong class="text-dark">@currentCategory.Name</strong></span>
             </div>
         </div>
     }
@@ -188,7 +192,7 @@
     {
         <div class="card mb-4 border-0 shadow-sm bg-light">
             <div class="card-body">
-                <h6 class="card-title mb-3 fw-bold text-primary"><i class="bi bi-sliders"></i> Filtruj wyniki</h6>
+                <h6 class="card-title mb-3 fw-bold text-primary"><i class="bi bi-sliders"></i> @Localizer["FilterResultsTitle"]</h6>
                 <form asp-action="Index" method="get">
                     <input type="hidden" name="query" value="@currentQuery" />
                     <input type="hidden" name="categoryId" value="@currentCategoryId" />
@@ -203,7 +207,7 @@
                                 @if (attr.Type == UncAds.Models.AttributeType.Dictionary && attr.Dictionary != null)
                                 {
                                     <select name="attributeFilters[@attr.Id]" class="form-select form-select-sm">
-                                        <option value="">Wszystkie</option>
+                                        <option value="">@Localizer["All"]</option>
                                         @foreach (var v in attr.Dictionary.Values)
                                         {
                                             <!option value="@v.Value" @(val == v.Value ? "selected" : "")>@v.Value</!option>
@@ -213,9 +217,9 @@
                                 else if (attr.Type == UncAds.Models.AttributeType.Boolean)
                                 {
                                     <select name="attributeFilters[@attr.Id]" class="form-select form-select-sm">
-                                        <option value="">-</option>
-                                        <!option value="true" @(val == "true" ? "selected" : "")>Tak</!option>
-                                        <!option value="false" @(val == "false" ? "selected" : "")>Nie</!option>
+                                        <option value="">@Localizer["Any"]</option>
+                                        <!option value="true" @(val == "true" ? "selected" : "")>@Localizer["Yes"]</!option>
+                                        <!option value="false" @(val == "false" ? "selected" : "")>@Localizer["No"]</!option>
                                     </select>
                                 }
                                 else
@@ -225,8 +229,8 @@
                             </div>
                         }
                         <div class="col-12 text-end">
-                            <a href="@Url.Action("Index", new { categoryId = currentCategoryId, query = currentQuery })" class="btn btn-link btn-sm text-decoration-none text-muted me-2">Wyczyść</a>
-                            <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill">Zastosuj filtry</button>
+                            <a href="@Url.Action("Index", new { categoryId = currentCategoryId, query = currentQuery })" class="btn btn-link btn-sm text-decoration-none text-muted me-2">@Localizer["ClearFilters"]</a>
+                            <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill">@Localizer["ApplyFilters"]</button>
                         </div>
                     </div>
                 </form>
@@ -254,10 +258,10 @@
     }
 
     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-        <h4 class="m-0 text-dark">Wyniki wyszukiwania</h4>
+        <h4 class="m-0 text-dark">@Localizer["SearchResultsHeader"]</h4>
         <div>
             <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm">
-                <i class="bi bi-plus-lg"></i> Dodaj ogłoszenie
+                <i class="bi bi-plus-lg"></i> @Localizer["AddAdButton"]
             </a>
         </div>
     </div>
@@ -266,9 +270,9 @@
     {
         <div class="text-center py-5">
             <div class="mb-3 text-muted" style="font-size: 4rem;"><i class="bi bi-inbox"></i></div>
-            <h4>Nic nie znaleziono :(</h4>
-            <p class="text-muted">Spróbuj zmienić kategorię lub wpisać inną frazę.</p>
-            <a href="@Url.Action("Index")" class="btn btn-outline-primary mt-2">Wyczyść wszystko</a>
+            <h4>@Localizer["NoResultsTitle"]</h4>
+            <p class="text-muted">@Localizer["NoResultsHint"]</p>
+            <a href="@Url.Action("Index")" class="btn btn-outline-primary mt-2">@Localizer["ClearAllButton"]</a>
         </div>
     }
     else
@@ -277,7 +281,8 @@
             @foreach (var item in Model)
             {
                 // Logika wyboru zdjęcia
-                string imageUrl = "/images/no-image.png"; // Domyślny placeholder (musisz go dodać do wwwroot/images)
+                // Używamy klucza lokalizacyjnego, aby placeholder był tłumaczony (jeśli to link do serwisu zewnętrznego)
+                string imageUrl = Localizer["NoImagePlaceholderText"].Value;
 
                 // Sprawdzamy czy ogłoszenie ma media typu image
                 var coverMedia = item.Media?.FirstOrDefault(m => m.MediaType == "image");
@@ -285,12 +290,7 @@
                 {
                     imageUrl = coverMedia.FilePath;
                 }
-                else
-                {
-                    // Fallback: dynamiczny placeholder z serwisu zewnętrznego jeśli nie masz pliku lokalnego
-                    imageUrl = "https://placehold.co/400x300?text=Brak+zdjęcia";
-                }
-
+                
                 <div class="col">
                     <div class="card ad-card h-100 bg-white">
                         <div class="ad-img-container">
@@ -321,7 +321,7 @@
                                 </div>
                                 <div class="d-grid mt-2">
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm rounded-pill">
-                                        Zobacz szczegóły
+                                        @Localizer["ViewDetailsButton"]
                                     </a>
                                 </div>
                             </div>

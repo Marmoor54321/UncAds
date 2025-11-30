@@ -1,4 +1,6 @@
 ﻿@model UncAds.Models.Ad
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = Model.Title;
@@ -18,8 +20,8 @@
             <div>
                 <h1 class="display-5 fw-bold text-break">@Model.Title</h1>
                 <div class="text-muted small">
-                    <i class="bi bi-calendar3"></i> Dodano: @Model.Date.ToString("dd.MM.yyyy HH:mm") &nbsp;|&nbsp;
-                    <i class="bi bi-eye"></i> Wyświetleń: @Model.ViewCount
+                    <i class="bi bi-calendar3"></i> @Localizer["AddedDateLabel"]: @Model.Date.ToString("dd.MM.yyyy HH:mm") &nbsp;|&nbsp;
+                    <i class="bi bi-eye"></i> @Localizer["ViewsCountLabel"]: @Model.ViewCount
                 </div>
             </div>
 
@@ -27,10 +29,10 @@
             {
                 <div class="mt-2 mt-md-0">
                     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm me-1">
-                        <i class="bi bi-pencil"></i> Edytuj
+                        <i class="bi bi-pencil"></i> @Localizer["EditButton"]
                     </a>
                     <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash"></i> Usuń
+                        <i class="bi bi-trash"></i> @Localizer["DeleteButton"]
                     </a>
                 </div>
             }
@@ -57,7 +59,7 @@
                         @for (int i = 0; i < images.Count; i++)
                         {
                             <div class="carousel-item @(i == 0 ? "active" : "") h-100 bg-dark text-center">
-                                <img src="@images[i].FilePath" class="d-block w-100" style="object-fit: contain; max-height: 500px; margin: 0 auto;" alt="Zdjęcie ogłoszenia">
+                                <img src="@images[i].FilePath" class="d-block w-100" style="object-fit: contain; max-height: 500px; margin: 0 auto;" alt="@Localizer["AdImageAltText"]">
                             </div>
                         }
                     </div>
@@ -66,11 +68,11 @@
                     {
                         <button class="carousel-control-prev" type="button" data-bs-target="#adCarousel" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Poprzedni</span>
+                            <span class="visually-hidden">@Localizer["PreviousButton"]</span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#adCarousel" data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Następny</span>
+                            <span class="visually-hidden">@Localizer["NextButton"]</span>
                         </button>
                     }
                 </div>
@@ -78,7 +80,7 @@
 
             <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-body">
-                    <h4 class="card-title text-primary border-bottom pb-2 mb-3">Opis</h4>
+                    <h4 class="card-title text-primary border-bottom pb-2 mb-3">@Localizer["DescriptionHeader"]</h4>
                     <div class="ad-description text-break">
                         @Html.Raw(Model.Description)
                     </div>
@@ -89,11 +91,11 @@
             {
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-body">
-                        <h4 class="card-title text-primary border-bottom pb-2 mb-3">Multimedia</h4>
+                        <h4 class="card-title text-primary border-bottom pb-2 mb-3">@Localizer["MediaHeader"]</h4>
 
                         @if (videos != null && videos.Any())
                         {
-                            <h6 class="fw-bold"><i class="bi bi-camera-video"></i> Wideo</h6>
+                            <h6 class="fw-bold"><i class="bi bi-camera-video"></i> @Localizer["VideoHeader"]</h6>
                             <div class="row g-3 mb-3">
                                 @foreach (var vid in videos)
                                 {
@@ -101,7 +103,7 @@
                                         <div class="ratio ratio-16x9 bg-dark rounded">
                                             <video controls>
                                                 <source src="@vid.FilePath" type="video/mp4">
-                                                Twoja przeglądarka nie obsługuje wideo.
+                                                @Localizer["VideoNotSupported"]
                                             </video>
                                         </div>
                                     </div>
@@ -111,14 +113,14 @@
 
                         @if (audios != null && audios.Any())
                         {
-                            <h6 class="fw-bold"><i class="bi bi-music-note-beamed"></i> Audio</h6>
+                            <h6 class="fw-bold"><i class="bi bi-music-note-beamed"></i> @Localizer["AudioHeader"]</h6>
                             <div class="vstack gap-2 mb-3">
                                 @foreach (var aud in audios)
                                 {
                                     <div class="bg-light p-2 rounded border">
                                         <audio controls class="w-100">
                                             <source src="@aud.FilePath" type="audio/mpeg" />
-                                            Twoja przeglądarka nie obsługuje audio.
+                                            @Localizer["AudioNotSupported"]
                                         </audio>
                                     </div>
                                 }
@@ -128,10 +130,10 @@
                         @if (otherMedia != null && otherMedia.Any())
                         {
                             <div class="alert alert-warning">
-                                <strong>Uwaga:</strong> Ogłoszenie zawiera pliki Flash/SWF, które mogą nie być obsługiwane przez nowoczesne przeglądarki.
+                                <strong>@Localizer["WarningLabel"]</strong> @Localizer["FlashWarningText"]
                                 @foreach (var om in otherMedia)
                                 {
-                                    <div class="mt-2"><a href="@om.FilePath" target="_blank" class="btn btn-outline-dark btn-sm">Pobierz/Otwórz plik: @System.IO.Path.GetFileName(om.FilePath)</a></div>
+                                    <div class="mt-2"><a href="@om.FilePath" target="_blank" class="btn btn-outline-dark btn-sm">@Localizer["DownloadFileLabel"]: @System.IO.Path.GetFileName(om.FilePath)</a></div>
                                 }
                             </div>
                         }
@@ -143,7 +145,7 @@
             {
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-body">
-                        <h4 class="card-title text-primary border-bottom pb-2 mb-3">Pliki do pobrania</h4>
+                        <h4 class="card-title text-primary border-bottom pb-2 mb-3">@Localizer["AttachmentsHeader"]</h4>
                         <div class="list-group">
                             @foreach (var att in Model.Attachments)
                             {
@@ -169,7 +171,7 @@
 
             <div class="card mb-4 border-primary shadow-sm">
                 <div class="card-header bg-primary text-white fw-bold">
-                    <i class="bi bi-person-circle"></i> Sprzedający
+                    <i class="bi bi-person-circle"></i> @Localizer["SellerHeader"]
                 </div>
                 <div class="card-body text-center">
                     @if (Model.User != null)
@@ -178,7 +180,7 @@
                         <img src="@avatar" class="rounded-circle mb-3 border p-1" width="80" height="80" style="object-fit: cover;">
                         <h5 class="card-title">@Model.User.DisplayName</h5>
                         <p class="text-muted small">@Model.User.Email</p>
-     @if (!string.IsNullOrEmpty(Model.User.Bio))
+                        @if (!string.IsNullOrEmpty(Model.User.Bio))
                         {
                             <hr />
                             <p class="small fst-italic text-muted">"@Model.User.Bio"</p>
@@ -186,10 +188,10 @@
                     }
                     else
                     {
-                        <p class="text-muted">Konto usunięte</p>
+                        <p class="text-muted">@Localizer["AccountDeletedText"]</p>
                     }
                     <div class="d-grid mt-3">
-                        <button class="btn btn-outline-primary btn-sm">Skontaktuj się</button>
+                        <button class="btn btn-outline-primary btn-sm">@Localizer["ContactButton"]</button>
                     </div>
                 </div>
             </div>
@@ -198,7 +200,7 @@
             {
                 <div class="card mb-4 border-0 shadow-sm">
                     <div class="card-header bg-white fw-bold">
-                        <i class="bi bi-list-check"></i> Szczegóły
+                        <i class="bi bi-list-check"></i> @Localizer["DetailsHeader"]
                     </div>
                     <ul class="list-group list-group-flush">
                         @foreach (var av in Model.AttributeValues)
@@ -214,7 +216,7 @@
 
             <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-body">
-                    <h6 class="fw-bold mb-3">Kategorie</h6>
+                    <h6 class="fw-bold mb-3">@Localizer["CategoriesHeader"]</h6>
                     @if (Model.AdCategories != null && Model.AdCategories.Any())
                     {
                         @foreach (var ac in Model.AdCategories)
@@ -226,7 +228,7 @@
                     }
                     else
                     {
-                        <span class="text-muted small">Brak</span>
+                        <span class="text-muted small">@Localizer["NoneText"]</span>
                     }
                 </div>
             </div>
@@ -237,17 +239,17 @@
                     <div class="accordion-item border-danger">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button collapsed text-danger bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReport" aria-expanded="false" aria-controls="collapseReport">
-                                <i class="bi bi-flag-fill me-2"></i> Zgłoś nadużycie
+                                <i class="bi bi-flag-fill me-2"></i> @Localizer["ReportAbuseButton"]
                             </button>
                         </h2>
                         <div id="collapseReport" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#reportAccordion">
                             <div class="accordion-body">
                                 <form method="post" asp-action="Report" asp-route-id="@Model.Id">
                                     <div class="mb-2">
-                                        <textarea name="reason" rows="3" required placeholder="Opisz powód zgłoszenia..." class="form-control form-control-sm"></textarea>
+                                        <textarea name="reason" rows="3" required placeholder="@Localizer["ReportReasonPlaceholder"]" class="form-control form-control-sm"></textarea>
                                     </div>
                                     <div class="d-grid">
-                                        <button class="btn btn-danger btn-sm">Wyślij zgłoszenie</button>
+                                        <button class="btn btn-danger btn-sm">@Localizer["SendReportButton"]</button>
                                     </div>
                                 </form>
                             </div>
@@ -257,7 +259,7 @@
             }
 
             <div class="d-grid">
-                <a asp-action="Index" class="btn btn-light border">Wróć do listy</a>
+                <a asp-action="Index" class="btn btn-light border">@Localizer["BackToListButton"]</a>
             </div>
 
         </div>

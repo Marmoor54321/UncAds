@@ -1,8 +1,9 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using UncAds.Models;
 using UncAds.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Localization;
 
 namespace UncAds.Controllers
 {
@@ -37,6 +38,27 @@ namespace UncAds.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            if (string.IsNullOrEmpty(culture))
+            {
+                return LocalRedirect(returnUrl ?? "/");
+            }
+
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddYears(1),
+                    IsEssential = true,
+                    HttpOnly = false
+                }
+            );
+
+            return LocalRedirect(returnUrl ?? "/");
         }
     }
 }

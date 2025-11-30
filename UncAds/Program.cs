@@ -5,6 +5,9 @@ using UncAds.Configuration;
 using UncAds.Data;
 using UncAds.Models;
 using UncAds.Services;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +31,24 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 builder.Services.Configure<UncAds.Services.HtmlSanitizerSettings>(builder.Configuration.GetSection("HtmlSanitizerSettings"));
 builder.Services.AddSingleton<UncAds.Services.IHtmlSanitizationService, UncAds.Services.HtmlSanitizationService>();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("pl-PL"),
+        new CultureInfo("en-US"),
+        new CultureInfo("de-DE")
+    };
+
+    options.DefaultRequestCulture = new RequestCulture("pl-PL");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
 builder.Services.AddRazorPages();
 
 
@@ -41,6 +61,7 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 // 3. Rejestracja NewsletterService
 builder.Services.AddScoped<INewsletterService, NewsletterService>();
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 var app = builder.Build();
 
@@ -91,7 +112,17 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
+var supportedLanguages = new[]
+{
+    new System.Globalization.CultureInfo("pl-PL"), // Polski - domyślny
+    new System.Globalization.CultureInfo("en-US"), // Angielski
+    new System.Globalization.CultureInfo("de-DE"), // Niemiecki
+};
 
+var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
+app.UseRequestLocalization(localizationOptions);
+
+app.UseRequestLocalization(localizationOptions);
 app.UseHttpsRedirection();
 app.UseRouting();
 

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="xml:space" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="AddedDateLabel" xml:space="preserve">
+    <value>Added:</value>
+  </data>
+  <data name="ViewsCountLabel" xml:space="preserve">
+    <value>Views:</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="AdImageAltText" xml:space="preserve">
+    <value>Ad photo</value>
+  </data>
+  <data name="PreviousButton" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="DescriptionHeader" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="MediaHeader" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="VideoHeader" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="VideoNotSupported" xml:space="preserve">
+    <value>Your browser does not support video.</value>
+  </data>
+  <data name="AudioHeader" xml:space="preserve">
+    <value>Audio</value>
+  </data>
+  <data name="AudioNotSupported" xml:space="preserve">
+    <value>Your browser does not support audio.</value>
+  </data>
+  <data name="WarningLabel" xml:space="preserve">
+    <value>Warning:</value>
+  </data>
+  <data name="FlashWarningText" xml:space="preserve">
+    <value>The ad contains Flash/SWF files, which may not be supported by modern browsers.</value>
+  </data>
+  <data name="DownloadFileLabel" xml:space="preserve">
+    <value>Download/Open file:</value>
+  </data>
+  <data name="AttachmentsHeader" xml:space="preserve">
+    <value>Attachments</value>
+  </data>
+  <data name="SellerHeader" xml:space="preserve">
+    <value>Seller</value>
+  </data>
+  <data name="AccountDeletedText" xml:space="preserve">
+    <value>Account deleted</value>
+  </data>
+  <data name="ContactButton" xml:space="preserve">
+    <value>Contact Seller</value>
+  </data>
+  <data name="DetailsHeader" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="CategoriesHeader" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="NoneText" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ReportAbuseButton" xml:space="preserve">
+    <value>Report Abuse</value>
+  </data>
+  <data name="ReportReasonPlaceholder" xml:space="preserve">
+    <value>Describe the reason for reporting...</value>
+  </data>
+  <data name="SendReportButton" xml:space="preserve">
+    <value>Send Report</value>
+  </data>
+  <data name="BackToListButton" xml:space="preserve">
+    <value>Back to List</value>
+  </data>
+</root>
