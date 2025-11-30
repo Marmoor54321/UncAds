@@ -1,13 +1,15 @@
 ﻿@model UncAds.Models.Ad
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Nowe ogłoszenie";
+    ViewData["Title"] = Localizer["PageTitle"];
 }
 
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-10">
 
-            <h2 class="mb-4"><i class="bi bi-plus-circle-dotted"></i> Dodaj nowe ogłoszenie</h2>
+            <h2 class="mb-4"><i class="bi bi-plus-circle-dotted"></i> @Localizer["HeadingAddAd"]</h2>
 
             <div asp-validation-summary="All" class="alert alert-danger" role="alert" style="display:none"></div>
 
@@ -15,26 +17,26 @@
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-card-text"></i> Informacje podstawowe</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-card-text"></i> @Localizer["HeaderBasicInfo"]</h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label asp-for="Title" class="form-label fw-bold">Tytuł ogłoszenia</label>
-                                <input asp-for="Title" class="form-control" placeholder="np. Sprzedam Opla Corsa..." />
+                                <label asp-for="Title" class="form-label fw-bold">@Localizer["LabelAdTitle"]</label>
+                                <input asp-for="Title" class="form-control" placeholder="@Localizer["PlaceholderAdTitle"]" />
                                 <span asp-validation-for="Title" class="text-danger small"></span>
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label fw-bold">Kategorie</label>
+                                <label class="form-label fw-bold">@Localizer["LabelCategories"]</label>
                                 <select id="categorySelect" name="SelectedCategoryIds" multiple class="form-select" style="height: 50px;"
                                         asp-items="ViewBag.Categories">
                                 </select>
                             </div>
 
                             <div class="col-12">
-                                <label asp-for="Description" class="form-label fw-bold">Opis szczegółowy</label>
-                                <textarea asp-for="Description" class="form-control" rows="6" placeholder="Opisz dokładnie przedmiot..."></textarea>
+                                <label asp-for="Description" class="form-label fw-bold">@Localizer["LabelDescription"]</label>
+                                <textarea asp-for="Description" class="form-control" rows="6" placeholder="@Localizer["PlaceholderDescription"]"></textarea>
                                 <span asp-validation-for="Description" class="text-danger small"></span>
                             </div>
                         </div>
@@ -43,55 +45,55 @@
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> Szczegóły kategorii</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-sliders"></i> @Localizer["HeaderCategoryDetails"]</h5>
                     </div>
                     <div class="card-body p-4">
                         <div id="attributesContainer">
-                            <p class="text-muted text-center fst-italic">Wybierz kategorię powyżej, aby zobaczyć dodatkowe pola.</p>
+                            <p class="text-muted text-center fst-italic">@Localizer["MessageSelectCategory"]</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-bottom py-3">
-                        <h5 class="m-0 text-primary"><i class="bi bi-images"></i> Zdjęcia i pliki</h5>
+                        <h5 class="m-0 text-primary"><i class="bi bi-images"></i> @Localizer["HeaderMediaFiles"]</h5>
                     </div>
                     <div class="card-body p-4">
 
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Galeria (Zdjęcia/Wideo)</label>
+                            <label class="form-label fw-bold">@Localizer["LabelGallery"]</label>
                             <input type="file" name="mediaFiles" multiple class="form-control media-file" accept="video/mp4,image/jpeg,image/png,image/gif,audio/mpeg,audio/wav,audio/ogg,.swf" />
                             <div class="form-text">
-                                <i class="bi bi-info-circle"></i> Maksymalnie @ViewBag.MaxMediaFiles plików. Każdy do @ViewBag.MaxFileSizeMB MB.
+                                <i class="bi bi-info-circle"></i> @Localizer["MediaInfo"]
                             </div>
                         </div>
 
                         <hr class="text-muted">
 
                         <div>
-                            <label class="form-label fw-bold mb-3">Załączniki (Dokumenty)</label>
+                            <label class="form-label fw-bold mb-3">@Localizer["LabelAttachments"]</label>
                             <div id="attachmentsContainer">
                                 <div class="attachment-group row g-2 mb-2 align-items-center bg-light p-2 rounded border">
                                     <div class="col-md-5">
                                         <input type="file" name="attachmentFiles" class="form-control attachment-file" />
                                     </div>
                                     <div class="col-md-5">
-                                        <input type="text" name="attachmentDescriptions" placeholder="Opis pliku (opcjonalne)" class="form-control" />
+                                        <input type="text" name="attachmentDescriptions" placeholder="@Localizer["PlaceholderAttachmentDescription"]" class="form-control" />
                                     </div>
                                     <div class="col-md-2 text-end">
                                     </div>
                                 </div>
                             </div>
                             <button type="button" id="addAttachment" class="btn btn-outline-secondary btn-sm mt-2">
-                                <i class="bi bi-plus-lg"></i> Dodaj kolejny plik
+                                <i class="bi bi-plus-lg"></i> @Localizer["ButtonAddAttachment"]
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-end gap-2 mb-5">
-                    <a asp-action="Index" class="btn btn-light border px-4">Anuluj</a>
-                    <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">Opublikuj ogłoszenie</button>
+                    <a asp-action="Index" class="btn btn-light border px-4">@Localizer["ButtonCancel"]</a>
+                    <button type="submit" class="btn btn-success px-5 fw-bold shadow-sm">@Localizer["ButtonPublish"]</button>
                 </div>
 
             </form>
@@ -107,6 +109,19 @@
             const maxFileSizeMB = @(ViewBag.MaxFileSizeMB ?? 5);
             const maxFileSizeBytes = maxFileSizeMB * 1024 * 1024;
 
+            const messages = {
+                maxMediaAlert: '@Localizer["JsAlertMaxMediaFiles"]'.replace('{0}', maxMediaFiles),
+                fileTooBigAlert: '@Localizer["JsAlertFileTooBig"]'.replace('{0}', maxFileSizeMB),
+                maxAttachmentsAlert: '@Localizer["JsAlertMaxAttachments"]'.replace('{0}', maxAttachments),
+                selectCategoryMessage: '@Localizer["MessageSelectCategory"]',
+                loadingSpinner: '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>',
+                fetchError: '@Localizer["JsAlertFetchError"]',
+                noAttributes: '@Localizer["JsMessageNoAttributes"]',
+                selectOptionYes: '@Localizer["JsSelectOptionYes"]',
+                selectOptionNo: '@Localizer["JsSelectOptionNo"]',
+                placeholderAttachment: '@Localizer["PlaceholderAttachmentDescription"]',
+            };
+
             const container = document.getElementById('attachmentsContainer');
             const addBtn = document.getElementById('addAttachment');
             const mediaInput = document.querySelector('input[name="mediaFiles"]');
@@ -116,13 +131,13 @@
             if(mediaInput){
                 mediaInput.addEventListener('change', function () {
                     if (this.files.length > maxMediaFiles) {
-                        alert(`Maksymalnie możesz dodać ${maxMediaFiles} plików multimedialnych.`);
+                        alert(messages.maxMediaAlert);
                         this.value = '';
                         return;
                     }
                     Array.from(this.files).forEach(file => {
                         if (file.size > maxFileSizeBytes) {
-                            alert(`Plik "${file.name}" jest za duży! Maks: ${maxFileSizeMB} MB.`);
+                            alert(messages.fileTooBigAlert.replace('{1}', file.name));
                             this.value = '';
                         }
                     });
@@ -133,7 +148,7 @@
                 if (!input.files || input.files.length === 0) return true;
                 const file = input.files[0];
                 if (file.size > maxFileSizeBytes) {
-                    alert(`Plik "${file.name}" jest za duży! Maksymalny rozmiar: ${maxFileSizeMB} MB.`);
+                    alert(messages.fileTooBigAlert.replace('{1}', file.name));
                     input.value = '';
                     return false;
                 }
@@ -152,7 +167,7 @@
                 addBtn.addEventListener('click', function () {
                     const currentCount = container.querySelectorAll('.attachment-group').length;
                     if (currentCount >= maxAttachments) {
-                        alert(`Limit załączników osiągnięty (${maxAttachments}).`);
+                        alert(messages.maxAttachmentsAlert);
                         return;
                     }
 
@@ -163,7 +178,7 @@
                             <input type="file" name="attachmentFiles" class="form-control attachment-file" />
                         </div>
                         <div class="col-md-5">
-                            <input type="text" name="attachmentDescriptions" placeholder="Opis pliku" class="form-control" />
+                            <input type="text" name="attachmentDescriptions" placeholder="${messages.placeholderAttachment}" class="form-control" />
                         </div>
                         <div class="col-md-2 text-end">
                             <button type="button" class="btn btn-danger btn-sm remove-attachment"><i class="bi bi-trash"></i></button>
@@ -179,110 +194,115 @@
                 });
             }
 
-                if(categorySelect){
-            categorySelect.addEventListener('change', function () {
-                const selected = Array.from(this.selectedOptions).map(o => o.value);
+            if(categorySelect){
+                categorySelect.addEventListener('change', function () {
+                    const selected = Array.from(this.selectedOptions).map(o => o.value);
 
-                if(selected.length === 0) {
-                    attributesContainer.innerHTML = '<p class="text-muted text-center fst-italic">Wybierz kategorię...</p>';
-                    return;
-                }
+                    if(selected.length === 0) {
+                        attributesContainer.innerHTML = '<p class="text-muted text-center fst-italic">' + messages.selectCategoryMessage + '</p>';
+                        return;
+                    }
 
-                attributesContainer.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary" role="status"></div></div>';
+                    attributesContainer.innerHTML = messages.loadingSpinner;
 
-                const params = new URLSearchParams();
-                selected.forEach(id => params.append('categoryIds', id));
+                    const params = new URLSearchParams();
+                    selected.forEach(id => params.append('categoryIds', id));
 
-                fetch(`/Ads/GetCategoryAttributes?` + params.toString())
-                    .then(r => {
-                        if (!r.ok) throw new Error("Network response was not ok");
-                        return r.json();
-                    })
-                    .then(data => {
-                        attributesContainer.innerHTML = '';
+                    fetch(`/Ads/GetCategoryAttributes?` + params.toString())
+                        .then(r => {
+                            if (!r.ok) throw new Error("Network response was not ok");
+                            return r.json();
+                        })
+                        .then(data => {
+                            attributesContainer.innerHTML = '';
 
-                        if(data.length === 0){
-                            attributesContainer.innerHTML = '<div class="alert alert-secondary text-center">Wybrane kategorie nie wymagają dodatkowych parametrów.</div>';
-                            return;
-                        }
-
-                        const rowDiv = document.createElement('div');
-                        rowDiv.classList.add('row', 'g-3');
-                        attributesContainer.appendChild(rowDiv);
-
-                        data.forEach(attr => {
-                            const colDiv = document.createElement('div');
-                            colDiv.classList.add('col-md-6');
-
-                            const label = document.createElement('label');
-                            label.textContent = attr.name;
-                            label.classList.add('form-label', 'fw-bold', 'small');
-
-                            let input;
-
-                            switch (attr.type) {
-                                case 0: // Text
-                                    input = document.createElement('input');
-                                    input.type = 'text';
-                                    input.classList.add('form-control');
-                                    break;
-                                case 1: // Number
-                                    input = document.createElement('input');
-                                    input.type = 'number';
-                                    input.classList.add('form-control');
-                                    break;
-                                case 2: // Boolean
-                                    input = document.createElement('select');
-                                    input.classList.add('form-select');
-                                    input.innerHTML = '<option value="true">Tak</option><option value="false">Nie</option>';
-                                    break;
-                                case 3: // Date
-                                    input = document.createElement('input');
-                                    input.type = 'date';
-                                    input.classList.add('form-control');
-                                    break;
-                                case 4: // Select
-                                    input = document.createElement('select');
-                                    input.classList.add('form-select');
-                                    if (attr.options) {
-                                        attr.options.split(';').forEach(o => {
-                                            if(o.trim()){
-                                                const opt = document.createElement('option');
-                                                opt.value = o.trim();
-                                                opt.textContent = o.trim();
-                                                input.appendChild(opt);
-                                            }
-                                        });
-                                    }
-                                    break;
-                                case 5: // Dictionary
-                                    input = document.createElement('select');
-                                    input.classList.add('form-select');
-                                    if (attr.allowMultiple) input.multiple = true;
-                                    if (attr.dictionaryValues) {
-                                        attr.dictionaryValues.forEach(v => {
-                                            const opt = document.createElement('option');
-                                            opt.value = v;
-                                            opt.textContent = v;
-                                            input.appendChild(opt);
-                                        });
-                                    }
-                                    break;
+                            if(data.length === 0){
+                                attributesContainer.innerHTML = '<div class="alert alert-secondary text-center">' + messages.noAttributes + '</div>';
+                                return;
                             }
 
-                            input.name = `AttributeValues[${attr.id}]`;
+                            const rowDiv = document.createElement('div');
+                            rowDiv.classList.add('row', 'g-3');
+                            attributesContainer.appendChild(rowDiv);
 
-                            colDiv.appendChild(label);
-                            colDiv.appendChild(input);
-                            rowDiv.appendChild(colDiv);
+                            data.forEach(attr => {
+                                const colDiv = document.createElement('div');
+                                colDiv.classList.add('col-md-6');
+
+                                const label = document.createElement('label');
+                                label.textContent = attr.name;
+                                label.classList.add('form-label', 'fw-bold', 'small');
+
+                                let input;
+
+                                switch (attr.type) {
+                                    case 0: // Text
+                                        input = document.createElement('input');
+                                        input.type = 'text';
+                                        input.classList.add('form-control');
+                                        break;
+                                    case 1: // Number
+                                        input = document.createElement('input');
+                                        input.type = 'number';
+                                        input.classList.add('form-control');
+                                        break;
+                                    case 2: // Boolean
+                                        input = document.createElement('select');
+                                        input.classList.add('form-select');
+                                        input.innerHTML = `<option value="true">${messages.selectOptionYes}</option><option value="false">${messages.selectOptionNo}</option>`;
+                                        break;
+                                    case 3: // Date
+                                        input = document.createElement('input');
+                                        input.type = 'date';
+                                        input.classList.add('form-control');
+                                        break;
+                                    case 4: // Select
+                                        input = document.createElement('select');
+                                        input.classList.add('form-select');
+                                        if (attr.options) {
+                                            attr.options.split(';').forEach(o => {
+                                                if(o.trim()){
+                                                    const opt = document.createElement('option');
+                                                    opt.value = o.trim();
+                                                    opt.textContent = o.trim();
+                                                    input.appendChild(opt);
+                                                }
+                                            });
+                                        }
+                                        break;
+                                    case 5: // Dictionary
+                                        input = document.createElement('select');
+                                        input.classList.add('form-select');
+                                        if (attr.allowMultiple) input.multiple = true;
+                                        if (attr.dictionaryValues) {
+                                            attr.dictionaryValues.forEach(v => {
+                                                const opt = document.createElement('option');
+                                                opt.value = v;
+                                                opt.textContent = v;
+                                                input.appendChild(opt);
+                                            });
+                                        }
+                                        break;
+                                    default:
+                                        input = document.createElement('input');
+                                        input.type = 'text';
+                                        input.classList.add('form-control');
+                                        break;
+                                }
+
+                                input.name = `AttributeValues[${attr.id}]`;
+
+                                colDiv.appendChild(label);
+                                colDiv.appendChild(input);
+                                rowDiv.appendChild(colDiv);
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            attributesContainer.innerHTML = '<div class="alert alert-danger">' + messages.fetchError + '</div>';
                         });
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        attributesContainer.innerHTML = '<div class="alert alert-danger">Wystąpił błąd podczas pobierania atrybutów.</div>';
-                    });
-            });
-        }
+                });
+            }
         });
     </script>
 }
